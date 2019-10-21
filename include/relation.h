@@ -6,7 +6,7 @@
 typedef struct relation
 {
     tuple * tuples;
-    int64_t num_tuples;
+    uint64_t num_tuples;
 }relation;
 
 
