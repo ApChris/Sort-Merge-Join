@@ -1,5 +1,5 @@
-#ifndef _getQolumn_H
-#define _getQolumn_H
+#ifndef _GETQOLUMN_H
+#define _GETQOLUMN_H
 
 #include <stdio.h>
 #include <stdlib.h>
