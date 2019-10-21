@@ -1,4 +1,5 @@
-OBJS = build/main.o
+OBJS = build/main.o \
+		build/getQolumn.o
 
 
 CC = g++
@@ -16,6 +17,8 @@ clean:
 build/main.o: src/main.c
 	$(CC) $(FLAGS) $< -o $@
 
+build/getQolumn.o: src/getQolumn.c
+	$(CC) $(FLAGS) $< -o $@
 
 $(TARGET) : $(OBJS)
 		$(CC) $(CFLAGS) $^ -o $@
