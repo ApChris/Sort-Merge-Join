@@ -1,5 +1,6 @@
 OBJS = build/main.o \
-		build/getQolumn.o
+		build/getQolumn.o \
+		build/initArray.o
 
 
 CC = g++
@@ -19,6 +20,10 @@ build/main.o: src/main.c
 
 build/getQolumn.o: src/getQolumn.c
 	$(CC) $(FLAGS) $< -o $@
+
+build/initArray.o: src/initArray.c
+	$(CC) $(FLAGS) $< -o $@
+
 
 $(TARGET) : $(OBJS)
 		$(CC) $(CFLAGS) $^ -o $@
