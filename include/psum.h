@@ -5,9 +5,9 @@
 
 typedef struct psum
 {
-    int64_t key;
-    int64_t payload;
-    int64_t position;
+    uint64_t key;
+    uint64_t payload;
+    uint64_t position;
 }psum;
 
 
