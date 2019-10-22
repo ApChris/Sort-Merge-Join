@@ -1,7 +1,7 @@
 
 #include "../include/getColumn.h"
 
-void getColumn(int64_t ** array, int64_t rows, int64_t selected_column, relation *rel)
+void getColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relation *rel)
 {
 
     // We'll create space for rows number of tuples
@@ -11,7 +11,7 @@ void getColumn(int64_t ** array, int64_t rows, int64_t selected_column, relation
         exit(-1);
     }
 
-    int64_t i = 0;
+    uint64_t i = 0;
 
     // For each row
     while(i < rows)
