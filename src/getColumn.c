@@ -1,4 +1,5 @@
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "../include/getColumn.h"
 
 void getColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relation *rel)
@@ -7,7 +8,7 @@ void getColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relat
     // We'll create space for rows number of tuples
     if((rel -> tuples = (tuple *)malloc(rows * sizeof(tuple))) == NULL)
     {
-        perror("getQolumn.c , first malloc");
+        perror("getQolumn.c , first malloc\n");
         exit(-1);
     }
 
