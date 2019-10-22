@@ -1,5 +1,5 @@
 OBJS = build/main.o \
-		build/getQolumn.o \
+		build/getColumn.o \
 		build/initArray.o
 
 
@@ -18,7 +18,7 @@ clean:
 build/main.o: src/main.c
 	$(CC) $(FLAGS) $< -o $@
 
-build/getQolumn.o: src/getQolumn.c
+build/getColumn.o: src/getColumn.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/initArray.o: src/initArray.c
@@ -27,3 +27,5 @@ build/initArray.o: src/initArray.c
 
 $(TARGET) : $(OBJS)
 		$(CC) $(CFLAGS) $^ -o $@
+
+rebuild: clean all
