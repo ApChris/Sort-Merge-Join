@@ -2,7 +2,7 @@
 
 #include "../include/getColumn.h"
 #include "../include/initArray.h"
-
+#include "../include/histogram.h"
 int main(int argc, char const *argv[])
 {
     relation struct_R;
@@ -29,5 +29,11 @@ int main(int argc, char const *argv[])
         printf("%ld, %ld\n", relation_R->tuples[i].key, relation_R->tuples[i].payload);
     }
 
+
+
+    histogram struct_h;
+    histogram *hist = &struct_h;
+    Histogram(relation_R,hist);
+    Print_Histogram(hist);
     return 0;
 }
