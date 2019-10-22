@@ -1,6 +1,7 @@
 OBJS = build/main.o \
 		build/getColumn.o \
-		build/initArray.o
+		build/initArray.o \
+		build/histogram.o
 
 
 CC = g++
@@ -22,6 +23,10 @@ build/getColumn.o: src/getColumn.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/initArray.o: src/initArray.c
+	$(CC) $(FLAGS) $< -o $@
+
+
+build/histogram.o: src/histogram.c
 	$(CC) $(FLAGS) $< -o $@
 
 
