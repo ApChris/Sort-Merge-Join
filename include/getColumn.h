@@ -5,6 +5,6 @@
 #include <stdlib.h>
 #include "../include/relation.h"
 
-void getColumn(int64_t ** array, int64_t rows, int64_t selected_column, relation *rel);
+void getColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relation *rel);
 
 #endif
