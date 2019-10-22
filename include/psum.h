@@ -3,11 +3,17 @@
 
 #include <stdint.h>
 
-typedef struct psum
+typedef struct psum_tuple
 {
     uint64_t key;
     uint64_t payload;
     uint64_t position;
+}psum_tuple;
+
+typedef struct psum
+{
+    psum_tuple * psum_tuples;
+    uint64_t num_tuples;
 }psum;
 
 
