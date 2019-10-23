@@ -41,9 +41,12 @@ void Histogram(relation * rel, histogram * hist)
 void Print_Histogram(histogram * hist)
 {
     uint64_t i = 0;
+    printf("----------------> Histogram <----------------\n");
     while(i < hist -> num_tuples)
     {
-        printf("RowID = %ld --- Bucket  = %ld --- Sum = %ld\n",hist -> hist_tuples[i].payload ,hist -> hist_tuples[i].key,    hist -> hist_tuples[i].sum);
+        if(hist -> hist_tuples[i].sum != 0)
+            printf("RowID = %ld\tBucket = %ld\tSum = %ld\n",hist -> hist_tuples[i].payload ,hist -> hist_tuples[i].key,    hist -> hist_tuples[i].sum);
         i++;
     }
+    printf("----------------------------------------------\n");
 }
