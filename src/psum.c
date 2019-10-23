@@ -8,7 +8,8 @@ void Psum(histogram * hist, psum * ps){
 	uint64_t i = 1;
 	ps -> num_tuples = hist -> num_tuples;
 
-	if((ps -> psum_tuples = (psum_tuple *)malloc(ps -> num_tuples * sizeof(psum_tuple))) == NULL){
+	if((ps -> psum_tuples = (psum_tuple *)malloc(ps -> num_tuples * sizeof(psum_tuple))) == NULL)
+	{
 		perror("psum.c , first malloc\n");
 		exit(-1);
 	}
@@ -17,7 +18,8 @@ void Psum(histogram * hist, psum * ps){
 	ps -> psum_tuples[0].payload = hist -> hist_tuples[0].payload;
 	ps -> psum_tuples[0].position = 0;
 
-	while(i < ps->num_tuples){
+	while(i < ps->num_tuples)
+	{
 		ps -> psum_tuples[i].position = ps -> psum_tuples[i-1].position + hist -> hist_tuples[i-1].sum;
 		ps -> psum_tuples[i].payload = hist -> hist_tuples[i].payload;
 		ps -> psum_tuples[i].key = hist -> hist_tuples[i].key;
