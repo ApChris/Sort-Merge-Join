@@ -6,6 +6,6 @@
 #include <time.h>
 #include <stdint.h>
 
-uint64_t ** initArray(uint64_t rows, uint64_t columns);
+uint64_t ** InitArray(uint64_t rows, uint64_t columns);
 
 #endif
