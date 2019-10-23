@@ -1,7 +1,7 @@
 
 #include "../include/initArray.h"
 
-uint64_t ** initArray(uint64_t rows, uint64_t columns)
+uint64_t ** InitArray(uint64_t rows, uint64_t columns)
 {
     uint64_t ** array;
 
@@ -29,7 +29,7 @@ uint64_t ** initArray(uint64_t rows, uint64_t columns)
     for(uint64_t i = 0; i < rows; i++)
     {
         for (uint64_t j = 0; j < columns; j++) {
-            array[i][j] = rand()%1000000;
+            array[i][j] = rand()%10000;
         }
     }
 
