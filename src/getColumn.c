@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "../include/getColumn.h"
 
-void getColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relation *rel)
+void GetColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relation *rel)
 {
 
     // We'll create space for rows number of tuples
