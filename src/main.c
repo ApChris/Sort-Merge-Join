@@ -3,6 +3,7 @@
 #include "../include/getColumn.h"
 #include "../include/initArray.h"
 #include "../include/histogram.h"
+#include "../include/psum.h"
 int main(int argc, char const *argv[])
 {
     relation struct_R;
@@ -35,5 +36,9 @@ int main(int argc, char const *argv[])
     histogram *hist = &struct_h;
     Histogram(relation_R,hist);
     Print_Histogram(hist);
+    psum struct_p;
+    psum *ps = &struct_p;
+    Psum(hist,ps);
+    Print_Psum(ps);
     return 0;
 }
