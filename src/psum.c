@@ -25,12 +25,15 @@ void Psum(histogram * hist, psum * ps){
 	}
 }
 
-void Print_Psum(psum * ps)
+void Print_Psum(histogram * hist, psum * ps)
 {
     uint64_t i = 0;
+	printf("-------------------> Psum <-------------------\n");
     while(i < ps -> num_tuples)
     {
-        printf("RowID = %ld --- Bucket  = %ld --- Position = %ld\n",ps -> psum_tuples[i].payload ,ps -> psum_tuples[i].key,    ps -> psum_tuples[i].position);
+		if(hist -> hist_tuples[i].sum != 0)
+        printf("RowID = %ld\tBucket = %ld\tPosition = %ld\n",ps -> psum_tuples[i].payload ,ps -> psum_tuples[i].key,    ps -> psum_tuples[i].position);
         i++;
     }
+	printf("----------------------------------------------\n");
 }
