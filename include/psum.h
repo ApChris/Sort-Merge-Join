@@ -2,6 +2,7 @@
 #define _PSUM_H
 
 #include <stdint.h>
+#include "../include/histogram.h"
 
 typedef struct psum_tuple
 {
@@ -15,6 +16,9 @@ typedef struct psum
     psum_tuple * psum_tuples;
     uint64_t num_tuples;
 }psum;
+
+void Psum(histogram * hist, psum * ps);
+void Print_Psum(psum * ps);
 
 
 #endif
