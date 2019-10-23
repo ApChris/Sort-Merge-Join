@@ -2,10 +2,11 @@ OBJS = build/main.o \
 		build/getColumn.o \
 		build/initArray.o \
 		build/histogram.o \
-		build/psum.o
+		build/psum.o \
+		build/reorderedColumn.o
 
 
-CC = g++
+CC = gcc
 FLAGS = -Wall -Wextra -g -c
 
 
@@ -31,7 +32,10 @@ build/histogram.o: src/histogram.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/psum.o: src/psum.c
-	$(CC) $(FLAGS) $< -o $@	
+	$(CC) $(FLAGS) $< -o $@
+
+build/reorderedColumn.o: src/reorderedColumn.c
+	$(CC) $(FLAGS) $< -o $@
 
 
 $(TARGET) : $(OBJS)
