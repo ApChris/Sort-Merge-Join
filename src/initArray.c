@@ -25,7 +25,7 @@ uint64_t ** initArray(uint64_t rows, uint64_t columns)
     // current time as seed
     srand(time(0));
 
-    // Set a random number from 0 to 9
+    // Set a random number from 0 to 999999
     for(uint64_t i = 0; i < rows; i++)
     {
         for (uint64_t j = 0; j < columns; j++) {
