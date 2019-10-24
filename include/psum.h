@@ -19,6 +19,6 @@ typedef struct psum
 
 void Psum(histogram * hist, psum * ps);
 void Print_Psum(histogram * hist, psum * ps);
-
+void RestorePsum(histogram *hist, psum *ps);
 
 #endif
