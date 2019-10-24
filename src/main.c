@@ -5,6 +5,7 @@
 #include "../include/histogram.h"
 #include "../include/psum.h"
 #include "../include/reorderedColumn.h"
+#include "../include/quicksort.h"
 
 int main(int argc, char const *argv[])
 {
@@ -52,5 +53,23 @@ int main(int argc, char const *argv[])
     for (uint64_t i = 0; i < rows; i++) {
         printf("%ld, %ld\n", relation_Rnew->tuples[i].key, relation_Rnew->tuples[i].payload);
     }
+
+
+    RestorePsum(hist, ps);  //psum's position returns to its initial values
+
+    // uint64_t start=ps->psum_tuples[0].position;
+    // uint64_t end=ps->psum_tuples[1].position;
+    // printf("start: %ld, end: %ld\n", start, end);
+
+    // printf("Initial bucket:\n");
+
+    // printBucket(relation_Rnew, start, end);
+
+    // printf("Quicksorted bucket:\n");
+
+    // Quicksort(relation_Rnew, start, end-1);
+    // printBucket(relation_Rnew, start, end);
+    
+
     return 0;
 }
