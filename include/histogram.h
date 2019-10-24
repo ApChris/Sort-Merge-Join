@@ -17,6 +17,6 @@ typedef struct histogram
     uint64_t num_tuples;
 }histogram;
 
-void Histogram(relation * rel, histogram * hist);
+void Histogram(relation * rel, histogram * hist, uint64_t sel_byte);
 void Print_Histogram(histogram * hist);
 #endif
