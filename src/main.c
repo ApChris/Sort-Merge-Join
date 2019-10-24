@@ -2,10 +2,9 @@
 
 #include "../include/getColumn.h"
 #include "../include/initArray.h"
-#include "../include/histogram.h"
-#include "../include/psum.h"
 #include "../include/reorderedColumn.h"
 #include "../include/quicksort.h"
+#include "../include/splitBucket.h"
 
 int main(int argc, char const *argv[])
 {
@@ -19,7 +18,7 @@ int main(int argc, char const *argv[])
 
     array_R = InitArray(rows,columns);
 
-    for(int i=0; i < rows; i++)
+    for(uint64_t i = 0; i < rows; i++)
     {
         for (uint64_t j = 0; j < columns; j++) {
             printf("%ld ", array_R[i][j]);
@@ -37,7 +36,7 @@ int main(int argc, char const *argv[])
 
     histogram struct_h;
     histogram *hist = &struct_h;
-    Histogram(relation_R,hist);
+    Histogram(relation_R,hist,0);
     Print_Histogram(hist);
 
     psum struct_p;
@@ -57,6 +56,16 @@ int main(int argc, char const *argv[])
 
     RestorePsum(hist, ps);  //psum's position returns to its initial values
 
+
+
+    histogram struct_h2;
+    histogram *hist2 = &struct_h2;
+    psum struct_p2;
+    psum *ps2 = &struct_p2;
+    Split_Bucket(relation_R,hist2,ps2,relation_Rnew,ps->psum_tuples[0].position,ps->psum_tuples[1].position);
+    for (uint64_t i = 0; i < rows; i++) {
+        printf("%ld, %ld\n", relation_Rnew->tuples[i].key, relation_Rnew->tuples[i].payload);
+    }
     // uint64_t start=ps->psum_tuples[0].position;
     // uint64_t end=ps->psum_tuples[1].position;
     // printf("start: %ld, end: %ld\n", start, end);
@@ -69,7 +78,7 @@ int main(int argc, char const *argv[])
 
     // Quicksort(relation_Rnew, start, end-1);
     // printBucket(relation_Rnew, start, end);
-    
+
 
     return 0;
 }
