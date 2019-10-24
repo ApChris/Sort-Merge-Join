@@ -3,7 +3,8 @@ OBJS = build/main.o \
 		build/initArray.o \
 		build/histogram.o \
 		build/psum.o \
-		build/reorderedColumn.o
+		build/reorderedColumn.o \
+		build/cleanRelation.o
 
 
 CC = gcc
@@ -37,6 +38,8 @@ build/psum.o: src/psum.c
 build/reorderedColumn.o: src/reorderedColumn.c
 	$(CC) $(FLAGS) $< -o $@
 
+build/cleanRelation.o: src/cleanRelation.c
+	$(CC) $(FLAGS) $< -o $@
 
 $(TARGET) : $(OBJS)
 		$(CC) $(CFLAGS) $^ -o $@
