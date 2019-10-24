@@ -39,3 +39,11 @@ void Print_Psum(histogram * hist, psum * ps)
     }
 	printf("----------------------------------------------\n");
 }
+
+void RestorePsum(histogram *hist, psum *ps){
+ 	uint64_t i = 0;
+	while(i < ps->num_tuples){
+		ps->psum_tuples[i].position = ps->psum_tuples[i].position - hist->hist_tuples[i].sum;
+		i++;
+	}
+}
