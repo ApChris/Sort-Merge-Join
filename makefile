@@ -4,7 +4,11 @@ OBJS = build/main.o \
 		build/histogram.o \
 		build/psum.o \
 		build/reorderedColumn.o \
+<<<<<<< HEAD
 		build/quicksort.o
+=======
+		build/cleanRelation.o
+>>>>>>> origin/master
 
 
 CC = gcc
@@ -38,9 +42,14 @@ build/psum.o: src/psum.c
 build/reorderedColumn.o: src/reorderedColumn.c
 	$(CC) $(FLAGS) $< -o $@
 
+<<<<<<< HEAD
 build/quicksort.o: src/quicksort.c
 	$(CC) $(FLAGS) $< -o $@
 
+=======
+build/cleanRelation.o: src/cleanRelation.c
+	$(CC) $(FLAGS) $< -o $@
+>>>>>>> origin/master
 
 $(TARGET) : $(OBJS)
 		$(CC) $(CFLAGS) $^ -o $@
