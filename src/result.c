@@ -34,6 +34,8 @@ void pushJoinedElements(result *res, uint64_t key, uint64_t rowIdS, uint64_t row
 	result *previous_result = res;
 	int flag = 0;
 
+	printf("Elements to be joined: key %ld, rowIdS %ld, rowIdR %ld\n", key, rowIdS, rowIdR);
+
 	while(current_result != NULL)
 	{
 		//	bucket hasn't reached 1 MB, so push it
@@ -77,27 +79,44 @@ void printResult(result *res){
 }
 
 void Join(relation *relation_R, relation *relation_S, result *res){
-	uint64_t mark, r, s = 0;
-	while(mark < relation_R->num_tuples){
-
-		while(relation_R->tuples[r].key < relation_S->tuples[s].key){
-			r++;
+	uint64_t mark = 0, r = 0, s = 0;
+	while(mark < relation_R->num_tuples && mark < relation_S->num_tuples){
+		if(mark==0){
+			while(relation_R->tuples[r].key < relation_S->tuples[s].key){
+				r++;
+				if(r == relation_R->num_tuples){
+					return;
+				}
+			}
+			while(relation_R->tuples[r].key > relation_S->tuples[s].key){
+				s++;
+				if(s == relation_S->num_tuples){
+					return;
+				}
+			}
+			mark = s;
 		}
-		while(relation_R->tuples[r].key > relation_S->tuples[s].key){
-			s++;
-		}
-		mark = s;
-
 		if (relation_R->tuples[r].key == relation_S->tuples[s].key)
 		{
+			printf("Element to be pushed\n");
+			printf("(key:%ld\tpayloadR:%ld\tpayloadS:%ld)\n", relation_R->tuples[r].key, relation_R->tuples[r].payload, relation_S->tuples[s].payload);
 			pushJoinedElements(res, relation_R->tuples[r].key, relation_R->tuples[r].payload
 				, relation_S->tuples[s].payload);
+			printf("Element pushed successfully\n");
+			printResult(res);
+			printf("\n");
 			s++;
+			if(s == relation_S->num_tuples){
+				return;
+			}
 		}
 		else
 		{
 			s = mark;
 			r++;
+			if(r == relation_R->num_tuples){
+				return;
+			}
 			mark = 0;	//	reset
 		}
 	}
