@@ -23,7 +23,8 @@ void ReorderedColumn(relation * rel_old, relation * rel_new, psum * ps)
         //  ps -> psum_tuples[result].position -> it means the position that we are going to write
         rel_new -> tuples[ps -> psum_tuples[result].position].key = rel_old -> tuples[i].key;
 
-        rel_new -> tuples[ps -> psum_tuples[result].position].payload = rel_old -> tuples[i].payload;
+        //rel_new -> tuples[ps -> psum_tuples[result].position].payload = rel_old -> tuples[i].payload;
+        rel_new -> tuples[ps -> psum_tuples[result].position].payload = i;
 
         ps -> psum_tuples[result].position++;
         i++;
