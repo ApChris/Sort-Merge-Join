@@ -7,7 +7,8 @@ OBJS = build/main.o \
 		build/quicksort.o \
 		build/cleanRelation.o \
 		build/splitBucket.o \
-		build/result.o
+		build/result.o \
+		build/processRelation.o
 
 
 
@@ -54,6 +55,9 @@ build/splitBucket.o: src/splitBucket.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/result.o: src/result.c
+	$(CC) $(FLAGS) $< -o $@
+
+build/processRelation.o: src/processRelation.c
 	$(CC) $(FLAGS) $< -o $@
 
 
