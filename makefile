@@ -6,7 +6,8 @@ OBJS = build/main.o \
 		build/reorderedColumn.o \
 		build/quicksort.o \
 		build/cleanRelation.o \
-		build/splitBucket.o
+		build/splitBucket.o \
+		build/result.o
 
 
 
@@ -50,6 +51,9 @@ build/cleanRelation.o: src/cleanRelation.c
 
 
 build/splitBucket.o: src/splitBucket.c
+	$(CC) $(FLAGS) $< -o $@
+
+build/result.o: src/result.c
 	$(CC) $(FLAGS) $< -o $@
 
 
