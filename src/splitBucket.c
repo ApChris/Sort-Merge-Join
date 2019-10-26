@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include "../include/splitBucket.h"
 
-void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_new, uint64_t start, uint64_t end, uint64_t sel_byte)
+void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_new, int64_t start, int64_t end, uint64_t sel_byte)
 {
     Clean_Relation(rel_old);
 
-    for(uint64_t i = start; i < end; i++)
+    for(int64_t i = start; i < end; i++)
     {
         rel_old -> tuples[i].key = rel_new -> tuples[i].key;
         rel_old -> tuples[i].payload = rel_new -> tuples[i].payload;
@@ -19,7 +19,7 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
 
     //rel_new -> num_tuples = rel_old -> num_tuples;
     uint64_t i = 0;
-    uint64_t selected_byte = sel_byte;
+    int64_t selected_byte = sel_byte;
     uint64_t result = 0;
 
     while(i < rel_old -> num_tuples)
