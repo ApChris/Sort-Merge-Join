@@ -3,7 +3,7 @@
 #include "../include/psum.h"
 #include "../include/histogram.h"
 
-void Psum(histogram * hist, psum * ps){
+void Psum(histogram * hist, psum * ps,int64_t start){
 
 	uint64_t i = 1;
 	ps -> num_tuples = hist -> num_tuples;
@@ -16,7 +16,7 @@ void Psum(histogram * hist, psum * ps){
 
 	ps -> psum_tuples[0].key = 0; //first
 	ps -> psum_tuples[0].payload = hist -> hist_tuples[0].payload;
-	ps -> psum_tuples[0].position = 0;
+	ps -> psum_tuples[0].position = start;
 
 	while(i < ps->num_tuples)
 	{
