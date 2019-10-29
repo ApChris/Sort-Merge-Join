@@ -1,10 +1,10 @@
 
 #include "../include/cleanRelation.h"
 
-void Clean_Relation(relation * rel)
+void Clean_Relation(relation * rel, int64_t start, int64_t end)
 {
-    uint64_t i = 0;
-    while(i < rel -> num_tuples)
+    uint64_t i = start;
+    while(i < end)
     {
         rel -> tuples[i].key = 0;
         rel -> tuples[i].payload = i;
