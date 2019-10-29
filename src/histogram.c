@@ -3,11 +3,10 @@
 #include "../include/histogram.h"
 
 
-void Histogram(relation * rel, histogram * hist, uint64_t sel_byte)
+void Histogram(relation * rel, histogram * hist, uint64_t sel_byte,int64_t start,int64_t end)
 {
 
     uint64_t i = 0;
-    uint64_t selected_byte = sel_byte;
     uint64_t result = 0;
 
     if((hist -> hist_tuples = (hist_tuple *)malloc(256 * sizeof(hist_tuple))) == NULL)
@@ -25,11 +24,10 @@ void Histogram(relation * rel, histogram * hist, uint64_t sel_byte)
         i++;
     }
 
-    i = 0;
-    while(i < rel -> num_tuples)
+    i = start;
+    while(i < end)
     {
-        result = (rel -> tuples[i].key >> (8*selected_byte) & 0xFF);
-    //    printf("%ld - first byte: %ld \n", rel -> tuples[i].key, result);
+        result = (rel -> tuples[i].key >> (8*sel_byte) & 0xFF);
 
         hist -> hist_tuples[result].sum++;
         i++;
