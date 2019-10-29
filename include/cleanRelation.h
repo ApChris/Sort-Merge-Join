@@ -3,7 +3,7 @@
 
 #include "relation.h"
 
-void Clean_Relation(relation * rel);
+void Clean_Relation(relation * rel, int64_t start, int64_t end);
 
 
 #endif
