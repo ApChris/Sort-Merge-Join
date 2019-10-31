@@ -24,7 +24,7 @@ void ReorderedColumn(relation * rel_old, relation * rel_new, psum * ps)
         rel_new -> tuples[ps -> psum_tuples[result].position].key = rel_old -> tuples[i].key;
 
         //rel_new -> tuples[ps -> psum_tuples[result].position].payload = rel_old -> tuples[i].payload;
-        rel_new -> tuples[ps -> psum_tuples[result].position].payload = i;
+        rel_new -> tuples[ps -> psum_tuples[result].position].payload = rel_old -> tuples[i].payload;
 
         ps -> psum_tuples[result].position++;
         i++;
