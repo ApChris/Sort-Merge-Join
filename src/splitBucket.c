@@ -13,12 +13,12 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
 
 
     Histogram(rel_old,hist,sel_byte,start,end);
-    Print_Histogram(hist);
+    //Print_Histogram(hist);
 
     // psum struct_p2;
     // psum *ps = &struct_p2;
     Psum(hist,ps,start);
-    Print_Psum(hist,ps);
+    //Print_Psum(hist,ps);
 
 
     uint64_t i = start;
@@ -41,4 +41,13 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
     RestorePsum(hist, ps);  //psum's position returns to its initial values
 
 
+}
+
+
+void printBucket(relation * rel, int64_t start, int64_t end)
+{
+	for(int64_t i = start; i < end; i++)
+	{
+		printf("%lu, %lu\n", rel -> tuples[i].key, rel -> tuples[i].payload);
+	}
 }
