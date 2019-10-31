@@ -77,11 +77,11 @@ int main(int argc, char const *argv[])
     {
         if( i == hist -> num_tuples - 1)
         {
-            Split_Bucket(relation_R,hist,ps,relation_Rnew,ps->psum_tuples[i].position,ps->psum_tuples[i].position + hist -> hist_tuples[i].sum,1);
+            Split_Bucket(relation_R,hist2,ps2,relation_Rnew,ps->psum_tuples[i].position,ps->psum_tuples[i].position + hist -> hist_tuples[i].sum,1);
         }
         else
         {
-            Split_Bucket(relation_R,hist,ps,relation_Rnew,ps->psum_tuples[i].position,ps->psum_tuples[i + 1].position,1);
+            Split_Bucket(relation_R,hist2,ps2,relation_Rnew,ps->psum_tuples[i].position,ps->psum_tuples[i + 1].position,1);
 
             //printBucket();
         }
@@ -127,7 +127,7 @@ int main(int argc, char const *argv[])
     // }
 
     //
-    //ProcessRelation(relation_R,hist,ps,relation_Rnew);
+    //ProcessRelation(relation_R,hist,ps,relation_Rnew,1);
     //Print_Relation(relation_Rnew,hist,ps);
 
 
