@@ -33,19 +33,16 @@ int64_t partition(relation * rel, int64_t start, int64_t end)
 void Quicksort(relation * rel, int64_t start, int64_t end)
 {
 
-         if (start < end)
-         {
-             int64_t partition_index = partition(rel, start, end);
-             Quicksort(rel, start, partition_index - 1);
-             Quicksort(rel, partition_index + 1, end);
-         }
+    if(rel == NULL)
+    {
+        perror("Quicksort error:");
+        exit(-1);
+    }
+    if (start < end)
+    {
+        int64_t partition_index = partition(rel, start, end);
+        Quicksort(rel, start, partition_index - 1);
+        Quicksort(rel, partition_index + 1, end);
+    }
 
-}
-
-void printBucket(relation * rel, int64_t start, int64_t end)
-{
-	for(int64_t i = start; i < end; i++)
-	{
-		printf("%ld, %ld\n", rel -> tuples[i].key, rel -> tuples[i].payload);
-	}
 }
