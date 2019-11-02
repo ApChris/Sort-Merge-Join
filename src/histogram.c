@@ -19,7 +19,7 @@ void Histogram(relation * rel, histogram * hist, uint64_t sel_byte,int64_t start
     while(i < hist -> num_tuples)
     {
         hist -> hist_tuples[i].key = i;
-        hist -> hist_tuples[i].payload = i;
+        hist -> hist_tuples[i].splitsCounter = 0;
         hist -> hist_tuples[i].sum = 0;
         i++;
     }
@@ -43,7 +43,7 @@ void Print_Histogram(histogram * hist)
     while(i < hist -> num_tuples)
     {
         if(hist -> hist_tuples[i].sum != 0)
-            printf("RowID = %ld\tBucket = %ld\tSum = %ld\n",hist -> hist_tuples[i].payload ,hist -> hist_tuples[i].key,    hist -> hist_tuples[i].sum);
+            printf("RowID = %lu\tBucket = %lu\tSum = %lu \tSplits = %lu\n",i ,hist -> hist_tuples[i].key,hist -> hist_tuples[i].sum,hist -> hist_tuples[i].splitsCounter);
         i++;
     }
     printf("----------------------------------------------\n");
