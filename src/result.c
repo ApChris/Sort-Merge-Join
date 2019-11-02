@@ -83,22 +83,19 @@ void printResult(result *res)
 	}
 }
 
-void Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, uint64_t start_B, uint64_t end_B, uint64_t sel_byte, result *res)
+void Join(relation *rel_A, relation *rel_B, uint64_t sel_byte, result *res)
 {
 
-	uint64_t result = (rel_A -> tuples[start_A].key >> (8*sel_byte) & 0xFF);
+	uint64_t mark = 0, a = 0, b = 0;
 
-	uint64_t mark = start_B, a = start_A, b = start_B;
-
-	printf("\n\n\nkey A[%lu]:%lu  bucket:%lu ----- startA:%lu - endA: %lu ------>>>> key B[%lu]:%lu startB:%lu - endB:%lu ---- Max splits of this bucket = %lu\n",start_A,rel_A -> tuples[start_A].key,result, start_A, end_A,start_B,rel_B -> tuples[start_B].key, start_B, end_B,sel_byte);
-	while(mark < end_A && mark < end_B)
+	while(mark < rel_A->num_tuples && mark < rel_B->num_tuples)
 	{
-		if(mark == start_A)
+		if(mark == 0)
 		{
 			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
 			{
 				a++;
-				if(a == end_A)
+				if(a == rel_A->num_tuples)
 				{
 					return;
 				}
@@ -106,7 +103,7 @@ void Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, ui
 			while(rel_A->tuples[a].key > rel_B->tuples[b].key)
 			{
 				b++;
-				if(b == end_B)
+				if(b == rel_B->num_tuples)
 				{
 					return;
 				}
@@ -115,29 +112,22 @@ void Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, ui
 		}
 		if (rel_A->tuples[a].key == rel_B->tuples[b].key)
 		{
-			//printf("Element to be pushed\n");
-			//printf("key %lu\tpayload_A: %lu\tpayload_B: %lu\n", rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
 			pushJoinedElements(res, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
-			//printf("Element pushed successfully\n");
-
-			//printf("\n");
 			b++;
-			if(b == end_B)
+			if(b == rel_B->num_tuples)
 			{
-				//return;
-				b = start_B;
-				a++;
+				return;
 			}
 		}
 		else
 		{
 			b = mark;
 			a++;
-			if(a == end_A)
+			if(a == rel_A->num_tuples)
 			{
 				return;
 			}
-			mark = start_A;	//	reset
+			mark = 0;	//	reset
 		}
 	}
 }
