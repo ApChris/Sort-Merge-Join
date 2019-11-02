@@ -131,25 +131,52 @@ uint64_t rowsB = relation_B -> num_tuples;
 
 
 
+
+    //
+     printf("\n\n------------------------------RESULTS------------------------------\n");
+
+
      result * head = NULL;
      head = resultInit();
-     Join(relation_Anew, histA, psA, relation_Bnew, histB, psB, head);
-     printf("\n\n------------------------------RESULTS------------------------------\n");
-     printResult(head);
-     printf("---------------------------------------------------------------------\n");
 
+     printResult(head);
      printf("%lu\n",relation_Anew->num_tuples);
      printf("%lu\n",relation_Bnew->num_tuples);
 
-     for(uint64_t i = 0; i < relation_Bnew->num_tuples; i++)
+     // for(uint64_t i = 0; i < relation_Bnew->num_tuples; i++)
+     // {
+     //     printf("%lu) key = %lu, payload = %lu\n",i,relation_Bnew->tuples[i].key,relation_Bnew->tuples[i].payload);
+     // }
+     uint64_t size_A = 0;
+     uint64_t size_B = 0;
+     for(uint64_t i = 0; i < histA -> num_tuples; i++)
      {
-         printf("%lu) key = %lu, payload = %lu\n",i,relation_Bnew->tuples[i].key,relation_Bnew->tuples[i].payload);
+
+         if(histA -> hist_tuples[i].sum == 0)
+         {
+             continue;
+         }
+         for(uint64_t j = 0; j < histB -> num_tuples; j++)
+         {
+             if(histB -> hist_tuples[j].sum == 0)
+             {
+                 continue;
+             }
+
+             if(i == j) // that bucket exists at both relations
+             {
+
+                printf("%lu idia\n",i);
+                Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
+             }
+
+         }
      }
 
-
+//Print_Histogram(histB);
+     printf("---------------------------------------------------------------------\n");
     return 0;
 }
-
 
 
 
