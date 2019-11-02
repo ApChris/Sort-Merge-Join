@@ -118,7 +118,9 @@ void Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, ui
 			b++;
 			if(b == end_B)
 			{
-				return;
+				//return;
+				b = start_B;
+				a++;
 			}
 		}
 		else
