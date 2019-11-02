@@ -172,7 +172,7 @@ uint64_t rowsB = relation_B -> num_tuples;
 
          }
      }
-
+printResult(head);
 //Print_Histogram(histB);
      printf("---------------------------------------------------------------------\n");
     return 0;
