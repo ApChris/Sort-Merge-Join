@@ -79,12 +79,12 @@ void printResult(result *res)
 
 void Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, uint64_t start_B, uint64_t end_B, uint64_t sel_byte, result *res)
 {
-	uint64_t selected_byte = 0;
+
 	uint64_t result = (rel_A -> tuples[start_A].key >> (8*sel_byte) & 0xFF);
 
 	uint64_t mark = start_B, a = start_A, b = start_B;
 
-	printf("\n\n\nkey A[%lu]:%lu  bucket:%lu ----- startA:%lu - endA: %lu ------ startB:%lu - endB:%lu ---- Max splits of this bucket = %lu\n",start_A,rel_A -> tuples[start_A].key,result, start_A, end_A, start_B, end_B,sel_byte);
+	printf("\n\n\nkey A[%lu]:%lu  bucket:%lu ----- startA:%lu - endA: %lu ------>>>> key B[%lu]:%lu startB:%lu - endB:%lu ---- Max splits of this bucket = %lu\n",start_A,rel_A -> tuples[start_A].key,result, start_A, end_A,start_B,rel_B -> tuples[start_B].key, start_B, end_B,sel_byte);
 	while(mark < end_A && mark < end_B)
 	{
 		if(mark == start_A)
