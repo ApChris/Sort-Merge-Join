@@ -43,7 +43,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
             histogram *hist1 = &struct_h1;
             psum struct_p1;
             psum *ps1 = &struct_p1;
-
+            hist -> hist_tuples[i].splitsCounter = 1;
             // BYTE 0
             if(i == hist -> num_tuples - 1)
             {
@@ -70,6 +70,8 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
                 if(size < L1_CACHE)
                 {
+
+
                     printf("\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b1,hist1 -> hist_tuples[b1].sum,size);
                     if(b1 == hist1 -> num_tuples - 1)
                     {
@@ -91,7 +93,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                     psum struct_p2;
                     psum *ps2 = &struct_p2;
 
-
+                    hist -> hist_tuples[i].splitsCounter = 2;
                     if(b1 == hist1 -> num_tuples - 1)
                     {
 
@@ -116,6 +118,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
                         if(size < L1_CACHE)
                         {
+
                             printf("\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b2,hist2 -> hist_tuples[b2].sum,size);
                             if(i == hist2 -> num_tuples - 1)
                             {
@@ -135,7 +138,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                             histogram *hist3 = &struct_h3;
                             psum struct_p3;
                             psum *ps3 = &struct_p3;
-
+                            hist -> hist_tuples[i].splitsCounter = 3;
                             if(b2 == hist2 -> num_tuples - 1)
                             {
                                 Split_Bucket(rel_old,hist3,ps3,rel_new,ps2->psum_tuples[b2].position, ps2 -> psum_tuples[b2].position + hist2 -> hist_tuples[b2].sum,3);
@@ -157,6 +160,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                 size = hist3 -> hist_tuples[b3].sum * sizeof(tuple);
                                 if(size < L1_CACHE)
                                 {
+
                                     printf("\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b3,hist3 -> hist_tuples[b3].sum,size);
                                     if(i == hist3 -> num_tuples - 1)
                                     {
@@ -176,7 +180,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                     histogram *hist4 = &struct_h4;
                                     psum struct_p4;
                                     psum *ps4 = &struct_p4;
-
+                                    hist -> hist_tuples[i].splitsCounter = 4;
                                     if(b3 == hist3 -> num_tuples - 1)
                                     {
                                         Split_Bucket(rel_old,hist4,ps4,rel_new,ps3->psum_tuples[b3].position, ps3 -> psum_tuples[b3].position + hist3 -> hist_tuples[b3].sum,4);
@@ -199,6 +203,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
                                         if(size < L1_CACHE)
                                         {
+
                                             printf("\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b4,hist4 -> hist_tuples[b4].sum,size);
                                             if(i == hist4 -> num_tuples - 1)
                                             {
@@ -218,7 +223,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                             histogram *hist5 = &struct_h5;
                                             psum struct_p5;
                                             psum *ps5 = &struct_p5;
-
+                                            hist -> hist_tuples[i].splitsCounter = 5;
                                             if(b4 == hist4 -> num_tuples - 1)
                                             {
                                                 Split_Bucket(rel_old,hist5,ps5,rel_new,ps4->psum_tuples[b4].position, ps4 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum,5);
@@ -241,6 +246,8 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
                                                 if(size < L1_CACHE)
                                                 {
+
+
                                                     printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b5,hist5 -> hist_tuples[b5].sum,size);
                                                     if(i == hist5 -> num_tuples - 1)
                                                     {
@@ -260,7 +267,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                     histogram *hist6 = &struct_h6;
                                                     psum struct_p6;
                                                     psum *ps6 = &struct_p6;
-
+                                                    hist -> hist_tuples[i].splitsCounter = 6;
                                                     if(b5 == hist5 -> num_tuples - 1)
                                                     {
                                                         Split_Bucket(rel_old,hist6,ps6,rel_new,ps5->psum_tuples[b5].position, ps5 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum,6);
@@ -303,7 +310,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                             histogram *hist7 = &struct_h7;
                                                             psum struct_p7;
                                                             psum *ps7 = &struct_p7;
-
+                                                            hist -> hist_tuples[i].splitsCounter = 7;
                                                             if(b6 == hist6 -> num_tuples - 1)
                                                             {
                                                                 Split_Bucket(rel_old,hist7,ps7,rel_new,ps6->psum_tuples[b6].position, ps6 -> psum_tuples[b6].position + hist6 -> hist_tuples[b6].sum,7);
@@ -326,6 +333,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
                                                                 if(size < L1_CACHE)
                                                                 {
+
                                                                     printf("\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b7,hist7 -> hist_tuples[b7].sum,size);
 
                                                                     if(i == hist7 -> num_tuples - 1)
@@ -346,7 +354,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                     histogram *hist8 = &struct_h8;
                                                                     psum struct_p8;
                                                                     psum *ps8 = &struct_p8;
-
+                                                                    hist -> hist_tuples[i].splitsCounter = 8;
                                                                     if(b7 == hist7 -> num_tuples - 1)
                                                                     {
                                                                         Split_Bucket(rel_old,hist8,ps8,rel_new,ps7->psum_tuples[b7].position, ps7 -> psum_tuples[b7].position + hist7 -> hist_tuples[b7].sum,8);
@@ -368,6 +376,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                         size = hist8 -> hist_tuples[b8].sum * sizeof(tuple);
                                                                         if(size < L1_CACHE)
                                                                         {
+
                                                                             printf("\t\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b8,hist8 -> hist_tuples[b8].sum,size);
                                                                             if(i == hist8 -> num_tuples - 1)
                                                                             {
@@ -380,14 +389,11 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                             //    printBucket(rel_new,ps8->psum_tuples[b8].position,ps8->psum_tuples[b8 + 1].position);
                                                                             }
                                                                         }
-
                                                                     }
-
                                                                 }
                                                             }
                                                         }
                                                     }
-
                                                 }
                                             }
                                         }
@@ -397,15 +403,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                         }
                     }
                 }
-
-
             }
-
-
         }
         i++;
     }
-
 }
 
 
