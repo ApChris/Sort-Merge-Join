@@ -15,13 +15,13 @@ void Psum(histogram * hist, psum * ps,int64_t start){
 	}
 
 	ps -> psum_tuples[0].key = 0; //first
-	ps -> psum_tuples[0].payload = hist -> hist_tuples[0].payload;
+	ps -> psum_tuples[0].payload = 0;
 	ps -> psum_tuples[0].position = start;
 
 	while(i < ps->num_tuples)
 	{
 		ps -> psum_tuples[i].position = ps -> psum_tuples[i-1].position + hist -> hist_tuples[i-1].sum;
-		ps -> psum_tuples[i].payload = hist -> hist_tuples[i].payload;
+		ps -> psum_tuples[i].payload = i;
 		ps -> psum_tuples[i].key = hist -> hist_tuples[i].key;
 		i++;
 	}
