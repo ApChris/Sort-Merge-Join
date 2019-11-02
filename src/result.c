@@ -66,14 +66,20 @@ void pushJoinedElements(result *res, uint64_t key, uint64_t payload_A, uint64_t 
 void printResult(result *res)
 {
 	result *current_result = res;
+	uint64_t j=0;
 
 	while(current_result != NULL)
 	{
-		for (uint64_t i = 0; i < current_result->num_results; i++)
+		for (uint64_t i = 0; i < ROWS; i++)
 		{
-			printf("%lu) key: %lu\tpayload_A: %lu\t\tpayload_B: %lu\n",i, current_result->buffer[i][0],current_result->buffer[i][1], current_result->buffer[i][2]);
+			if (current_result->buffer[i][0] == 0 && current_result->buffer[i][1] == 0 && current_result->buffer[i][2] == 0)
+			{
+				break;
+			}
+			printf("%lu) key: %lu\tpayload_A: %lu\t\tpayload_B: %lu\n",(ROWS*j)+i, current_result->buffer[i][0],current_result->buffer[i][1], current_result->buffer[i][2]);
 		}
 		current_result = current_result->next_result;
+		j++;
 	}
 }
 
