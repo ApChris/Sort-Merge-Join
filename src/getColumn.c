@@ -42,7 +42,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
         perror("GetColumn_FromFILE.c error:");
         exit(-1);
     }
-    printf("%s\n",filename);
+    //printf("%s\n",filename);
     ch = getc(file);
     for(ch = getc(file); ch != EOF; ch = getc(file))
     {
@@ -52,7 +52,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
         }
     }
     rewind(file);
-    printf("rows = %ld\n",rows);
+    //printf("rows = %ld\n",rows);
 
     // We'll create space for rows number of tuples
     if((rel -> tuples = (tuple *)malloc(rows * sizeof(tuple))) == NULL)
@@ -65,16 +65,25 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
     uint64_t payload = 0;
     int64_t i = 0;
 
-    fscanf(file, "%lu,%lu",&key,&payload);
+    // fscanf(file, "%lu,%lu",&key,&payload);
+    //
+    // while (!feof(file))
+    // {
+    //
+    //     printf("%lu -> %lu,%lu\n",i,key,payload);
+    //     fscanf(file, "%lu,%lu",&key,&payload);
+    //     rel -> tuples[i].key = key; // key is the value
+    //     rel -> tuples[i].payload = payload; // payload
+    //     i++;
+    // }
 
-    while (!feof(file))
+    //ch = getc(file);
+    for(; i < rows; i++)
     {
-
-        //printf("%lu -> %lu,%lu\n",i,key,payload);
         fscanf(file, "%lu,%lu",&key,&payload);
-        rel -> tuples[i].key = key; // key is the value
-        rel -> tuples[i].payload = payload; // payload
-        i++;
+            rel -> tuples[i].key = key; // key is the value
+            rel -> tuples[i].payload = payload; // payload
+            //i++;
     }
 
 
