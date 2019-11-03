@@ -5,7 +5,7 @@
 void ReorderedColumn(relation * rel_old, relation * rel_new, psum * ps)
 {
     uint64_t i = 0;
-    uint64_t selected_byte = 0;
+    uint64_t selected_byte = 7;
     uint64_t result = 0;
 
     if((rel_new -> tuples = (tuple *)malloc(rel_old -> num_tuples * sizeof(tuple))) == NULL)
