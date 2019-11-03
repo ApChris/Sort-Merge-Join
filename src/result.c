@@ -3,8 +3,6 @@
 #include "../include/relation.h"
 
 
-
-
 result * resultInit()
 {
 	result * head_result;
@@ -25,33 +23,22 @@ void insertNewResult(result *res)
 	res->next_result = current_result;
 }
 
-void pushJoinedElements(result *res, uint64_t key, uint64_t payload_A, uint64_t payload_B){
-	result *current_result = res;
-	result *previous_result = res;
+result *pushJoinedElements(result *head, uint64_t key, uint64_t payload_A, uint64_t payload_B){
+	result *current_result = head;
+	result *previous_result = head;
 	int flag = 0;
 
-//	printf("Elements to be joined: key %lu\tpayload_A: %lu\tpayload_B: %lu\n", key, payload_A, payload_B);
-
-	while(current_result != NULL)
+	//	bucket hasn't reached 1 MB, so push it
+	if(current_result->num_results < ROWS)
 	{
-		//	bucket hasn't reached 1 MB, so push it
-		if(current_result->num_results < ROWS)
-		{
-			current_result->buffer[current_result->num_results][0] = key;
-			current_result->buffer[current_result->num_results][1] = payload_A;
-			current_result->buffer[current_result->num_results][2] = payload_B;
+		current_result->buffer[current_result->num_results][0] = key;
+		current_result->buffer[current_result->num_results][1] = payload_A;
+		current_result->buffer[current_result->num_results][2] = payload_B;
 
-			current_result->num_results++;
-			flag=1;
-		}
-
+		current_result->num_results++;
+	}else{
+		//	bucket has reached 1 MB, create a new Result and push it there
 		previous_result = current_result;
-		current_result = current_result->next_result;
-	}
-
-	//	bucket has reached 1 MB, create a new Result and push it there
-	if(flag == 0)
-	{
 		insertNewResult(previous_result);
 		current_result = previous_result->next_result;
 
@@ -60,12 +47,15 @@ void pushJoinedElements(result *res, uint64_t key, uint64_t payload_A, uint64_t 
 		current_result->buffer[current_result->num_results][2] = payload_B;
 
 		current_result->num_results++;
+
 	}
+
+	return current_result;
 }
 
-void printResult(result *res)
+void printResult(result *head)
 {
-	result *current_result = res;
+	result *current_result = head;
 	uint64_t j=0;
 
 	while(current_result != NULL)
@@ -76,120 +66,116 @@ void printResult(result *res)
 			{
 				break;
 			}
-			printf("%lu) key: %lu\tpayload_A: %lu\t\tpayload_B: %lu\n",(ROWS*j)+i, current_result->buffer[i][0],current_result->buffer[i][1], current_result->buffer[i][2]);
+			// printf("%lu) key: %lu\tpayload_A: %lu\t\tpayload_B: %lu\n",(ROWS*j)+i, current_result->buffer[i][0],current_result->buffer[i][1], current_result->buffer[i][2]);
 		}
 		current_result = current_result->next_result;
 		j++;
 	}
 }
-uint64_t Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, uint64_t start_B, uint64_t end_B, uint64_t sel_byte, result *res)
-{
-	uint64_t selected_byte = 0;
-	uint64_t counter = 0;
 
-	uint64_t mark = start_A, a = start_A, b = start_B;
-
-	while(mark < end_A && mark < end_B)
-	{
-		if(mark == start_A)
-		{
-			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
-			{
-				a++;
-				if(a == end_A)
-				{
-					printf("-->1\n");
-
-					return counter;
-				}
-			}
-			while(rel_A->tuples[a].key > rel_B->tuples[b].key)
-			{
-				b++;
-				if(b == end_B)
-				{
-					printf("-->2\n");
-
-					return counter;
-				}
-			}
-			mark = b;
-		}
-		if (rel_A->tuples[a].key == rel_B->tuples[b].key)
-		{
-			pushJoinedElements(res, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
-			counter++;
-			b++;
-			if(b == end_B)
-			{
-				printf("-->3\n");
-
-				return counter;
-				// b = start_B;
-				// a++;
-			}
-		}
-		else
-		{
-			b = mark;
-			a++;
-			if(a == end_A)
-			{
-				printf("-->4--%lu--%lu\n",a,rel_A->tuples[a].key);
-				printf("-->4--%lu--%lu\n",b,rel_B->tuples[b].key);
-
-				return counter;
-			}
-			mark = start_A;	//	reset
-		}
-	}
-}
-//
-// void Join(relation *rel_A, relation *rel_B, uint64_t sel_byte, result *res)
+// uint64_t Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, uint64_t start_B, uint64_t end_B, uint64_t sel_byte, result *head, result *current)
 // {
-//
-// 	uint64_t mark = 0, a = 0, b = 0;
-//
-// 	while(mark < rel_A->num_tuples && mark < rel_B->num_tuples)
+// 	uint64_t selected_byte = 0;
+// 	uint64_t counter = 0;
+
+// 	uint64_t mark = start_A, a = start_A, b = start_B;
+
+// 	while(mark < end_A || mark < end_B)
 // 	{
-// 		if(mark == 0)
+// 		if(mark == start_B)
 // 		{
 // 			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
 // 			{
 // 				a++;
-// 				if(a == rel_A->num_tuples)
+// 				if(a == end_A)
 // 				{
-// 					return;
+// 					printf("-->1\n");
+// 					printf("-->1 counter %lu\n", counter);
+
+// 					return counter;
 // 				}
 // 			}
 // 			while(rel_A->tuples[a].key > rel_B->tuples[b].key)
 // 			{
 // 				b++;
-// 				if(b == rel_B->num_tuples)
+// 				if(b == end_B)
 // 				{
-// 					return;
+// 					printf("-->2\n");
+// 					printf("-->2 counter %lu\n", counter);
+
+// 					return counter;
 // 				}
 // 			}
 // 			mark = b;
 // 		}
 // 		if (rel_A->tuples[a].key == rel_B->tuples[b].key)
 // 		{
-// 			pushJoinedElements(res, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
+// 			// printf("counter: %lu, mark: %lu To be joined: key %lu, payloadA %lu, payloadB %lu\n", counter, mark, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
+// 			pushJoinedElements(head, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload, current);
+// 			counter++;
+// 			//printf("counter after push: %lu\n", counter);
 // 			b++;
-// 			if(b == rel_B->num_tuples)
+// 			if(b == end_B)
 // 			{
-// 				return;
+// 				printf("-->3\n");
+// 				printf("-->3 counter %lu\n", counter);
+
+// 				return counter;
+// 				// b = start_B;
+// 				// a++;
 // 			}
 // 		}
 // 		else
 // 		{
 // 			b = mark;
 // 			a++;
-// 			if(a == rel_A->num_tuples)
+// 			if(a == end_A)
 // 			{
-// 				return;
+// 				printf("-->4--%lu--%lu\n",a,rel_A->tuples[a].key);
+// 				printf("-->4--%lu--%lu\n",b,rel_B->tuples[b].key);
+// 				printf("-->4 counter %lu\n", counter);
+
+// 				return counter;
 // 			}
-// 			mark = 0;	//	reset
+// 			mark = start_B;	//	reset
 // 		}
 // 	}
+// 	//printf("bghka apo thn pisw porta, startA: %lu, endA: %lu, startB: %lu, endB: %lu mark: %lu\n", start_A, end_A, start_B, end_B, mark);
+// 	return counter;
 // }
+uint64_t Join(relation *rel_A, relation *rel_B, result *head)
+{
+	uint64_t selected_byte = 0;
+	uint64_t counter = 0;
+
+	uint64_t mark = 0, a = 0, b = 0;
+
+	while(a < rel_A->num_tuples && b < rel_B->num_tuples)
+	{
+
+			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
+			{
+				a++;
+
+			}
+			while(rel_A->tuples[a].key > rel_B->tuples[b].key)
+			{
+				b++;
+
+			}
+			mark = b;
+		while (rel_A->tuples[a].key == rel_B->tuples[mark].key)
+		{
+			b = mark;
+			while (rel_A->tuples[a].key == rel_B->tuples[b].key)
+			{
+				head = pushJoinedElements(head, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
+				b++;
+				counter++;
+			}
+			a++;
+		}
+
+	}
+	return counter;
+}

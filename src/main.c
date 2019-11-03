@@ -14,24 +14,7 @@ int main(int argc, char const *argv[])
     relation struct_A;
     relation *relation_A = &struct_A;
 
-    uint64_t **array_A;
-/*    uint64_t rowsA = 2500;
-    uint64_t columnsA = 10;
-    uint64_t selected_columnA = 3;
-
-    array_A = InitArray(rowsA,columnsA);
-
-    for(uint64_t i = 0; i < rowsA; i++)
-    {
-        for (uint64_t j = 0; j < columnsA; j++) {
-            printf("%ld ", array_A[i][j]);
-        }
-        printf("\n");
-    }
-
-    GetColumn(array_A,rowsA,selected_columnA,relation_A);
-*/
-    GetColumn_FromFILE("Datasets/tiny/relA",relation_A);
+    GetColumn_FromFILE("Datasets/small/relA",relation_A);
     uint64_t rowsA = relation_A -> num_tuples;
 
     histogram struct_hA;
@@ -76,7 +59,7 @@ int main(int argc, char const *argv[])
      uint64_t **array_B;
 
 
-GetColumn_FromFILE("Datasets/tiny/relB",relation_B);
+GetColumn_FromFILE("Datasets/small/relB",relation_B);
 uint64_t rowsB = relation_B -> num_tuples;
 
 // for(uint64_t i = 0; i < relation_B -> num_tuples; i++)
@@ -121,8 +104,7 @@ uint64_t rowsB = relation_B -> num_tuples;
     // Print_Relation(relation_Anew,histA,psA);
      //Print_Relation(relation_Bnew,histB,psB);
      //
-     result * head = NULL;
-     head = resultInit();
+
 
 //     printResult(head);
 
@@ -130,48 +112,58 @@ uint64_t rowsB = relation_B -> num_tuples;
      // {
      //     printf("%lu) key = %lu, payload = %lu\n",i,relation_Bnew->tuples[i].key,relation_Bnew->tuples[i].payload);
      // }
-     uint64_t size_A = 0;
-     uint64_t size_B = 0;
-     double time_spent;
-     uint64_t counter;
-     for(uint64_t i = 0; i < histA -> num_tuples; i++)
-     {
+     // uint64_t size_A = 0;
+     // uint64_t size_B = 0;
+     // double time_spent;
+     // uint64_t counter;
+     // for(uint64_t i = 0; i < histA -> num_tuples; i++)
+     // {
 
-         if(histA -> hist_tuples[i].sum == 0)
-         {
-             continue;
-         }
-         for(uint64_t j = 0; j < histB -> num_tuples; j++)
-         {
-             if(histB -> hist_tuples[j].sum == 0)
-             {
-                 continue;
-             }
+     //     if(histA -> hist_tuples[i].sum == 0)
+     //     {
+     //         continue;
+     //     }
+     //     for(uint64_t j = 0; j < histB -> num_tuples; j++)
+     //     {
+     //         if(histB -> hist_tuples[j].sum == 0)
+     //         {
+     //             continue;
+     //         }
 
-             if(i == j) // that bucket exists at both relations
-             {
+     //         if(i == j) // that bucket exists at both relations
+     //         {
 
-                //printf("Bucket: %lu <----exists at both relations \n",i);
-                clock_t begin = clock();
+     //            printf("Bucket: %lu <----exists at both relations \n",i);
+     //            clock_t begin = clock();
 
-                //Join(relation_Anew, relation_Bnew,1, head);
-                // if(histA -> hist_tuples[i].splitsCounter == 0 && histA -> hist_tuples[i].splitsCounter == 0)
-                // {
-                //     counter = Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
-                //
-                // }
-                // else
-                // {
-                    counter = Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
-                //}
-                clock_t end = clock();
+     //            //Join(relation_Anew, relation_Bnew,1, head);
+     //            // if(histA -> hist_tuples[i].splitsCounter == 0 && histA -> hist_tuples[i].splitsCounter == 0)
+     //            // {
+     //            //     counter = Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
+     //            //
+     //            // }
+     //            // else
+     //            // {
+     //                counter += Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
+     //            //}
+     //            clock_t end = clock();
 
-                time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-             }
+     //            time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+     //         }
 
-         }
-     }
- printResult(head);
+     //     }
+     // }
+    
+    result * head = NULL;
+    head = resultInit();
+    result * head2 = head;
+
+    double time_spent;
+    clock_t begin = clock();
+    uint64_t counter = Join(relation_Anew, relation_Bnew, head);
+    clock_t end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printResult(head2);
 
 // Print_Histogram(histB);
  //Print_Relation(relation_Anew,histA,psA);
