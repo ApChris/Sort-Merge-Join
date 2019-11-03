@@ -23,6 +23,6 @@ result * resultInit();
 void insertNewResult(result *res);
 void pushJoinedElements(result *res, uint64_t key, uint64_t rowIdS, uint64_t rowIdR);
 void printResult(result *res);
-void Join(relation *rel_A, relation *rel_B, uint64_t sel_byte, result *res);
-
+//void Join(relation *rel_A, relation *rel_B, uint64_t sel_byte, result *res);
+uint64_t Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, uint64_t start_B, uint64_t end_B, uint64_t sel_byte, result *res);
 #endif
