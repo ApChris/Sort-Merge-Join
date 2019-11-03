@@ -30,7 +30,7 @@ void pushJoinedElements(result *res, uint64_t key, uint64_t payload_A, uint64_t 
 	result *previous_result = res;
 	int flag = 0;
 
-	//printf("Elements to be joined: key %lu\tpayload_A: %lu\tpayload_B: %lu\n", key, payload_A, payload_B);
+//	printf("Elements to be joined: key %lu\tpayload_A: %lu\tpayload_B: %lu\n", key, payload_A, payload_B);
 
 	while(current_result != NULL)
 	{
@@ -82,30 +82,35 @@ void printResult(result *res)
 		j++;
 	}
 }
-
-void Join(relation *rel_A, relation *rel_B, uint64_t sel_byte, result *res)
+uint64_t Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, uint64_t start_B, uint64_t end_B, uint64_t sel_byte, result *res)
 {
+	uint64_t selected_byte = 0;
+	uint64_t counter = 0;
 
-	uint64_t mark = 0, a = 0, b = 0;
+	uint64_t mark = start_A, a = start_A, b = start_B;
 
-	while(mark < rel_A->num_tuples && mark < rel_B->num_tuples)
+	while(mark < end_A && mark < end_B)
 	{
-		if(mark == 0)
+		if(mark == start_A)
 		{
 			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
 			{
 				a++;
-				if(a == rel_A->num_tuples)
+				if(a == end_A)
 				{
-					return;
+					printf("-->1\n");
+
+					return counter;
 				}
 			}
 			while(rel_A->tuples[a].key > rel_B->tuples[b].key)
 			{
 				b++;
-				if(b == rel_B->num_tuples)
+				if(b == end_B)
 				{
-					return;
+					printf("-->2\n");
+
+					return counter;
 				}
 			}
 			mark = b;
@@ -113,21 +118,78 @@ void Join(relation *rel_A, relation *rel_B, uint64_t sel_byte, result *res)
 		if (rel_A->tuples[a].key == rel_B->tuples[b].key)
 		{
 			pushJoinedElements(res, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
+			counter++;
 			b++;
-			if(b == rel_B->num_tuples)
+			if(b == end_B)
 			{
-				return;
+				printf("-->3\n");
+
+				return counter;
+				// b = start_B;
+				// a++;
 			}
 		}
 		else
 		{
 			b = mark;
 			a++;
-			if(a == rel_A->num_tuples)
+			if(a == end_A)
 			{
-				return;
+				printf("-->4--%lu--%lu\n",a,rel_A->tuples[a].key);
+				printf("-->4--%lu--%lu\n",b,rel_B->tuples[b].key);
+
+				return counter;
 			}
-			mark = 0;	//	reset
+			mark = start_A;	//	reset
 		}
 	}
 }
+//
+// void Join(relation *rel_A, relation *rel_B, uint64_t sel_byte, result *res)
+// {
+//
+// 	uint64_t mark = 0, a = 0, b = 0;
+//
+// 	while(mark < rel_A->num_tuples && mark < rel_B->num_tuples)
+// 	{
+// 		if(mark == 0)
+// 		{
+// 			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
+// 			{
+// 				a++;
+// 				if(a == rel_A->num_tuples)
+// 				{
+// 					return;
+// 				}
+// 			}
+// 			while(rel_A->tuples[a].key > rel_B->tuples[b].key)
+// 			{
+// 				b++;
+// 				if(b == rel_B->num_tuples)
+// 				{
+// 					return;
+// 				}
+// 			}
+// 			mark = b;
+// 		}
+// 		if (rel_A->tuples[a].key == rel_B->tuples[b].key)
+// 		{
+// 			pushJoinedElements(res, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
+// 			b++;
+// 			if(b == rel_B->num_tuples)
+// 			{
+// 				return;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			b = mark;
+// 			a++;
+// 			if(a == rel_A->num_tuples)
+// 			{
+// 				return;
+// 			}
+// 			mark = 0;	//	reset
+// 		}
+// 	}
+// }
