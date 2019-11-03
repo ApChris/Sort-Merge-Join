@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <time.h>
 #include "../include/getColumn.h"
 #include "../include/initArray.h"
 #include "../include/reorderedColumn.h"
@@ -9,27 +9,7 @@
 
 int main(int argc, char const *argv[])
 {
-/*
-    relation struct_R;
-    relation *relation_R = &struct_R;
 
-    uint64_t **array_R;
-    uint64_t rows = 2500;
-    uint64_t columns = 10;
-    uint64_t selected_column = 3;
-
-    array_R = InitArray(rows,columns);
-
-    for(uint64_t i = 0; i < rows; i++)
-    {
-        for (uint64_t j = 0; j < columns; j++) {
-            printf("%ld ", array_R[i][j]);
-        }
-        printf("\n");
-    }
-
-    GetColumn(array_R,rows,selected_column,relation_R);
-*/
 
     relation struct_A;
     relation *relation_A = &struct_A;
@@ -56,7 +36,7 @@ int main(int argc, char const *argv[])
 
     histogram struct_hA;
     histogram *histA = &struct_hA;
-    Histogram(relation_A,histA,0,0,rowsA);
+    Histogram(relation_A,histA,7,0,rowsA);
     Print_Histogram(histA);
 
 
@@ -70,44 +50,42 @@ int main(int argc, char const *argv[])
     relation *relation_Anew = &struct_Anew;
     ReorderedColumn(relation_A,relation_Anew,psA);
 
-
     RestorePsum(histA, psA);  //psum's position returns to its initial values
 
 
-    //Print_Relation(relation_Anew,histA,psA);
 
-    ProcessRelation(relation_A,histA,psA,relation_Anew,1);
+    //Print_Relation(relation_A,histA,psA);
 
-     //Print_Relation(relation_Rnew,hist,ps);
+    //
 
+  ProcessRelation(relation_A,histA,psA,relation_Anew,6);
 
-
+  // for(uint64_t i = 0; i < relation_Anew -> num_tuples; i++)
+  //     {
+  //         printf("%lu)key = %lu, payload = %lu\n",i,relation_Anew -> tuples[i].key,relation_Anew -> tuples[i].payload);
+  //     }
+//
+// //    Print_Relation(relation_Anew,histA,psA);
+//      //Print_Relation(relation_Rnew,hist,ps);
+//
+//
+//
      relation struct_B;
      relation *relation_B = &struct_B;
 
      uint64_t **array_B;
-/*     uint64_t rowsB = 500;
-     uint64_t columnsB = 5;
-     uint64_t selected_columnB = 3;
 
-     array_B = InitArray(rowsB,columnsB);
 
-     for(uint64_t i = 0; i < rowsB; i++)
-     {
-         for (uint64_t j = 0; j < columnsB; j++) {
-             printf("%ld ", array_B[i][j]);
-         }
-         printf("\n");
-     }
-
-     GetColumn(array_B,rowsB,selected_columnB,relation_B);
-*/
 GetColumn_FromFILE("Datasets/tiny/relB",relation_B);
 uint64_t rowsB = relation_B -> num_tuples;
 
+// for(uint64_t i = 0; i < relation_B -> num_tuples; i++)
+// {
+//     printf("%lu,%lu\n",relation_B -> tuples[i].key,relation_B -> tuples[i].payload);
+// }
      histogram struct_hB;
      histogram *histB = &struct_hB;
-     Histogram(relation_B,histB,0,0,rowsB);
+     Histogram(relation_B,histB,7,0,rowsB);
      Print_Histogram(histB);
 
 
@@ -119,15 +97,19 @@ uint64_t rowsB = relation_B -> num_tuples;
      // MEXRI EDW EXEI SWSTA APOTELESMATA
      relation struct_Bnew;
      relation *relation_Bnew = &struct_Bnew;
-     ReorderedColumn(relation_B,relation_Bnew,psB);
+    ReorderedColumn(relation_B,relation_Bnew,psB);
+
+    RestorePsum(histB, psB);  //psum's position returns to its initial values
+
+    ProcessRelation(relation_B,histB,psB,relation_Bnew,6);
 
 
-     RestorePsum(histB, psB);  //psum's position returns to its initial values
 
-     ProcessRelation(relation_B,histB,psB,relation_Bnew,1);
 
-    // Print_Relation(relation_Anew,histA,psA);
-     //Print_Relation(relation_Bnew,histB,psB);
+    // Print_Histogram(histA);
+    // Print_Psum(histA,psA);
+     // Print_Relation(relation_Anew,histA,psA);
+    // Print_Relation(relation_Bnew,histB,psB);
 
 
 
@@ -136,12 +118,13 @@ uint64_t rowsB = relation_B -> num_tuples;
      printf("\n\n------------------------------RESULTS------------------------------\n");
 
 
+    // Print_Relation(relation_Anew,histA,psA);
+     //Print_Relation(relation_Bnew,histB,psB);
+     //
      result * head = NULL;
      head = resultInit();
 
-     printResult(head);
-     printf("%lu\n",relation_Anew->num_tuples);
-     printf("%lu\n",relation_Bnew->num_tuples);
+//     printResult(head);
 
      // for(uint64_t i = 0; i < relation_Bnew->num_tuples; i++)
      // {
@@ -149,6 +132,8 @@ uint64_t rowsB = relation_B -> num_tuples;
      // }
      uint64_t size_A = 0;
      uint64_t size_B = 0;
+     double time_spent;
+     uint64_t counter;
      for(uint64_t i = 0; i < histA -> num_tuples; i++)
      {
 
@@ -166,15 +151,34 @@ uint64_t rowsB = relation_B -> num_tuples;
              if(i == j) // that bucket exists at both relations
              {
 
-                printf("%lu idia\n",i);
-                Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
+                //printf("Bucket: %lu <----exists at both relations \n",i);
+                clock_t begin = clock();
+
+                //Join(relation_Anew, relation_Bnew,1, head);
+                // if(histA -> hist_tuples[i].splitsCounter == 0 && histA -> hist_tuples[i].splitsCounter == 0)
+                // {
+                //     counter = Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
+                //
+                // }
+                // else
+                // {
+                    counter = Join(relation_Anew, psA -> psum_tuples[i].position, psA -> psum_tuples[i + 1].position, relation_Bnew, psB -> psum_tuples[j].position, psB -> psum_tuples[j + 1].position,histA -> hist_tuples[i].splitsCounter, head);
+                //}
+                clock_t end = clock();
+
+                time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
              }
 
          }
      }
-printResult(head);
-//Print_Histogram(histB);
+ printResult(head);
+
+// Print_Histogram(histB);
+ //Print_Relation(relation_Anew,histA,psA);
+//  Print_Relation(relation_Bnew,histB,psB);
      printf("---------------------------------------------------------------------\n");
+     printf("Elements in Result: %lu\n",counter);
+     printf("time = %lf s\n",time_spent);
     return 0;
 }
 
