@@ -13,7 +13,7 @@
 #define COLUMNS 3
 typedef struct result
 {
-	uint64_t buffer[ROWS][3];	//key, rowIdR, rowIdS
+	uint64_t buffer[ROWS][3];	//key, payloadA, payloadB
 	struct result *next_result;
 	uint64_t num_results;
 }result;
