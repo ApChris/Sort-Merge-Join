@@ -5,7 +5,7 @@
 
 void Psum(histogram * hist, psum * ps,int64_t start)
 {
-
+	// histogram and psum have the same size
 	uint64_t i = 1;
 	ps -> num_tuples = hist -> num_tuples;
 
@@ -41,9 +41,12 @@ void Print_Psum(histogram * hist, psum * ps)
 	printf("----------------------------------------------\n");
 }
 
-void RestorePsum(histogram *hist, psum *ps){
+// Set positions back to original
+void RestorePsum(histogram *hist, psum *ps)
+{
  	uint64_t i = 0;
-	while(i < ps->num_tuples){
+	while(i < ps->num_tuples)
+	{
 		ps->psum_tuples[i].position = ps->psum_tuples[i].position - hist->hist_tuples[i].sum;
 		i++;
 	}
