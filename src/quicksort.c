@@ -29,7 +29,7 @@ int64_t partition(relation * rel, int64_t start, int64_t end)
 	return (i+1);
 }
 
-
+// Sort keys from relation in range start to end
 void Quicksort(relation * rel, int64_t start, int64_t end)
 {
 
