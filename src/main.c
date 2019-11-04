@@ -6,7 +6,6 @@
 #include "../include/quicksort.h"
 #include "../include/splitBucket.h"
 #include "../include/result.h"
-#include "../include/trie.h"
 
 int main(int argc, char const *argv[])
 {
@@ -16,7 +15,7 @@ int main(int argc, char const *argv[])
     relation *relation_A = &struct_A;
 
 
-    GetColumn_FromFILE("Datasets/tiny/relA",relation_A);
+    GetColumn_FromFILE("Datasets/small/relA",relation_A);
     uint64_t rowsA = relation_A -> num_tuples;
 
 
@@ -54,7 +53,7 @@ int main(int argc, char const *argv[])
      uint64_t **array_B;
 
 
-GetColumn_FromFILE("Datasets/tiny/relB",relation_B);
+GetColumn_FromFILE("Datasets/small/relB",relation_B);
 uint64_t rowsB = relation_B -> num_tuples;
 
 
@@ -100,7 +99,6 @@ uint64_t rowsB = relation_B -> num_tuples;
      uint64_t size_B = 0;
      double time_spent;
      uint64_t counter = 0;
-     bool bA = false, bB = false;
      clock_t begin;
      clock_t end;
 
