@@ -5,6 +5,7 @@
 void ReorderedColumn(relation * rel_old, relation * rel_new, psum * ps)
 {
     uint64_t i = 0;
+    //  = 7 because we need the 8th byte(0 = 1st byte from the right, 1 = 2nd byte from the right)
     uint64_t selected_byte = 7;
     uint64_t result = 0;
 
