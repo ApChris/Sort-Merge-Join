@@ -147,24 +147,38 @@ uint64_t Join(relation *rel_A, relation *rel_B, result *head)
 			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
 			{
 				a++;
+				if(a==rel_A->num_tuples){
+					return counter;
+				}
 
 			}
 			while(rel_A->tuples[a].key > rel_B->tuples[b].key)
 			{
 				b++;
+				if(b==rel_B->num_tuples){
+					return counter;
+				}
 
 			}
 			mark = b;
+
+
 		while (rel_A->tuples[a].key == rel_B->tuples[mark].key)
 		{
 			b = mark;
 			while (rel_A->tuples[a].key == rel_B->tuples[b].key)
 			{
 				head = pushJoinedElements(head, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
+				if(b==rel_B->num_tuples){
+					return counter;
+				}
 				b++;
 				counter++;
 			}
 			a++;
+			if(a==rel_A->num_tuples){
+				return counter;
+			}
 		}
 
 	}
