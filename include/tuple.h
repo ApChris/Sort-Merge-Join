@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+// pair of key, payload
 typedef struct tuple
 {
     uint64_t key;
