@@ -7,6 +7,9 @@
 #include "./include/quicksort.h"
 #include "./include/histogram.h"
 #include "./include/psum.h"
+#include "./include/result.h"
+
+// compilation method: gcc -o unit_test unit_testing.c ./src/quicksort.c ./src/histogram.c ./src/psum.c ./src/result.c -lcunit
 
 
 // Test suite initializer and cleanup functions
@@ -26,8 +29,8 @@ void Init_relation(relation *rel, int size){
 	rel->num_tuples = 0;
 }
 
-// Quicksort unit tests
-void QuickSortSimple(void){
+// Quicksort testing: various arrays to test if they are sorted successfully
+void Quick_Sort_Simple(void){
 	uint64_t v[10] = {1554683260001491562, 500327316197258909, 500327316197258909, 500327316197258909,
 						500327316197258909, 500327316197258909, 500327316197258909, 500327316197258909,
 						500327316197258909, 500327316197258909};
@@ -119,7 +122,8 @@ void QuickSortSimple(void){
 
 }
 
-void QuickSortEdge(void){
+// Quicksort testing: some edge cases
+void Quick_Sort_Edge(void){
 	uint64_t v[1] = {500327316197258901};
 	uint64_t w[2] = {500327316197258902, 500327316197258901};
 	uint64_t x[2] = {500327316197258901, 500327316197258902};
@@ -157,7 +161,7 @@ void QuickSortEdge(void){
     Quicksort(sort1, 0, sort1->num_tuples-1);
     Quicksort(sort2, 0, sort2->num_tuples-1);
     Quicksort(sort3, 0, sort3->num_tuples-1);
-    Quicksort(sort4, 0, 1);
+    // Quicksort(sort4, 0, 1);
 
     CU_ASSERT_EQUAL(sort1->tuples[0].key, 500327316197258901);
     CU_ASSERT_EQUAL(sort2->tuples[0].key, 500327316197258901);
@@ -168,7 +172,7 @@ void QuickSortEdge(void){
 
 }
 
-// Histogram and Psum unit tests
+// Histogram and Psum testing: regular histogram and psum creation
 void Histogram_Psum_Simple(void){
 	uint64_t R[20] = {9238353, 33367813, 4997225, 47348955, 23851595, 31331698,
 						11715274, 49281279, 29490875, 13006865, 28013437, 7446775,
@@ -213,7 +217,7 @@ void Histogram_Psum_Simple(void){
 
 }
 
-// Histogram and Psum 1st byte is the same unit test
+// Histogram and Psum testing: 1st byte is the same
 void Histogram_Psum_Edge(void){
     uint64_t R[20] = {251592448, 16689664, 37120, 253689600, 181775360, 14003200,
                         743424, 1006080, 1047040, 64000, 699392, 44032, 54784,
@@ -254,6 +258,152 @@ void Histogram_Psum_Edge(void){
     }
 }
 
+// Join testing: Regular join of two arrays
+void Join_Simple(void){
+
+	uint64_t A[10] = {543, 123, 654, 876, 7564, 4536, 7654, 432, 1265, 45234};
+	uint64_t Aid[10] = {0, 0, 0, 1, 1, 5, 5, 7, 9, 9};
+
+	uint64_t B[6] = {435, 1346, 435312, 34543, 5345, 543};
+	uint64_t Bid[6] = {0, 1, 3, 5, 7, 9};
+
+
+	relation r1;
+    relation *join1 = &r1;
+    Init_relation(join1, 10);
+
+    relation r2;
+    relation *join2 = &r2;
+    Init_relation(join2, 6);
+
+    for (int i = 0; i < 10; i++)
+    {
+    	join1->tuples[i].key = Aid[i];
+    	join1->tuples[i].payload = A[i];
+    	join1->num_tuples++;
+    }
+    for (int j = 0; j < 6; j++)
+    {
+    	join2->tuples[j].key = Bid[j];
+    	join2->tuples[j].payload = B[j];
+    	join2->num_tuples++;
+    }
+
+    result *res = resultInit();
+
+    Join(join1, join2, res);
+
+    CU_ASSERT_EQUAL(res->buffer[0][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[1][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[2][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[3][0], 1);
+    CU_ASSERT_EQUAL(res->buffer[4][0], 1);
+    CU_ASSERT_EQUAL(res->buffer[5][0], 5);
+    CU_ASSERT_EQUAL(res->buffer[6][0], 5);
+    CU_ASSERT_EQUAL(res->buffer[7][0], 7);
+    CU_ASSERT_EQUAL(res->buffer[8][0], 9);
+    CU_ASSERT_EQUAL(res->buffer[9][0], 9);
+
+
+}
+
+// Join testing: every element is similar
+void Join_Same(void){
+
+	uint64_t A[10] = {543, 123, 654, 876, 7564, 4536, 7654, 432, 1265, 45234};
+	uint64_t Aid[10] = {0, 0, 0, 1, 1, 5, 5, 7, 9, 9};
+
+	uint64_t B[10] = {435, 1346, 435312, 34543, 5345, 543, 4325, 534532, 123124, 312424};
+	uint64_t Bid[10] = {0, 0, 0, 1, 1, 5, 5, 7, 9, 9};
+
+	relation r1;
+    relation *join1 = &r1;
+    Init_relation(join1, 10);
+
+    relation r2;
+    relation *join2 = &r2;
+    Init_relation(join2, 10);
+
+    for (int i = 0; i < 10; i++)
+    {
+    	join1->tuples[i].key = Aid[i];
+    	join1->tuples[i].payload = A[i];
+    	join1->num_tuples++;
+    }
+    for (int j = 0; j < 10; j++)
+    {
+    	join2->tuples[j].key = Bid[j];
+    	join2->tuples[j].payload = B[j];
+    	join2->num_tuples++;
+    }
+
+    result *res = resultInit();
+
+    Join(join1, join2, res);
+
+    CU_ASSERT_EQUAL(res->buffer[0][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[1][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[2][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[3][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[4][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[5][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[6][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[7][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[8][0], 0);
+    CU_ASSERT_EQUAL(res->buffer[9][0], 1);
+    CU_ASSERT_EQUAL(res->buffer[10][0], 1);
+    CU_ASSERT_EQUAL(res->buffer[11][0], 1);
+    CU_ASSERT_EQUAL(res->buffer[12][0], 1);
+    CU_ASSERT_EQUAL(res->buffer[13][0], 5);
+    CU_ASSERT_EQUAL(res->buffer[14][0], 5);
+    CU_ASSERT_EQUAL(res->buffer[15][0], 5);
+    CU_ASSERT_EQUAL(res->buffer[16][0], 5);
+    CU_ASSERT_EQUAL(res->buffer[17][0], 7);
+    CU_ASSERT_EQUAL(res->buffer[18][0], 9);
+    CU_ASSERT_EQUAL(res->buffer[19][0], 9);
+    CU_ASSERT_EQUAL(res->buffer[20][0], 9);
+    CU_ASSERT_EQUAL(res->buffer[21][0], 9);
+
+}
+
+// Join testing: no similar element
+void Join_Different(void){
+
+	uint64_t A[10] = {543, 123, 654, 876, 7564, 4536, 7654, 432, 1265, 45234};
+	uint64_t Aid[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+	uint64_t B[10] = {435, 1346, 435312, 34543, 5345, 543, 4325, 534532, 123124, 312424};
+	uint64_t Bid[10] = {11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+
+	relation r1;
+    relation *join1 = &r1;
+    Init_relation(join1, 10);
+
+    relation r2;
+    relation *join2 = &r2;
+    Init_relation(join2, 10);
+
+    for (int i = 0; i < 10; i++)
+    {
+    	join1->tuples[i].key = Aid[i];
+    	join1->tuples[i].payload = A[i];
+    	join1->num_tuples++;
+    }
+    for (int j = 0; j < 10; j++)
+    {
+    	join2->tuples[j].key = Bid[j];
+    	join2->tuples[j].payload = B[j];
+    	join2->num_tuples++;
+    }
+
+    result *res = resultInit();
+    result *printres = res;
+
+    uint64_t counter = 0;
+    counter = Join(join1, join2, res);
+    CU_ASSERT_EQUAL(counter, 0);
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -272,10 +422,13 @@ int main(int argc, char const *argv[])
 	}
 
 	// Add unit tests to the suite
-	if ((CU_ADD_TEST(pSuite, QuickSortSimple)==NULL) || 
-		(CU_ADD_TEST(pSuite, QuickSortEdge)==NULL) ||
+	if ((CU_ADD_TEST(pSuite, Quick_Sort_Simple)==NULL) || 
+		(CU_ADD_TEST(pSuite, Quick_Sort_Edge)==NULL) ||
 		(CU_ADD_TEST(pSuite, Histogram_Psum_Simple)==NULL) ||
-		(CU_ADD_TEST(pSuite, Histogram_Psum_Edge)==NULL))
+		(CU_ADD_TEST(pSuite, Histogram_Psum_Edge)==NULL) ||
+		(CU_ADD_TEST(pSuite, Join_Simple)==NULL) || 
+		(CU_ADD_TEST(pSuite, Join_Same)==NULL) ||
+		(CU_ADD_TEST(pSuite, Join_Different)==NULL))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
