@@ -8,7 +8,8 @@ OBJS = build/main.o \
 		build/cleanRelation.o \
 		build/splitBucket.o \
 		build/result.o \
-		build/processRelation.o
+		build/processRelation.o \
+		build/sortMergeJoin.o
 
 
 
@@ -58,6 +59,9 @@ build/result.o: src/result.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/processRelation.o: src/processRelation.c
+	$(CC) $(FLAGS) $< -o $@
+
+build/sortMergeJoin.o: src/sortMergeJoin.c
 	$(CC) $(FLAGS) $< -o $@
 
 
