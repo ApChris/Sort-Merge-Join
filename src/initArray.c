@@ -1,6 +1,8 @@
 
 #include "../include/initArray.h"
 
+
+// A function that creates an array with random numbers (FOR TESTING
 uint64_t ** InitArray(uint64_t rows, uint64_t columns)
 {
     uint64_t ** array;
