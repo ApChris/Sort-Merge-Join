@@ -15,8 +15,7 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
     Histogram(rel_old,hist,sel_byte,start,end);
     //Print_Histogram(hist);
 
-    // psum struct_p2;
-    // psum *ps = &struct_p2;
+
     Psum(hist,ps,start);
     //Print_Psum(hist,ps);
 
@@ -39,6 +38,7 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
     }
 
     RestorePsum(hist, ps);  //psum's position returns to its initial values
+
 
 
 }

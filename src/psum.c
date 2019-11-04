@@ -3,7 +3,8 @@
 #include "../include/psum.h"
 #include "../include/histogram.h"
 
-void Psum(histogram * hist, psum * ps,int64_t start){
+void Psum(histogram * hist, psum * ps,int64_t start)
+{
 
 	uint64_t i = 1;
 	ps -> num_tuples = hist -> num_tuples;

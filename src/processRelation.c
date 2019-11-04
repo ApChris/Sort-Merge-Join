@@ -23,17 +23,15 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
         if(size < L1_CACHE)
         {
             printf("--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",i,hist -> hist_tuples[i].sum,size);
-            //printf("\t Quicksort Bucket %lu\n",i);
             if(i == hist -> num_tuples - 1)
             {
                Quicksort(rel_new, ps -> psum_tuples[i].position,ps -> psum_tuples[i].position + hist -> hist_tuples[i].sum - 1);
-            //   printBucket(rel_new,ps->psum_tuples[i].position,ps->psum_tuples[i].position + hist -> hist_tuples[i].sum);
             }
             else
             {
 
                Quicksort(rel_new,ps -> psum_tuples[i].position,ps -> psum_tuples[i + 1].position -1);
-            //   printBucket(rel_new,ps->psum_tuples[i].position,ps->psum_tuples[i + 1].position);
+
             }
         }
         else        // SPLIT
@@ -48,14 +46,11 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
             if(i == hist -> num_tuples - 1)
             {
                 Split_Bucket(rel_old,hist1,ps1,rel_new,ps->psum_tuples[i].position, ps -> psum_tuples[i].position + hist -> hist_tuples[i].sum,sel_byte);
-                //printBucket(rel_new,ps1->psum_tuples[i].position,ps1->psum_tuples[i].position + hist1 -> hist_tuples[i].sum);
             }
             else
             {
 
                 Split_Bucket(rel_old,hist1,ps1,rel_new,ps->psum_tuples[i].position,ps->psum_tuples[i + 1].position,sel_byte);
-                //printBucket(rel_new,ps1->psum_tuples[i].position,ps1->psum_tuples[i + 1].position);
-                //printf("e %ld , %ld\n\t",ps1->psum_tuples[i].position,ps1->psum_tuples[i + 1].position);
 
             }
 
@@ -77,14 +72,11 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                     if(b1 == hist1 -> num_tuples - 1)
                     {
                         Quicksort(rel_new, ps1 -> psum_tuples[b1].position,ps1 -> psum_tuples[b1].position + hist1 -> hist_tuples[b1].sum - 1);
-                    //    printBucket(rel_new,ps1->psum_tuples[b1].position,ps1->psum_tuples[b1].position + hist1 -> hist_tuples[b1].sum);
                     }
                     else
                     {
                         Quicksort(rel_new,ps1 -> psum_tuples[b1].position,ps1 -> psum_tuples[b1 + 1].position -1);
-                    //    printBucket(rel_new,ps1->psum_tuples[b1].position,ps1->psum_tuples[b1 + 1].position);
                     }
-
                 }
                 else    // SPLIT
                 {
@@ -99,13 +91,11 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                     {
 
                         Split_Bucket(rel_old,hist2,ps2,rel_new,ps1->psum_tuples[b1].position, ps1 -> psum_tuples[b1].position + hist1 -> hist_tuples[b1].sum,5);
-                    //    printBucket(rel_new,ps2->psum_tuples[b1].position,ps2 -> psum_tuples[b1].position + hist2 -> hist_tuples[b1].sum);
                     }
                     else
                     {
 
                         Split_Bucket(rel_old,hist2,ps2,rel_new,ps1->psum_tuples[b1].position,ps1->psum_tuples[b1 + 1].position,5);
-                    //    printBucket(rel_new,ps2->psum_tuples[b1].position,ps2 -> psum_tuples[b1 + 1].position);
                     }
 
                     // BYTE 2
@@ -125,12 +115,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                             if(i == hist2 -> num_tuples - 1)
                             {
                                 Quicksort(rel_new, ps2 -> psum_tuples[b2].position,ps2 -> psum_tuples[b2].position + hist2 -> hist_tuples[b2].sum - 1);
-                            //    printBucket(rel_new,ps2->psum_tuples[b2].position,ps2->psum_tuples[b2].position + hist2 -> hist_tuples[b2].sum);
                             }
                             else
                             {
                                 Quicksort(rel_new,ps2 -> psum_tuples[b2].position,ps2 -> psum_tuples[b2 + 1].position -1);
-                            //    printBucket(rel_new,ps2->psum_tuples[b2].position,ps2->psum_tuples[b2 + 1].position);
                             }
                         }
                         else    // SPLIT
@@ -144,12 +132,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                             if(b2 == hist2 -> num_tuples - 1)
                             {
                                 Split_Bucket(rel_old,hist3,ps3,rel_new,ps2->psum_tuples[b2].position, ps2 -> psum_tuples[b2].position + hist2 -> hist_tuples[b2].sum,4);
-                            //    printBucket(rel_new,ps3->psum_tuples[b2].position,ps3 -> psum_tuples[b2].position + hist3 -> hist_tuples[b2].sum);
                             }
                             else
                             {
                                 Split_Bucket(rel_old,hist3,ps3,rel_new,ps2->psum_tuples[b2].position,ps2->psum_tuples[b2 + 1].position,4);
-                            //    printBucket(rel_new,ps3->psum_tuples[b2].position,ps3 -> psum_tuples[b2 + 1].position);
                             }
 
                             // BYTE 3
@@ -167,12 +153,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                     if(i == hist3 -> num_tuples - 1)
                                     {
                                         Quicksort(rel_new, ps3 -> psum_tuples[b3].position,ps3 -> psum_tuples[b3].position + hist3 -> hist_tuples[b3].sum - 1);
-                                    //    printBucket(rel_new,ps3->psum_tuples[b3].position,ps3->psum_tuples[b3].position + hist3 -> hist_tuples[b3].sum);
                                     }
                                     else
                                     {
                                         Quicksort(rel_new,ps3 -> psum_tuples[b3].position,ps3 -> psum_tuples[b3 + 1].position -1);
-                                    //    printBucket(rel_new,ps3->psum_tuples[b3].position,ps3->psum_tuples[b3 + 1].position);
                                     }
                                 }
                                 else    // SPLIT
@@ -186,12 +170,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                     if(b3 == hist3 -> num_tuples - 1)
                                     {
                                         Split_Bucket(rel_old,hist4,ps4,rel_new,ps3->psum_tuples[b3].position, ps3 -> psum_tuples[b3].position + hist3 -> hist_tuples[b3].sum,3);
-                                    //    printBucket(rel_new,ps4->psum_tuples[b3].position,ps4 -> psum_tuples[b3].position + hist4 -> hist_tuples[b3].sum);
                                     }
                                     else
                                     {
                                         Split_Bucket(rel_old,hist4,ps4,rel_new,ps3->psum_tuples[b3].position,ps3->psum_tuples[b3 + 1].position,3);
-                                    //    printBucket(rel_new,ps4->psum_tuples[b3].position,ps4 -> psum_tuples[b3 + 1].position);
                                     }
 
                                     // BYTE 4
@@ -210,12 +192,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                             if(i == hist4 -> num_tuples - 1)
                                             {
                                                 Quicksort(rel_new, ps4 -> psum_tuples[b4].position,ps3 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum - 1);
-                                            //    printBucket(rel_new,ps4->psum_tuples[b4].position,ps4->psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum);
                                             }
                                             else
                                             {
                                                 Quicksort(rel_new,ps4 -> psum_tuples[b4].position,ps3 -> psum_tuples[b4 + 1].position -1);
-                                            //    printBucket(rel_new,ps4->psum_tuples[b4].position,ps4->psum_tuples[b4 + 1].position);
                                             }
                                         }
                                         else    // SPLIT
@@ -229,12 +209,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                             if(b4 == hist4 -> num_tuples - 1)
                                             {
                                                 Split_Bucket(rel_old,hist5,ps5,rel_new,ps4->psum_tuples[b4].position, ps4 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum,2);
-                                            //    printBucket(rel_new,ps5->psum_tuples[b4].position,ps5 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum);
                                             }
                                             else
                                             {
                                                 Split_Bucket(rel_old,hist5,ps5,rel_new,ps4->psum_tuples[b4].position,ps4->psum_tuples[b4 + 1].position,2);
-                                            //    printBucket(rel_new,ps5->psum_tuples[b4].position,ps5 -> psum_tuples[b4 + 1].position);
                                             }
 
                                             // BYTE 5
@@ -254,12 +232,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                     if(i == hist5 -> num_tuples - 1)
                                                     {
                                                         Quicksort(rel_new, ps5 -> psum_tuples[b5].position,ps3 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum - 1);
-                                                    //    printBucket(rel_new,ps5->psum_tuples[b5].position,ps5->psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum);
                                                     }
                                                     else
                                                     {
                                                         Quicksort(rel_new,ps5 -> psum_tuples[b5].position,ps5 -> psum_tuples[b5 + 1].position -1);
-                                                    //    printBucket(rel_new,ps5->psum_tuples[b5].position,ps5->psum_tuples[b5 + 1].position);
                                                     }
                                                 }
                                                 else    // SPLIT
@@ -273,12 +249,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                     if(b5 == hist5 -> num_tuples - 1)
                                                     {
                                                         Split_Bucket(rel_old,hist6,ps6,rel_new,ps5->psum_tuples[b5].position, ps5 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum,1);
-                                                    //    printBucket(rel_new,ps6->psum_tuples[b5].position,ps6 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum);
                                                     }
                                                     else
                                                     {
                                                         Split_Bucket(rel_old,hist6,ps6,rel_new,ps5->psum_tuples[b5].position,ps5->psum_tuples[b5 + 1].position,1);
-                                                    //    printBucket(rel_new,ps6->psum_tuples[b5].position,ps6 -> psum_tuples[b5 + 1].position);
                                                     }
 
                                                     // BYTE 6
@@ -297,12 +271,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                             if(i == hist6 -> num_tuples - 1)
                                                             {
                                                                 Quicksort(rel_new, ps6 -> psum_tuples[b6].position,ps6 -> psum_tuples[b6].position + hist6 -> hist_tuples[b6].sum - 1);
-                                                            //    printBucket(rel_new,ps6->psum_tuples[b6].position,ps6->psum_tuples[b6].position + hist6 -> hist_tuples[b6].sum);
                                                             }
                                                             else
                                                             {
                                                                 Quicksort(rel_new,ps6 -> psum_tuples[b6].position,ps6 -> psum_tuples[b6 + 1].position -1);
-                                                            //    printBucket(rel_new,ps6->psum_tuples[b6].position,ps6->psum_tuples[b6 + 1].position);
                                                             }
                                                         }
                                                         else    // SPLIT
@@ -316,12 +288,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                             if(b6 == hist6 -> num_tuples - 1)
                                                             {
                                                                 Split_Bucket(rel_old,hist7,ps7,rel_new,ps6->psum_tuples[b6].position, ps6 -> psum_tuples[b6].position + hist6 -> hist_tuples[b6].sum,0);
-                                                            //    printBucket(rel_new,ps7->psum_tuples[b6].position,ps7 -> psum_tuples[b6].position + hist7 -> hist_tuples[b6].sum);
                                                             }
                                                             else
                                                             {
                                                                 Split_Bucket(rel_old,hist7,ps7,rel_new,ps6->psum_tuples[b6].position,ps6->psum_tuples[b6 + 1].position,0);
-                                                            //    printBucket(rel_new,ps7->psum_tuples[b6].position,ps7 -> psum_tuples[b6 + 1].position);
                                                             }
 
                                                             // BYTE 7
@@ -341,12 +311,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                     if(i == hist7 -> num_tuples - 1)
                                                                     {
                                                                         Quicksort(rel_new, ps7 -> psum_tuples[b7].position,ps7 -> psum_tuples[b7].position + hist7 -> hist_tuples[b7].sum - 1);
-                                                                    //    printBucket(rel_new,ps7->psum_tuples[b7].position,ps7->psum_tuples[b7].position + hist7 -> hist_tuples[b7].sum);
                                                                     }
                                                                     else
                                                                     {
                                                                         Quicksort(rel_new,ps7 -> psum_tuples[b7].position,ps7 -> psum_tuples[b7 + 1].position -1);
-                                                                    //    printBucket(rel_new,ps7->psum_tuples[b7].position,ps7->psum_tuples[b7 + 1].position);
                                                                     }
                                                                 }
                                                                 else    // SPLIT
@@ -360,12 +328,10 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                     if(b7 == hist7 -> num_tuples - 1)
                                                                     {
                                                                         Split_Bucket(rel_old,hist8,ps8,rel_new,ps7->psum_tuples[b7].position, ps7 -> psum_tuples[b7].position + hist7 -> hist_tuples[b7].sum,-1);
-                                                                    //    printBucket(rel_new,ps8->psum_tuples[b7].position,ps8 -> psum_tuples[b7].position + hist8 -> hist_tuples[b7].sum);
                                                                     }
                                                                     else
                                                                     {
                                                                         Split_Bucket(rel_old,hist8,ps8,rel_new,ps7->psum_tuples[b7].position,ps7->psum_tuples[b7 + 1].position,-1);
-                                                                    //    printBucket(rel_new,ps8->psum_tuples[b7].position,ps8 -> psum_tuples[b7 + 1].position);
                                                                     }
 
                                                                     // LAST QUICKSORT
@@ -383,32 +349,51 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                             if(i == hist8 -> num_tuples - 1)
                                                                             {
                                                                                 Quicksort(rel_new, ps8 -> psum_tuples[b8].position,ps8 -> psum_tuples[b8].position + hist8 -> hist_tuples[b8].sum - 1);
-                                                                            //    printBucket(rel_new,ps8->psum_tuples[b8].position,ps8->psum_tuples[b8].position + hist8 -> hist_tuples[b8].sum);
                                                                             }
                                                                             else
                                                                             {
                                                                                 Quicksort(rel_new,ps8 -> psum_tuples[b8].position,ps8 -> psum_tuples[b8 + 1].position -1);
-                                                                            //    printBucket(rel_new,ps8->psum_tuples[b8].position,ps8->psum_tuples[b8 + 1].position);
                                                                             }
                                                                         }
                                                                     }
+                                                                    free(hist8->hist_tuples);
+                                                                    free(ps8->psum_tuples);
                                                                 }
+
                                                             }
+                                                            free(hist7->hist_tuples);
+                                                            free(ps7->psum_tuples);
                                                         }
+
                                                     }
+                                                    free(hist6->hist_tuples);
+                                                    free(ps6->psum_tuples);
                                                 }
+
                                             }
+                                            free(hist5->hist_tuples);
+                                            free(ps5->psum_tuples);
                                         }
+
                                     }
+                                    free(hist4->hist_tuples);
+                                    free(ps4->psum_tuples);
                                 }
                             }
+                            free(hist3->hist_tuples);
+                            free(ps3->psum_tuples);
                         }
                     }
+                    free(hist2->hist_tuples);
+                    free(ps2->psum_tuples);
                 }
             }
+            free(hist1->hist_tuples);
+            free(ps1->psum_tuples);
         }
         i++;
     }
+
 }
 
 
