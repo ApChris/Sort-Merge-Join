@@ -5,8 +5,7 @@
 #include "../include/psum.h"
 
 void swap(tuple *a, tuple *b);
-
-uint64_t partition(relation * rel, int64_t start, int64_t end);
+int64_t partition(relation * rel, int64_t start, int64_t end);
 void Quicksort(relation * rel, int64_t start, int64_t end);
 
 #endif
