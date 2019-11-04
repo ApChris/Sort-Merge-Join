@@ -2,9 +2,6 @@
 #include "../include/result.h"
 #include "../include/relation.h"
 
-
-
-
 result * resultInit()
 {
 	result * head_result;
@@ -86,54 +83,12 @@ void Deallocate_List(result *res)
 
 	while(res != NULL)
 	{
-		// for(uint64_t i = 0; i < ROWS; i++)
-		// {
-		// 	free(res->buffer[i]);
-		// }
-		// free(res->buffer);
 		current_result = res;
 		res = res->next_result;
 		free(current_result);
 	}
 }
-/*
-uint64_t Join(relation *rel_A, uint64_t start_A, uint64_t end_A, relation *rel_B, uint64_t start_B, uint64_t end_B, uint64_t sel_byte, result *res)
-{
-	uint64_t selected_byte = 0;
-	uint64_t counter = 0;
 
-	uint64_t mark = start_A, a = start_A, b = start_B;
-
-	while(a < end_A && b < end_B)
-	{
-		while(rel_A->tuples[a].key < rel_B->tuples[b].key)
-		{
-			a++;
-
-		}
-		while(rel_A->tuples[a].key > rel_B->tuples[b].key)
-		{
-			b++;
-
-		}
-		mark = b;
-
-		while (rel_A->tuples[a].key == rel_B->tuples[mark].key)
-		{
-			b = mark;
-			while (rel_A->tuples[a].key == rel_B->tuples[b].key)
-			{
-				res = pushJoinedElements(res, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
-				b++;
-				counter++;
-			}
-			a++;
-		}
-
-	}
-	return counter;
-}
-*/
 uint64_t Join(relation *rel_A, relation *rel_B, result *head)
 {
 	uint64_t selected_byte = 0;
