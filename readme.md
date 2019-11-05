@@ -4,6 +4,7 @@
 ---
 
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
+Clone Sort-Merge-Join in your local repository, open terminal and type the following:
 <pre><code>make rebuild
 
 ./smj tiny
