@@ -11,6 +11,7 @@ Clone Sort-Merge-Join in your local repository, open terminal and type the follo
 ./smj small
 ./smj medium
 </code></pre>
+Results for tiny dataset should be 640.000, for small 50.000.000 and for medium 900.000.000 (currently not working, need ~24GB ram memory, cannot compress memory space)
 <h2 id="sort-merge-join">Sort Merge Join</h2>
 <p>Sort-Merge Join is a join algorithm, which sorts the relations by a join attribute and then merges the elements of the sorted arrays.</p>
 <p>The key idea of the sort-merge algorithm is to first sort the relations by the join attribute.  Sorting the input is the most expensive part of performing a sort-merge join.</p>
