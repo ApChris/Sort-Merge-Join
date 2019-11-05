@@ -29,8 +29,8 @@ Results for tiny dataset should be 640.000, for small 50.000.000 and for medium 
 <p>The corresponding data will be segmented to 2^8 buckets, where each bucket size must be equal to processor’s L1-cache (for this project, L1-cache equals to 64KB).</p>
 <h2 id="histogram-and-psum">Histogram and Psum</h2>
 <p>Two helpful structures that each serves a particular puprose on the distribution of the dataset into the buckets, making new histogram and psum structures in each iteration of the radix sort.<br>
-Histogram holds the key value and it’s frequency of appearance(sum) in the input array.<br>
-Psum holds the key value and it’s position that will be placed in the final array (post-sorted array).<br>
+<strong>Histogram</strong> holds the key value and it’s frequency of appearance(sum) in the input array.<br>
+<strong>Psum</strong> holds the key value and it’s position that will be placed in the final array (post-sorted array).<br>
 i.e.</p>
 
 <table>
