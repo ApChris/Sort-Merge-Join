@@ -7,9 +7,8 @@
 #include "../include/quicksort.h"
 #include "../include/splitBucket.h"
 #include "../include/result.h"
-
-void Final_Relation(relation * rel, relation * rel_final);
-result * SortMergeJoin(relation * relation_A_final, relation * relation_B_final);
+#include "../include/sortMergeJoin.h"
+#include "../include/processRelation.h"
 
 int main(int argc, char const *argv[])
 {

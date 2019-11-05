@@ -1,6 +1,7 @@
 #ifndef _SORT_MERGE_JOIN_H_
 #define _SORT_MERGE_JOIN_H_
 
+
 #include "relation.h"
 #include "result.h"
 #include <time.h>

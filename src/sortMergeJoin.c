@@ -1,4 +1,5 @@
 
+
 #include "../include/sortMergeJoin.h"
 
 result * SortMergeJoin(relation * relation_A_final, relation * relation_B_final)
