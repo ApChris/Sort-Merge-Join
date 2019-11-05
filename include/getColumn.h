@@ -1,7 +1,7 @@
 #ifndef _GETCOLUMN_H
 #define _GETCOLUMN_H
 
-#include "../include/relation.h"
+#include "relation.h"
 
 // functions to get input
 void GetColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relation *rel);

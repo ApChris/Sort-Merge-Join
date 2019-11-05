@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../include/processRelation.h"
-#include "../include/quicksort.h"
+
+
 
 #define L1_CACHE 65536    //  = 64 kb
 
@@ -440,5 +441,4 @@ void Final_Relation(relation * rel, relation * rel_final)
     free(ps -> psum_tuples);
     free(rel -> tuples);
 
-    return rel_final;
 }

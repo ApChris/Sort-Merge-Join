@@ -34,7 +34,7 @@ void GetColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relat
 void GetColumn_FromFILE(const char * filename, relation *rel)
 {
     FILE *file;
-    int64_t rows = 0;
+    uint64_t rows = 0;
     char ch;
 
     if((file = fopen(filename,"r")) == NULL)
@@ -62,7 +62,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
 
     uint64_t key = 0;
     uint64_t payload = 0;
-    int64_t i = 0;
+    uint64_t i = 0;
 
 
     for(; i < rows; i++)
@@ -77,7 +77,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
     rel -> num_tuples = rows;
 
 
-    if(fclose(file) != NULL)
+    if(fclose(file) != 0)
     {
         perror("GetColumn_FromFILE.c error:");
         exit(-1);

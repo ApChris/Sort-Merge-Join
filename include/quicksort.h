@@ -2,7 +2,7 @@
 #define _QUICKSORT_H
 
 #include <stdint.h>
-#include "../include/psum.h"
+#include "psum.h"
 
 void swap(tuple *a, tuple *b);
 int64_t partition(relation * rel, int64_t start, int64_t end);

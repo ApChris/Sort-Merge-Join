@@ -18,7 +18,7 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
     // Create a new psum
     Psum(hist,ps,start);
 
-    uint64_t i = start;
+    int64_t i = start;
     uint64_t result = 0;
 
     // Get old keys and write them correclty at new relation

@@ -2,7 +2,7 @@
 #define _PSUM_H
 
 #include <stdint.h>
-#include "../include/histogram.h"
+#include "histogram.h"
 
 typedef struct psum_tuple
 {

@@ -3,7 +3,7 @@
 #include "../include/histogram.h"
 
 
-void Histogram(relation * rel, histogram * hist, uint64_t sel_byte,int64_t start,int64_t end)
+void Histogram(relation * rel, histogram * hist, uint64_t sel_byte,uint64_t start,uint64_t end)
 {
 
     uint64_t i = 0;

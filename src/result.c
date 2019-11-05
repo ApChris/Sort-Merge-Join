@@ -27,31 +27,30 @@ result *pushJoinedElements(result *head, uint64_t key, uint64_t payload_A, uint6
 {
 	result *current_result = head;
 	result *previous_result = head;
-	int flag = 0;
 
-		//	bucket hasn't reached 1 MB, so push it
-		if(current_result->num_results < ROWS)
-		{
-			current_result->buffer[current_result->num_results][0] = key;
-			current_result->buffer[current_result->num_results][1] = payload_A;
-			current_result->buffer[current_result->num_results][2] = payload_B;
+	//	bucket hasn't reached 1 MB, so push it
+	if(current_result->num_results < ROWS)
+	{
+		current_result->buffer[current_result->num_results][0] = key;
+		current_result->buffer[current_result->num_results][1] = payload_A;
+		current_result->buffer[current_result->num_results][2] = payload_B;
 
-			current_result->num_results++;
-		}
-		else
-		{
-			//	bucket has reached 1 MB, create a new Result and push it there
-			previous_result = current_result;
-			insertNewResult(previous_result);
-			current_result = previous_result->next_result;
+		current_result->num_results++;
+	}
+	else
+	{
+		//	bucket has reached 1 MB, create a new Result and push it there
+		previous_result = current_result;
+		insertNewResult(previous_result);
+		current_result = previous_result->next_result;
 
-			current_result->buffer[current_result->num_results][0] = key;
-			current_result->buffer[current_result->num_results][1] = payload_A;
-			current_result->buffer[current_result->num_results][2] = payload_B;
+		current_result->buffer[current_result->num_results][0] = key;
+		current_result->buffer[current_result->num_results][1] = payload_A;
+		current_result->buffer[current_result->num_results][2] = payload_B;
 
-			current_result->num_results++;
+		current_result->num_results++;
 
-		}
+	}
 
 	return current_result;
 }
@@ -91,7 +90,6 @@ void Deallocate_List(result *res)
 
 uint64_t Join(relation *rel_A, relation *rel_B, result *head)
 {
-	uint64_t selected_byte = 0;
 	uint64_t counter = 0;
 
 	uint64_t mark = 0, a = 0, b = 0;

@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/relation.h"
-#include "../include/psum.h"
+#include "relation.h"
+#include "psum.h"
 
 #define ROWS ((1024*1024) / 40)	/*	40:	3 columns of int64_t
 	  							 		1 pointer to the next result,
