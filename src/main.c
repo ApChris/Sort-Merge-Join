@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 #include "../include/getColumn.h"
 #include "../include/initArray.h"
 #include "../include/reorderedColumn.h"
