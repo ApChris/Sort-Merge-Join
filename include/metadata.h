@@ -9,6 +9,5 @@ typedef struct metadata
 }metadata;
 
 
-metadata * Read_Init_Binary(const char * filename);
 
 #endif
