@@ -183,7 +183,7 @@ metadata * Read_Init_Binary(const char * filename)
             offset_metadata += array[0];
 
         }
-        //return md;
+
         offset_metadata = 2;
         // print
         // for (size_t i = 2; i < array[0] + 2; i++)
@@ -205,11 +205,75 @@ metadata * Read_Init_Binary(const char * filename)
             exit(-1);
         }
 
+    }
+    // close
+    if(fclose(file_init))
+    {
+        perror("finit failed:");
+        exit(-1);
+    }
+    return md;
+}
 
+
+
+void Read_Work(const char * filename)
+{
+
+    // variables for init file
+    FILE * file;
+    uint64_t length = 0;
+    uint64_t read;
+    char seps[] = "\n,()&|_ ";
+    char * line = NULL;
+
+    // open work file
+    if((file = fopen(filename,"rb+")) == NULL)
+    {
+        perror("file_init fopen failed:");
+        exit(-1);
+    }
+
+    while ((read = getline(&line, &length, file)) != -1)
+    {
+        char * token;
+        printf("%s\n",line);
+        token = strtok(line,seps);
+
+        while(token != NULL)
+        {
+            printf("%s\n",token);
+            token = strtok(NULL,seps);
+
+        }
+        // if(strcmp(token,"F"))
+        // {
+        //     break;
+        // }
+        // //break;
 
     }
 
-    return md;
+    //ch = strtok( , "|");
+
+    // length == all bytes in file but we divide with 8 , because we use uint64_t
+    // fseek(file, 0, SEEK_END);
+    // length = ftell(file);
+    // fseek(file, 0, SEEK_SET);
+
+    if(line)
+    {
+        free(line);
+    }
+
+    printf("\n\n\n");
+    // close
+    if(fclose(file))
+    {
+        perror("fclose failed:");
+        exit(-1);
+    }
+
 
 
 }
