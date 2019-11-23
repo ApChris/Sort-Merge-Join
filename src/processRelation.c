@@ -472,20 +472,20 @@ void Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos, relation
 void Filter(relation * rel, uint64_t limit, char symbol, relation * rel_final)
 {
     uint64_t counter = 0;
-        printf("aa %lu-%c\n",rel -> num_tuples,symbol);
-        uint64_t flag = 0;
+    uint64_t flag = 0;
 
-        uint64_t j = 0;
+    uint64_t j = 0;
+
     for (size_t i = 0; i < rel -> num_tuples; i++)
     {
         if(symbol == '>')
         {
 
-            if(limit > rel -> tuples[i].key)
+            if(rel -> tuples[i].key < limit)
             {
                 continue;
             }
-            else if(limit < rel -> tuples[i].key)
+            else if(rel -> tuples[i].key > limit)   // equal?
             {
                 if(flag == 0)
                 {
@@ -513,14 +513,79 @@ void Filter(relation * rel, uint64_t limit, char symbol, relation * rel_final)
                 counter++;
             }
         }
-        // else if(strcmp(symbol,"<"))
-        // {
-        //
-        // }
-        // else if(strcmp(symbol,"="))
-        // {
-        //
-        // }
+        else if(symbol == '<')
+        {
+            if(rel -> tuples[i].key > limit)
+            {
+                continue;
+            }
+            else if(rel -> tuples[i].key < limit)   // equal?
+            {
+                if(flag == 0)
+                {
+                    if((rel_final -> tuples = (tuple *)malloc((counter+1) * sizeof(tuple))) == NULL)
+                    {
+                        perror("Filter , first malloc\n");
+                        exit(-1);
+                    }
+                    flag = 1;
+
+                    rel_final -> tuples[j].key = rel -> tuples[i].key;
+                    rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                    j++;
+                    counter++;
+                    continue;
+                }
+                if((rel_final -> tuples = (tuple *)realloc(rel_final -> tuples,(counter+1) * sizeof(tuple))) == NULL)
+                {
+                    perror("Filter , realloc\n");
+                    exit(-1);
+                }
+                rel_final -> tuples[j].key = rel -> tuples[i].key;
+                rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                j++;
+                counter++;
+            }
+        }
+        else if(symbol,"=")
+        {
+            if(rel -> tuples[i].key < limit)
+            {
+                continue;
+            }
+            else if(rel -> tuples[i].key == limit)   // equal?
+            {
+                if(flag == 0)
+                {
+                    if((rel_final -> tuples = (tuple *)malloc((counter+1) * sizeof(tuple))) == NULL)
+                    {
+                        perror("Filter , first malloc\n");
+                        exit(-1);
+                    }
+                    flag = 1;
+
+                    rel_final -> tuples[j].key = rel -> tuples[i].key;
+                    rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                    j++;
+                    counter++;
+                    continue;
+                }
+                if((rel_final -> tuples = (tuple *)realloc(rel_final -> tuples,(counter+1) * sizeof(tuple))) == NULL)
+                {
+                    perror("Filter , realloc\n");
+                    exit(-1);
+                }
+                rel_final -> tuples[j].key = rel -> tuples[i].key;
+                rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                j++;
+                counter++;
+            }
+            else
+            {
+                break;
+            }
+
+        }
     }
     rel_final -> num_tuples = counter;
     printf("counter = %lu\n", counter);
@@ -561,6 +626,6 @@ void Filter(relation * rel, uint64_t limit, char symbol, relation * rel_final)
     }
 */
     //free(rel);
-        printf("counter = %lu\n", counter);
+    printf("counter = %lu\n", counter);
 
 }
