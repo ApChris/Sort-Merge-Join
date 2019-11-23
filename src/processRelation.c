@@ -442,3 +442,125 @@ void Final_Relation(relation * rel, relation * rel_final)
     free(rel -> tuples);
 
 }
+
+
+void Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos, relation * rel)
+{
+    uint64_t * ptr;
+
+    // We'll create space for rows number of tuples
+    if((rel -> tuples = (tuple *)malloc(md[md_pos].num_tuples * sizeof(tuple))) == NULL)
+    {
+        perror("Create_Relation.c , first malloc\n");
+        exit(-1);
+    }
+
+    ptr =  md[md_pos].array[array_pos];
+
+    for(size_t i = 0; i < md[md_pos].num_tuples; i++)
+    {
+        rel -> tuples[i].key = *(ptr + i); // key is the value
+        rel -> tuples[i].payload = i; // payload
+
+    }
+
+    // The number of tuples is the number of rows
+    rel -> num_tuples = md[md_pos].num_tuples;
+
+
+}
+void Filter(relation * rel, uint64_t limit, char symbol, relation * rel_final)
+{
+    uint64_t counter = 0;
+        printf("aa %lu-%c\n",rel -> num_tuples,symbol);
+        uint64_t flag = 0;
+
+        uint64_t j = 0;
+    for (size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        if(symbol == '>')
+        {
+
+            if(limit > rel -> tuples[i].key)
+            {
+                continue;
+            }
+            else if(limit < rel -> tuples[i].key)
+            {
+                if(flag == 0)
+                {
+                    if((rel_final -> tuples = (tuple *)malloc((counter+1) * sizeof(tuple))) == NULL)
+                    {
+                        perror("Filter , first malloc\n");
+                        exit(-1);
+                    }
+                    flag = 1;
+
+                    rel_final -> tuples[j].key = rel -> tuples[i].key;
+                    rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                    j++;
+                    counter++;
+                    continue;
+                }
+                if((rel_final -> tuples = (tuple *)realloc(rel_final -> tuples,(counter+1) * sizeof(tuple))) == NULL)
+                {
+                    perror("Filter , realloc\n");
+                    exit(-1);
+                }
+                rel_final -> tuples[j].key = rel -> tuples[i].key;
+                rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                j++;
+                counter++;
+            }
+        }
+        // else if(strcmp(symbol,"<"))
+        // {
+        //
+        // }
+        // else if(strcmp(symbol,"="))
+        // {
+        //
+        // }
+    }
+    rel_final -> num_tuples = counter;
+    printf("counter = %lu\n", counter);
+
+/*
+    printf("aa\n");
+    // We'll create space for rows number of tuples
+    if((rel_final -> tuples = (tuple *)malloc(counter * sizeof(tuple))) == NULL)
+    {
+        perror("Filter , first malloc\n");
+        exit(-1);
+    }
+    rel_final -> num_tuples = counter;
+    uint64_t j = 0;
+    for (size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        if(symbol == '>')
+        {
+            if(limit > rel -> tuples[i].key)
+            {
+                continue;
+            }
+            else if(limit < rel -> tuples[i].key)
+            {
+                rel_final -> tuples[j].key = rel -> tuples[i].key;
+                rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                j++;
+            }
+        }
+        else if(symbol == '<')
+        {
+
+        }
+        else if(symbol == '=')
+        {
+
+        }
+    }
+*/
+    //free(rel);
+        printf("counter = %lu\n", counter);
+
+}
