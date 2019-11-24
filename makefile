@@ -9,7 +9,8 @@ OBJS = build/main.o \
 		build/splitBucket.o \
 		build/result.o \
 		build/processRelation.o \
-		build/sortMergeJoin.o
+		build/sortMergeJoin.o \
+		build/intervening.o
 
 
 
@@ -24,7 +25,6 @@ all: $(TARGET)
 clean:
 	$(RM) -r $(TARGET) build/*
 
-
 build/main.o: src/main.c
 	$(CC) $(FLAGS) $< -o $@
 
@@ -33,7 +33,6 @@ build/getColumn.o: src/getColumn.c
 
 build/initArray.o: src/initArray.c
 	$(CC) $(FLAGS) $< -o $@
-
 
 build/histogram.o: src/histogram.c
 	$(CC) $(FLAGS) $< -o $@
@@ -47,10 +46,8 @@ build/reorderedColumn.o: src/reorderedColumn.c
 build/quicksort.o: src/quicksort.c
 	$(CC) $(FLAGS) $< -o $@
 
-
 build/cleanRelation.o: src/cleanRelation.c
 	$(CC) $(FLAGS) $< -o $@
-
 
 build/splitBucket.o: src/splitBucket.c
 	$(CC) $(FLAGS) $< -o $@
@@ -62,6 +59,9 @@ build/processRelation.o: src/processRelation.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/sortMergeJoin.o: src/sortMergeJoin.c
+	$(CC) $(FLAGS) $< -o $@
+
+build/intervening.o: src/intervening.c
 	$(CC) $(FLAGS) $< -o $@
 
 
