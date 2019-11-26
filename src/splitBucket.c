@@ -4,12 +4,10 @@
 void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_new, int64_t start, int64_t end, uint64_t sel_byte)
 {
     // Clean the area of the relation
-    Clean_Relation(rel_old,start,end);
 
     for(int64_t i = start; i < end; i++)
     {
-        rel_old -> tuples[i].key = rel_new -> tuples[i].key;
-        rel_old -> tuples[i].payload = rel_new -> tuples[i].payload;
+        swap(&rel_old -> tuples[i],&rel_new -> tuples[i]);
     }
 
     // Create a new histogram in range start:end
@@ -27,18 +25,13 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
 
         result = (rel_old -> tuples[i].key >> (8*sel_byte) & 0xFF);
 
-        //  ps -> psum_tuples[result].position -> it means the position that we are going to write
-        rel_new -> tuples[ps -> psum_tuples[result].position].key = rel_old -> tuples[i].key;
-
-        rel_new -> tuples[ps -> psum_tuples[result].position].payload = rel_old -> tuples[i].payload;
+        swap(&rel_new -> tuples[ps -> psum_tuples[result].position],&rel_old -> tuples[i]);
 
         ps -> psum_tuples[result].position++;
         i++;
     }
 
     RestorePsum(hist, ps);  //psum's position returns to its initial values
-
-
 
 }
 
