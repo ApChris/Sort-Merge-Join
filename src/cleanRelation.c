@@ -8,7 +8,10 @@ void Clean_Relation(relation * rel, int64_t start, int64_t end)
     while(i < end)
     {
         rel -> tuples[i].key = 0;
-        rel -> tuples[i].payload = i;
+        for (uint64_t j = 0; j < rel -> tuples[i].position; j++)
+        {
+            rel -> tuples[i].payload[j] = 0;
+        }
         i++;
     }
 }
