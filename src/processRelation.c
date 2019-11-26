@@ -188,11 +188,11 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                             printf("\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b4,hist4 -> hist_tuples[b4].sum,size);
                                             if(i == hist4 -> num_tuples - 1)
                                             {
-                                                Quicksort(rel_new, ps4 -> psum_tuples[b4].position,ps3 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum - 1);
+                                                Quicksort(rel_new, ps4 -> psum_tuples[b4].position,ps4 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum - 1);
                                             }
                                             else
                                             {
-                                                Quicksort(rel_new,ps4 -> psum_tuples[b4].position,ps3 -> psum_tuples[b4 + 1].position -1);
+                                                Quicksort(rel_new,ps4 -> psum_tuples[b4].position,ps4 -> psum_tuples[b4 + 1].position -1);
                                             }
                                         }
                                         else    // SPLIT
@@ -202,6 +202,8 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                             histogram *hist5 = &struct_h5;
                                             psum struct_p5;
                                             psum *ps5 = &struct_p5;
+
+                                            //Print_Relation(rel_new,hist4,ps4);
                                             if(b4 == hist4 -> num_tuples - 1)
                                             {
                                                 Split_Bucket(rel_old,hist5,ps5,rel_new,ps4->psum_tuples[b4].position, ps4 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum,2);
@@ -211,6 +213,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                 Split_Bucket(rel_old,hist5,ps5,rel_new,ps4->psum_tuples[b4].position,ps4->psum_tuples[b4 + 1].position,2);
                                             }
 
+                                            //Print_Relation(rel_new,hist5,ps5);
                                             // BYTE 5
                                             for(uint64_t b5 = 0; b5 < hist5 -> num_tuples; b5++)
                                             {
@@ -227,7 +230,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                     printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b5,hist5 -> hist_tuples[b5].sum,size);
                                                     if(i == hist5 -> num_tuples - 1)
                                                     {
-                                                        Quicksort(rel_new, ps5 -> psum_tuples[b5].position,ps3 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum - 1);
+                                                        Quicksort(rel_new, ps5 -> psum_tuples[b5].position,ps5 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum - 1);
                                                     }
                                                     else
                                                     {
@@ -236,20 +239,25 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                 }
                                                 else    // SPLIT
                                                 {
-                                                    printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b5,hist5 -> hist_tuples[b5].sum,size);
+                                                    printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------123\n",b5,hist5 -> hist_tuples[b5].sum,size);
                                                     histogram struct_h6;
                                                     histogram *hist6 = &struct_h6;
                                                     psum struct_p6;
                                                     psum *ps6 = &struct_p6;
+
+                                                //    Print_Relation_2(rel_new);
                                                     if(b5 == hist5 -> num_tuples - 1)
                                                     {
                                                         Split_Bucket(rel_old,hist6,ps6,rel_new,ps5->psum_tuples[b5].position, ps5 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum,1);
+
                                                     }
                                                     else
                                                     {
-                                                        Split_Bucket(rel_old,hist6,ps6,rel_new,ps5->psum_tuples[b5].position,ps5->psum_tuples[b5 + 1].position,1);
-                                                    }
 
+                                                        Split_Bucket(rel_old,hist6,ps6,rel_new,ps5->psum_tuples[b5].position,ps5->psum_tuples[b5 + 1].position,1);
+
+                                                    }
+                                                    //Print_Relation(rel_new,hist6,ps6);
                                                     // BYTE 6
                                                     for(uint64_t b6 = 0; b6 < hist6 -> num_tuples; b6++)
                                                     {
@@ -403,21 +411,34 @@ void Print_Relation(relation * rel, histogram * hist, psum * ps)
         {
             for(uint64_t j = ps -> psum_tuples[i].position; j < ps -> psum_tuples[i].position + hist -> hist_tuples[i].sum; j++)
             {
-                printf("%lu key = %lu,  payload = %lu\n",j, rel->tuples[j].key, rel->tuples[j].payload);
+                printf("%lu) key = %lu|",j, rel->tuples[j].key);
+                for (size_t k = 0; k < rel -> tuples[j].position; k++)
+                {
+
+                    printf("%lu|",rel->tuples[j].payload[k]);
+                }
+                printf("\n");
             }
             printf("------------------------------\n");
             break;
         }
         for(uint64_t j = ps -> psum_tuples[i].position; j < ps -> psum_tuples[i + 1].position; j++)
         {
-            printf("%lu key = %lu,  payload = %lu\n",j, rel->tuples[j].key, rel->tuples[j].payload);
+            //printf("%lu key = %lu,  payload = %lu\n",j, rel->tuples[j].key, rel->tuples[j].payload);
+            printf("%lu) key = %lu|",j, rel->tuples[j].key);
+            for (size_t k = 0; k < rel -> tuples[j].position; k++)
+            {
+
+                printf("%lu|",rel->tuples[j].payload[k]);
+            }
+            printf("\n");
         }
         printf("------------------------------\n");
 
     }
 }
 
-void Final_Relation(relation * rel, relation * rel_final)
+void Radix_Sort(relation * rel, relation * rel_final)
 {
     histogram struct_h;
     histogram * hist = &struct_h;
@@ -443,6 +464,8 @@ void Final_Relation(relation * rel, relation * rel_final)
 
 }
 
+/////////////////////////////////////////////////////////////// PROJECT 2 /////////////////////////////////////////
+
 
 void Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos, relation * rel)
 {
@@ -460,15 +483,55 @@ void Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos, relation
     for(size_t i = 0; i < md[md_pos].num_tuples; i++)
     {
         rel -> tuples[i].key = *(ptr + i); // key is the value
-        rel -> tuples[i].payload = i; // payload
+        if((rel -> tuples[i].payload = (uint64_t *)malloc(sizeof(uint64_t))) == NULL)
+        {
+            perror("Create_Relation.c , first malloc\n");
+            exit(-1);
+        }
+        rel -> tuples[i].payload[0] = i;// payload
+        rel -> tuples[i].position = 1;
 
     }
 
     // The number of tuples is the number of rows
     rel -> num_tuples = md[md_pos].num_tuples;
+}
 
+void Print_Relation_2(relation * rel)
+{
+    for (uint64_t i = 0; i < rel -> num_tuples; i++)
+    {
+        for(uint64_t j = 0; j < rel -> tuples[i].position; j++)
+        {
+            if(j == 0)
+            {
+                printf("key = %lu", rel->tuples[i].key);
+            }
+            printf("\tpayload = %lu",rel->tuples[i].payload[j]);
+        }
+        printf("\tposition= %lu\n",rel->tuples[i].position);
+    }
+}
+
+void Update_Tuple_Payload(metadata * md, relation * rel, uint64_t pos, uint64_t key, uint64_t payload)
+{
+    printf("%lu, %lu\n",payload, rel -> tuples[pos].position);
+    if((rel -> tuples[pos].payload = (uint64_t *)realloc(rel -> tuples[pos].payload,(rel -> tuples[pos].position+1) * sizeof(uint64_t))) == NULL)
+    {
+        perror("Update realloc\n");
+        exit(-1);
+    }
+    //printf("%lu\n",payload);
+    rel -> tuples[pos].key = key;
+    rel -> tuples[pos].payload[rel -> tuples[pos].position] = payload;
+    rel -> tuples[pos].position++;
+    printf("%lu, %lu\n",payload, rel -> tuples[pos].position);
 
 }
+
+
+
+
 void Filter(relation * rel, uint64_t limit, char symbol, relation * rel_final)
 {
     uint64_t counter = 0;
