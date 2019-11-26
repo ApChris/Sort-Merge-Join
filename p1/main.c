@@ -64,8 +64,8 @@ else
     exit(-1);
 }
 
-Final_Relation(relation_A, relation_A_final);
-Final_Relation(relation_B, relation_B_final);
+Radix_Sort(relation_A, relation_A_final);
+Radix_Sort(relation_B, relation_B_final);
 
 res = SortMergeJoin(relation_A_final, relation_B_final);
 
