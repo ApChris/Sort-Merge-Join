@@ -60,6 +60,7 @@ void pushJoinedElements_v2(uint64_t payload, intervening_array * array)
 }
 
 
+
 uint64_t Join_v2(intervening *intervening, relation *rel_A, relation *rel_B, intervening_array *array_A, intervening_array *array_B)
 {
 	uint64_t counter = 0;
