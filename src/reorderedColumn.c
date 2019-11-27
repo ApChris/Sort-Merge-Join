@@ -35,7 +35,6 @@ void ReorderedColumn(relation * rel_old, relation * rel_new, psum * ps)
         {
             rel_new -> tuples[ps -> psum_tuples[result].position].payload[j] = rel_old -> tuples[i].payload[j];// payload
         }
-        printf("\n");
 
         rel_new -> tuples[ps -> psum_tuples[result].position].position = rel_old -> tuples[i].position;
         ps -> psum_tuples[result].position++;

@@ -40,28 +40,57 @@ int main(int argc, char const *argv[])
     relation struct_A;
     relation * relation_A = &struct_A;
 
+    // r1.1
     Create_Relation(md,1,1,relation_A);
-
-    Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
-    Update_Tuple_Payload(md,relation_A,1560,99999999,789);
-    Update_Tuple_Payload(md,relation_A,1560,99999999,32);
-    Update_Tuple_Payload(md,relation_A,1560,99999999,450);
-
-    Update_Tuple_Payload(md,relation_A,1560,99999999,72);
-    Update_Tuple_Payload(md,relation_A,1560,99999999,65);
-
-    Update_Tuple_Payload(md,relation_A,1559,8888888,72);
-    Update_Tuple_Payload(md,relation_A,1559,8888888,65);
-    Update_Tuple_Payload(md,relation_A,1559,8888888,72);
-    Update_Tuple_Payload(md,relation_A,1558,7777777,65);
-
-    //Print_Relation_2(relation_A);
 
     relation struct_A_final;
     relation * relation_A_final = &struct_A_final;
     Radix_Sort(relation_A, relation_A_final);
-    //
-     Print_Relation_2(relation_A_final);
+
+
+
+    relation struct_B;
+    relation * relation_B = &struct_B;
+
+    // r2.0
+    Create_Relation(md,2,0,relation_B);
+
+    relation struct_B_final;
+    relation * relation_B_final = &struct_B_final;
+    Radix_Sort(relation_B, relation_B_final);
+
+    // r1.1 = r2.0
+
+    intervening *interv_final = interveningInit();
+
+    Join_v2(interv_final, relation_A_final, relation_B_final, 1, 0);
+    Print_Relation_2(interv_final->final_rel);
+
+
+
+    
+
+
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,789);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,32);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,450);
+
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,72);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,65);
+
+    // Update_Tuple_Payload(md,relation_A,1559,8888888,72);
+    // Update_Tuple_Payload(md,relation_A,1559,8888888,65);
+    // Update_Tuple_Payload(md,relation_A,1559,8888888,72);
+    // Update_Tuple_Payload(md,relation_A,1558,7777777,65);
+
+    //Print_Relation_2(relation_A);
+
+    // relation struct_A_final;
+    // relation * relation_A_final = &struct_A_final;
+    // Radix_Sort(relation_A, relation_A_final);
+    // //
+    //  Print_Relation_2(relation_A_final);
 
     // printf("%lu\n", relation_A_final -> num_tuples);
 
