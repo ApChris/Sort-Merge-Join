@@ -19,7 +19,7 @@ intervening * interveningInit();
 
 uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B, uint64_t rowIdA, uint64_t rowIdB);
 // intervening * updateInterveningStruct(intervening *intervening, uint64_t *array_A, uint64_t *array_B);
-void pushJoinedElements_v2(relation * temp_rel, uint64_t * payload_A, uint64_t * payload_B, uint64_t counter, uint64_t key);
+void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation * relation_B,uint64_t posA, uint64_t posB, uint64_t counter, uint64_t key);
 // uint64_t Join_v2(intervening *intervening, relation *rel_A, relation *rel_B, intervening_array *array_A, intervening_array *array_B);
 
 // uint64_t binarySearch(uint64_t * array,uint64_t start, uint64_t end, uint64_t payload);
