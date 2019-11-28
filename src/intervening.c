@@ -58,25 +58,48 @@ intervening * interveningInit()
 // 	}
 // }
 
-void pushJoinedElements_v2(relation * temp_rel, uint64_t * payload_A, uint64_t * payload_B, uint64_t counter, uint64_t key){
+void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation * relation_B, uint64_t posA, uint64_t posB, uint64_t counter, uint64_t key)
+{
+	uint64_t number_of_paylods = 0;
 	if (counter == 0)
 	{
-		temp_rel->tuples = (tuple*)malloc(sizeof(tuple));
-		temp_rel->tuples[counter].position = 2;
-		temp_rel->tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*2);
-		temp_rel->tuples[counter].payload[0] = payload_A;
-		temp_rel->tuples[counter].payload[1] = payload_B;
-		temp_rel->tuples[counter].key = key;
-		temp_rel->num_tuples=1;
-	}else
+		temp_rel -> tuples = (tuple*)malloc(sizeof(tuple));
+		temp_rel -> tuples[counter].position = 2;
+		temp_rel -> tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*2);
+
+		for (size_t i = 0; i < relation_A -> tuples[posA].position; i++)
+		{
+			temp_rel->tuples[counter].payload[number_of_paylods] = relation_A -> tuples[posA].payload[i];
+			number_of_paylods++;
+		}
+		for (size_t i = 0; i < relation_B -> tuples[posB].position; i++)
+		{
+			temp_rel -> tuples[counter].payload[number_of_paylods] = relation_B -> tuples[posB].payload[i];
+			number_of_paylods++;
+		}
+
+		temp_rel -> tuples[counter].key = key;
+		temp_rel -> num_tuples = 1;
+	}
+	else
 	{
-		temp_rel->tuples = (tuple*)realloc(temp_rel->tuples, (sizeof(tuple)*(counter+1)));
-		temp_rel->tuples[counter].position = 2;
-		temp_rel->tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*2);
-		temp_rel->tuples[counter].payload[0] = payload_A;
-		temp_rel->tuples[counter].payload[1] = payload_B;
-		temp_rel->tuples[counter].key = key;
-		temp_rel->num_tuples++;
+		temp_rel -> tuples = (tuple*)realloc(temp_rel->tuples, (sizeof(tuple)*(counter+1)));
+	 	temp_rel -> tuples[counter].position = relation_A -> tuples[posA].position + relation_B -> tuples[posB].position;
+		temp_rel->tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*temp_rel -> tuples[counter].position);
+		
+		for (size_t i = 0; i < relation_A -> tuples[posA].position; i++)
+		{
+			temp_rel->tuples[counter].payload[number_of_paylods] = relation_A -> tuples[posA].payload[i];
+			number_of_paylods++;
+		}
+		for (size_t i = 0; i < relation_B -> tuples[posB].position; i++)
+		{
+			temp_rel -> tuples[counter].payload[number_of_paylods] = relation_B -> tuples[posB].payload[i];
+			number_of_paylods++;
+		}
+		temp_rel -> tuples[counter].key = key;
+		temp_rel -> num_tuples++;
+
 	}
 }
 
@@ -126,16 +149,17 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 			{
 				// keyA = keyB
 				// head = pushJoinedElements(head, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
-			
+
 				if (join_flag == 0)
 				{
-					if (final_interv->position == NULL)
+					if (final_interv -> position == NULL)
 					{
 						final_interv -> rowId = (uint64_t*)malloc(sizeof(uint64_t)*2);
 						final_interv -> rowId[0] = rowIdA;
 						final_interv -> rowId[1] = rowIdB;
 						final_interv -> position = 2;
-						temp_rel = (relation*)malloc(sizeof(relation));
+
+						temp_rel = (relation *)malloc(sizeof(relation));
 						relation struct_final;
 						final_interv -> final_rel = &struct_final;
 						printf("mphka sto malloc\n");
@@ -152,12 +176,11 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 				}
 
 				// push
-				
-				pushJoinedElements_v2(temp_rel, rel_A->tuples[a].payload, rel_B->tuples[b].payload, counter,
-					rel_A->tuples[a].key);
-				
+				//printf("%lu\n", rel_A->tuples[a].payload[0]);
+				pushJoinedElements_v2(temp_rel, rel_A, rel_B, a, b, counter,rel_A->tuples[a].key);
+
 				// final_interv -> final_rel -> num_tuples = counter;
-				
+
 				if(b==rel_B->num_tuples)
 				{
 					final_interv -> final_rel = temp_rel;
@@ -175,6 +198,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 		}
 
 	}
+	final_interv -> final_rel = temp_rel;
 	return counter;
 }
 
