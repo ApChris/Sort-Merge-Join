@@ -23,7 +23,7 @@ void insertNewResult(result *res)
 	res->next_result = current_result;
 }
 
-result *pushJoinedElements(result *head, uint64_t key, uint64_t payload_A, uint64_t payload_B)
+result *pushJoinedElements(result *head, uint64_t key, uint64_t * payload_A, uint64_t * payload_B)
 {
 	result *current_result = head;
 	result *previous_result = head;
