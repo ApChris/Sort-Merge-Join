@@ -43,6 +43,21 @@ int main(int argc, char const *argv[])
     // r1.1
     Create_Relation(md,1,1,relation_A);
 
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,789);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,32);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,450);
+    //
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,72);
+    // Update_Tuple_Payload(md,relation_A,1560,99999999,65);
+    //
+    // Update_Tuple_Payload(md,relation_A,1559,8888888,72);
+    // Update_Tuple_Payload(md,relation_A,1559,8888888,65);
+    // Update_Tuple_Payload(md,relation_A,1559,8888888,72);
+    // Update_Tuple_Payload(md,relation_A,1558,7777777,78);
+
+
+
     relation struct_A_final;
     relation * relation_A_final = &struct_A_final;
     Radix_Sort(relation_A, relation_A_final);
@@ -55,20 +70,21 @@ int main(int argc, char const *argv[])
     // r2.0
     Create_Relation(md,2,0,relation_B);
 
+    // Update_Tuple_Payload(md,relation_B,66,8888888,99);
+    // Update_Tuple_Payload(md,relation_B,20,7777777,23);
+
     relation struct_B_final;
     relation * relation_B_final = &struct_B_final;
     Radix_Sort(relation_B, relation_B_final);
 
     // r1.1 = r2.0
 
-    intervening *interv_final = interveningInit();
+    intervening * interv_final = interveningInit();
 
     Join_v2(interv_final, relation_A_final, relation_B_final, 1, 0);
-    Print_Relation_2(interv_final->final_rel);
+    Print_Relation_2(interv_final -> final_rel);
 
 
-
-    
 
 
     // Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
