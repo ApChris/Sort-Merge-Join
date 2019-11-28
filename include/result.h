@@ -22,7 +22,7 @@ result * resultInit();
 
 void insertNewResult(result *res);
 uint64_t Join(relation *rel_A, relation *rel_B, result *head);
-result * pushJoinedElements(result *head, uint64_t key, uint64_t payload_A, uint64_t payload_B);
+result * pushJoinedElements(result *head, uint64_t key, uint64_t * payload_A, uint64_t * payload_B);
 void printResult(result *res);
 void Deallocate_List(result *res);
 
