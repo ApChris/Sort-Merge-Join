@@ -1,24 +1,6 @@
 #include "../include/intervening.h"
 #include "../include/relation.h"
 
-
-// intervening_array * intervening_Array_Init()
-// {
-
-// 	intervening_array intervening_Array_struct;
-//     intervening_array * intervening_Array = &intervening_Array_struct;
-// 	if ((intervening_Array = ((intervening_array * )malloc(sizeof(intervening_array)))) == NULL)
-// 	{
-// 		perror("intervening.c, first malloc");
-// 		exit(-1);
-// 	}
-
-// 	intervening_Array -> position = 0;
-// 	intervening_Array -> payload_array = NULL;
-
-// 	return intervening_Array;
-// }
-
 intervening * interveningInit()
 {
 	intervening intervening_struct;
@@ -35,28 +17,6 @@ intervening * interveningInit()
 
 	return intervening_S;
 }
-
-
-// intervening *updateInterveningStruct(intervening *intervening, uint64_t *array_A, uint64_t *array_B){
-
-// }
-
-// void pushJoinedElements_v2(relation * temp_rel, uint64_t * payload_A, uint64_t * payload_B)
-// {
-// 	// An oxi monadiko payload, push, alliws continue.
-// 	if (array -> payload_array == NULL)
-// 	{
-// 		array -> payload_array = ((intervening_array *)malloc(((array -> position)+1)*sizeof(uint64_t)));
-// 		array -> payload_array[array -> position] = payload;
-// 		array -> position++;
-// 	}
-// 	else
-// 	{
-// 		array -> payload_array = ((intervening_array*)realloc(array -> payload_array, (array -> position+1)*sizeof(uint64_t)));
-// 		array -> payload_array[array -> position] = payload;
-// 		array -> position++;
-// 	}
-// }
 
 void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation * relation_B, uint64_t posA, uint64_t posB, uint64_t counter, uint64_t key)
 {
@@ -80,13 +40,13 @@ void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation 
 
 		temp_rel -> tuples[counter].key = key;
 		temp_rel -> num_tuples = 1;
+
 	}
 	else
 	{
 		temp_rel -> tuples = (tuple*)realloc(temp_rel->tuples, (sizeof(tuple)*(counter+1)));
 	 	temp_rel -> tuples[counter].position = relation_A -> tuples[posA].position + relation_B -> tuples[posB].position;
-		temp_rel->tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*temp_rel -> tuples[counter].position);
-		
+		temp_rel -> tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*temp_rel -> tuples[counter].position);
 		for (size_t i = 0; i < relation_A -> tuples[posA].position; i++)
 		{
 			temp_rel->tuples[counter].payload[number_of_paylods] = relation_A -> tuples[posA].payload[i];
@@ -99,7 +59,6 @@ void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation 
 		}
 		temp_rel -> tuples[counter].key = key;
 		temp_rel -> num_tuples++;
-
 	}
 }
 
@@ -147,9 +106,6 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 			b = mark;
 			while (rel_A->tuples[a].key == rel_B->tuples[b].key)
 			{
-				// keyA = keyB
-				// head = pushJoinedElements(head, rel_A->tuples[a].key, rel_A->tuples[a].payload, rel_B->tuples[b].payload);
-
 				if (join_flag == 0)
 				{
 					if (final_interv -> position == NULL)
@@ -162,24 +118,26 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 						temp_rel = (relation *)malloc(sizeof(relation));
 						relation struct_final;
 						final_interv -> final_rel = &struct_final;
-						printf("mphka sto malloc\n");
+						final_interv -> final_rel -> num_tuples = 0;
+						printf("join malloc\n");
 
 					}
 					else
 					{
 						final_interv -> rowId = (uint64_t*)realloc(final_interv->rowId, (sizeof(uint64_t)*((final_interv -> position) + 1)));
 						final_interv -> position += 1;
-						printf("mphka sto realloc\n");
+						temp_rel = (relation *)malloc(sizeof(relation));
+						relation struct_final;
+						final_interv -> final_rel = &struct_final;
+						final_interv -> final_rel -> num_tuples = 0;
+						printf("join realloc\n");
 					}
 					join_flag = 1;
 
 				}
 
 				// push
-				//printf("%lu\n", rel_A->tuples[a].payload[0]);
 				pushJoinedElements_v2(temp_rel, rel_A, rel_B, a, b, counter,rel_A->tuples[a].key);
-
-				// final_interv -> final_rel -> num_tuples = counter;
 
 				if(b==rel_B->num_tuples)
 				{
@@ -202,7 +160,18 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 	return counter;
 }
 
-
+uint64_t FindRowID(intervening * final_interv, uint64_t rowID)
+{
+	printf("pos = %lu\n", final_interv -> position);
+	for (size_t i = 0; i < final_interv -> position; i++)
+	{
+		if(final_interv -> rowId[i] == rowID)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
 
 // uint64_t binarySearch(uint64_t * array,uint64_t start, uint64_t end, uint64_t payload)
 // {
@@ -234,9 +203,4 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 // 		sum += array -> payload_array[i];
 // 	}
 // 	return sum;
-// }
-
-// intervening * Update(intervening * inter, metadata * meta, intervening_array * array)
-// {
-//
 // }
