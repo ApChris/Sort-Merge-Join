@@ -238,19 +238,122 @@ void Read_Work(const char * filename)
     {
         char * token;
         printf("%s\n",line);
+
+        uint64_t * parameters = (uint64_t*)malloc(sizeof(uint64_t));
+        int num_parameters = 0;
+
+        char ** predicates = (char**)malloc(sizeof(char*));
+        int num_predicates = 0;
+
+        char ** filters = (char**)malloc(sizeof(char*));
+        int num_filters = 0;
+
+        char ** selects = (char**)malloc(sizeof(char*));
+        int num_selects = 0;
+
+
+
         token = strtok(line,seps);
+        
 
         while(token != NULL)
         {
-            printf("%s\n",token);
-            token = strtok(NULL,seps);
-
+            // printf("token: %s\n", token);
+            if ((strchr(token, '=') == NULL) && (strchr(token, '.') == NULL))
+            {
+                parameters[num_parameters] = atoi(token);
+                num_parameters++;
+                token = strtok(NULL,seps);
+                if((parameters = (uint64_t*)realloc(parameters, sizeof(uint64_t)*(num_parameters+1)))==NULL){
+                    perror("realloc, Read_Work parameters");
+                    exit(-1);
+                }
+                continue;
+            }
+            if ((strchr(token, '=') != NULL) && (strchr(token, '.') != NULL))
+            {
+                predicates[num_predicates] = (char*)malloc((strlen(token)+1)*sizeof(char*));
+                strcpy(predicates[num_predicates], token);
+                num_predicates++; 
+                token = strtok(NULL,seps);
+                if((predicates = (char**)realloc(predicates, sizeof(char*)*(num_predicates+1))) == NULL){
+                    perror("realloc, Read_Work predicates");
+                    exit(-1);
+                }
+                continue;
+            }
+            if ((strchr(token, '>') != NULL) || (strchr(token, '<') != NULL))
+            { 
+                filters[num_filters] = (char*)malloc((strlen(token)+1)*sizeof(char*));
+                strcpy(filters[num_filters], token);
+                num_filters++;
+                token = strtok(NULL,seps);
+                if ((filters = (char*)realloc(filters, sizeof(char*)*(num_filters+1))) == NULL)
+                {
+                    perror("realloc, Read_Work filters");
+                    exit(-1);
+                }
+                continue;
+            }
+            if ((strchr(token, '=') == NULL) && (strchr(token, '.') != NULL) && (strchr(token, '>') == NULL) || (strchr(token, '<') == NULL))
+            {
+                selects[num_selects] = (char*)malloc((strlen(token)+1)*sizeof(char*));
+                strcpy(selects[num_selects], token);
+                num_selects++;
+                token = strtok(NULL,seps);
+                if ((selects = (char*)realloc(selects, sizeof(char*)*(num_selects+1))) == NULL)
+                {
+                    perror("realloc, Read_Work selects");
+                    exit(-1);
+                }
+                continue;
+            }
         }
+
+        for (int i = 0; i < num_parameters; i++)
+        {
+            printf("parameters[%d]: %lu\n", i, parameters[i]);
+        }
+        for (int i = 0; i < num_predicates; i++)
+        {
+            printf("predicates[%d]: %s\n", i, predicates[i]);
+        }
+        for (int i = 0; i < num_filters; i++)
+        {
+            printf("filters[%d]: %s\n", i, filters[i]);
+        }
+        for (int i = 0; i < num_selects; i++)
+        {
+            printf("selects[%d]: %s\n", i, selects[i]);
+        }
+        
+        printf("\n");
         // if(strcmp(token,"F"))
         // {
         //     break;
         // }
         // //break;
+
+
+        free(parameters);
+
+        for (int i = 0; i < num_predicates; i++)
+        {
+            free(predicates[i]);
+        }
+        free(predicates);
+
+        for (int i = 0; i < num_filters; i++)
+        {
+            free(filters[i]);
+        }
+        free(filters);
+
+        for (int i = 0; i < num_selects; i++)
+        {
+            free(selects[i]);
+        }
+        free(selects);
 
     }
 
