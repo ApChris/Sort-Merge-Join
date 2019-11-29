@@ -24,8 +24,8 @@ void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation 
 	if (counter == 0)
 	{
 		temp_rel -> tuples = (tuple*)malloc(sizeof(tuple));
-		temp_rel -> tuples[counter].position = 2;
-		temp_rel -> tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*2);
+		temp_rel -> tuples[counter].position = relation_A -> tuples[posA].position + relation_B -> tuples[posB].position;
+		temp_rel -> tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*temp_rel -> tuples[counter].position);
 
 		for (size_t i = 0; i < relation_A -> tuples[posA].position; i++)
 		{
