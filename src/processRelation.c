@@ -559,8 +559,6 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
                 if(flag == 0)
                 {
 
-
-
                     if((rel_final -> tuples = (tuple *)malloc((counter+1) * sizeof(tuple))) == NULL)
                     {
                         perror("Filter , first malloc\n");
@@ -622,6 +620,7 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
             {
                 if(flag == 0)
                 {
+
                     if((rel_final -> tuples = (tuple *)malloc((counter+1) * sizeof(tuple))) == NULL)
                     {
                         perror("Filter , first malloc\n");
@@ -630,9 +629,23 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
                     flag = 1;
 
                     rel_final -> tuples[j].key = rel -> tuples[i].key;
-                    rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+
+                    if((rel_final -> tuples[j].payload = (uint64_t *)malloc((rel -> tuples[i].position) * sizeof(uint64_t))) == NULL)
+                    {
+                        perror("Filter , second malloc\n");
+                        exit(-1);
+                    }
+                    for (size_t z = 0; z < rel -> tuples[i].position; z++)
+                    {
+                        rel_final -> tuples[j].payload[z] = rel -> tuples[i].payload[z];
+
+                    }
+                    //rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                    rel_final -> num_tuples = 1;
+                    rel_final -> tuples[j].position = rel -> tuples[i].position;
                     j++;
                     counter++;
+
                     continue;
                 }
                 if((rel_final -> tuples = (tuple *)realloc(rel_final -> tuples,(counter+1) * sizeof(tuple))) == NULL)
@@ -641,7 +654,20 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
                     exit(-1);
                 }
                 rel_final -> tuples[j].key = rel -> tuples[i].key;
-                rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+
+                if((rel_final -> tuples[j].payload = (uint64_t *)malloc((rel -> tuples[i].position) * sizeof(uint64_t)) ) == NULL)
+                {
+                    perror("Filter , third malloc\n");
+                    exit(-1);
+                }
+                for (size_t z = 0; z < rel -> tuples[i].position; z++)
+                {
+                    rel_final -> tuples[j].payload[z] = rel -> tuples[i].payload[z];
+
+                }
+                //rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                rel_final -> tuples[j].position = rel -> tuples[i].position;
+                rel_final -> num_tuples++;
                 j++;
                 counter++;
             }
@@ -656,6 +682,7 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
             {
                 if(flag == 0)
                 {
+
                     if((rel_final -> tuples = (tuple *)malloc((counter+1) * sizeof(tuple))) == NULL)
                     {
                         perror("Filter , first malloc\n");
@@ -664,9 +691,23 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
                     flag = 1;
 
                     rel_final -> tuples[j].key = rel -> tuples[i].key;
-                    rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+
+                    if((rel_final -> tuples[j].payload = (uint64_t *)malloc((rel -> tuples[i].position) * sizeof(uint64_t))) == NULL)
+                    {
+                        perror("Filter , second malloc\n");
+                        exit(-1);
+                    }
+                    for (size_t z = 0; z < rel -> tuples[i].position; z++)
+                    {
+                        rel_final -> tuples[j].payload[z] = rel -> tuples[i].payload[z];
+
+                    }
+                    //rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                    rel_final -> num_tuples = 1;
+                    rel_final -> tuples[j].position = rel -> tuples[i].position;
                     j++;
                     counter++;
+
                     continue;
                 }
                 if((rel_final -> tuples = (tuple *)realloc(rel_final -> tuples,(counter+1) * sizeof(tuple))) == NULL)
@@ -675,7 +716,20 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
                     exit(-1);
                 }
                 rel_final -> tuples[j].key = rel -> tuples[i].key;
-                rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+
+                if((rel_final -> tuples[j].payload = (uint64_t *)malloc((rel -> tuples[i].position) * sizeof(uint64_t)) ) == NULL)
+                {
+                    perror("Filter , third malloc\n");
+                    exit(-1);
+                }
+                for (size_t z = 0; z < rel -> tuples[i].position; z++)
+                {
+                    rel_final -> tuples[j].payload[z] = rel -> tuples[i].payload[z];
+
+                }
+                //rel_final -> tuples[j].payload = rel -> tuples[i].payload;
+                rel_final -> tuples[j].position = rel -> tuples[i].position;
+                rel_final -> num_tuples++;
                 j++;
                 counter++;
             }
