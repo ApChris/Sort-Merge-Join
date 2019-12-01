@@ -529,7 +529,26 @@ void Update_Tuple_Payload(metadata * md, relation * rel, uint64_t pos, uint64_t 
 
 }
 
+void Update_Relation_Keys(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos)
+{
+    uint64_t * ptr = md[md_row].array[md_column];
+    for (uint64_t i = 0; i < rel -> num_tuples; i++)
+    {
+        rel -> tuples[i].key = *(ptr + rel -> tuples[i].payload[pos]);
+    }
+}
 
+void CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos)
+{
+    uint64_t * ptr = md[md_row].array[md_column];
+    uint64_t sum = 0;
+    for (uint64_t i = 0; i < rel -> num_tuples; i++)
+    {
+        sum += *(ptr + rel -> tuples[i].payload[pos]); // calculate keys 
+        //sum += rel -> tuples[i].payload[pos]; // calculate payloads
+    }
+    printf("Sum = %lu\n",sum);
+}
 
 
 relation * Filter(relation * rel, uint64_t limit, char symbol)
