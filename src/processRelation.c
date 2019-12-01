@@ -438,7 +438,7 @@ void Print_Relation(relation * rel, histogram * hist, psum * ps)
     }
 }
 
-void Radix_Sort(relation * rel, relation * rel_final)
+relation * Radix_Sort(relation * rel, relation * rel_final)
 {
     histogram struct_h;
     histogram * hist = &struct_h;
@@ -461,6 +461,8 @@ void Radix_Sort(relation * rel, relation * rel_final)
     free(hist -> hist_tuples);
     free(ps -> psum_tuples);
     free(rel -> tuples);
+
+    return rel_final;
 
 }
 
@@ -544,7 +546,7 @@ void CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel
     uint64_t sum = 0;
     for (uint64_t i = 0; i < rel -> num_tuples; i++)
     {
-        sum += *(ptr + rel -> tuples[i].payload[pos]); // calculate keys 
+        sum += *(ptr + rel -> tuples[i].payload[pos]); // calculate keys
         //sum += rel -> tuples[i].payload[pos]; // calculate payloads
     }
     printf("Sum = %lu\n",sum);
