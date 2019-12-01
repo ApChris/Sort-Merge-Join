@@ -49,47 +49,53 @@ int main(int argc, char const *argv[])
     // Radix sort to r3.2
     relation struct_A_final;
     relation * relation_A_final = &struct_A_final;
-    Radix_Sort(relation_A, relation_A_final);
+    relation_A = Radix_Sort(relation_A, relation_A_final);
 
     // 0.2>3499
-    relation_A_final = Filter(relation_A_final, 3499, '>');
+    relation_A = Filter(relation_A, 3499, '>');
 
-//      Print_Relation_2(relation_A_final);
+    Print_Relation_2(relation_A);
 
-    // r0.0
+    // // r0.0
     relation struct_B;
     relation * relation_B = &struct_B;
     Create_Relation(md,0,0,relation_B);
-
-    // Radix Sort to r0.0
+    //
+    // // Radix Sort to r0.0
     relation struct_B_final;
     relation * relation_B_final = &struct_B_final;
-    Radix_Sort(relation_B, relation_B_final);
+    relation_B = Radix_Sort(relation_B, relation_B_final);
+    //
 
-    // 0.2 = 1.0
+    Print_Relation_2(relation_B);
+    // // 0.2 = 1.0
     intervening * interv_final = interveningInit();
-    Join_v2(interv_final, relation_A_final, relation_B_final, 3, 0);
+    Join_v2(interv_final, relation_A, relation_B, 3, 0);
     Print_Relation_2(interv_final->final_rel);
-    // 0.1
+    // // 0.1
     Update_Relation_Keys(md,3,1,interv_final->final_rel,0);
-
-
-    // r0.0
+    //
+    relation struct_D_final;
+    relation * relation_D_final = &struct_D_final;
+    interv_final -> final_rel = Radix_Sort(interv_final->final_rel, relation_D_final);
+    //
+    Print_Relation_2(interv_final->final_rel);
+    //
+    // // r0.0
     relation struct_C;
     relation * relation_C = &struct_C;
     Create_Relation(md,1,0,relation_C);
-
-    // Radix Sort to r0.0
+    //
+    // // Radix Sort to r0.0
     relation struct_C_final;
     relation * relation_C_final = &struct_C_final;
-    Radix_Sort(relation_C, relation_C_final);
-
-    Join_v2(interv_final, interv_final->final_rel, relation_C_final, 3, 1);
-
+    relation_C = Radix_Sort(relation_C, relation_C_final);
+    //
+    Join_v2(interv_final, interv_final->final_rel, relation_C, 3, 1);
 
     Print_Relation_2(interv_final->final_rel);
-
-    CheckSum(md,0,2,interv_final->final_rel,3);
+    //
+    CheckSum(md,3,1,interv_final->final_rel,0);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,789);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,32);
