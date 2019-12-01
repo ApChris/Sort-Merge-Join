@@ -125,6 +125,16 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 					else
 					{
 						final_interv -> rowId = (uint64_t*)realloc(final_interv->rowId, (sizeof(uint64_t)*((final_interv -> position) + 1)));
+						if(!FindRowID(final_interv,rowIdA))
+						{
+							final_interv -> rowId[final_interv -> position] = rowIdA;
+						}
+						else
+						{
+							final_interv -> rowId[final_interv -> position] = rowIdB;
+						}
+
+
 						final_interv -> position += 1;
 						temp_rel = (relation *)malloc(sizeof(relation));
 						relation struct_final;

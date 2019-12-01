@@ -96,6 +96,12 @@ int main(int argc, char const *argv[])
     Print_Relation_2(interv_final->final_rel);
     //
     CheckSum(md,3,1,interv_final->final_rel,0);
+
+    for (size_t i = 0; i < interv_final->position; i++)
+    {
+            printf("r%lu|",interv_final->rowId[i]);
+    }
+    printf("\n");
     // Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,789);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,32);
