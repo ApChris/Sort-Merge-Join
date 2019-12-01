@@ -102,6 +102,8 @@ int main(int argc, char const *argv[])
             printf("r%lu|",interv_final->rowId[i]);
     }
     printf("\n");
+
+    Read_Work("workloads/small/small.work");
     // Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,789);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,32);

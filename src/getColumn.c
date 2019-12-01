@@ -215,7 +215,28 @@ metadata * Read_Init_Binary(const char * filename)
     return md;
 }
 
+char *split(char *str, const char *delim){
+    char *p = strstr(str, delim);
 
+    if (p == NULL)
+        return NULL;
+
+    *p = '\0';
+    return p + strlen(delim);
+}
+
+int self_join_check(char *str1, char* str2){
+    char *tail_str1, *tail_str2;
+
+    tail_str1 = split(str1, ".");
+    tail_str2 = split(str2, ".");
+
+    if (!strcmp(str1, str2))
+    {
+        return 0;
+    }
+    return -1;
+}
 
 void Read_Work(const char * filename)
 {
@@ -237,7 +258,8 @@ void Read_Work(const char * filename)
     while ((read = getline(&line, &length, file)) != -1)
     {
         char * token;
-        printf("%s\n",line);
+        printf("\nNew query:\t");
+        printf("%s",line);
 
         uint64_t * parameters = (uint64_t*)malloc(sizeof(uint64_t));
         int num_parameters = 0;
@@ -251,14 +273,19 @@ void Read_Work(const char * filename)
         char ** selects = (char**)malloc(sizeof(char*));
         int num_selects = 0;
 
+        int F_flag = 0;
 
 
-        token = strtok(line,seps);
-        
+        token = strtok(line,seps);      
 
         while(token != NULL)
         {
             // printf("token: %s\n", token);
+            if(strchr(token, 'F'))
+            {
+                F_flag = 1;
+                break;
+            }
             if ((strchr(token, '=') == NULL) && (strchr(token, '.') == NULL))
             {
                 parameters[num_parameters] = atoi(token);
@@ -272,14 +299,43 @@ void Read_Work(const char * filename)
             }
             if ((strchr(token, '=') != NULL) && (strchr(token, '.') != NULL))
             {
-                predicates[num_predicates] = (char*)malloc((strlen(token)+1)*sizeof(char*));
-                strcpy(predicates[num_predicates], token);
-                num_predicates++; 
-                token = strtok(NULL,seps);
-                if((predicates = (char**)realloc(predicates, sizeof(char*)*(num_predicates+1))) == NULL){
-                    perror("realloc, Read_Work predicates");
-                    exit(-1);
+                char * predicate = (char*)malloc(strlen(token)+1);
+                char * predicate_tail;
+                strcpy(predicate, token);  //  temp_token has the string of the token
+                predicate_tail = split(predicate, "=");   // predicate_tail: string after delimeter
+                                                             // and predicate: string before delimeter
+
+                // self join, i.e. 0.1=0.2 (scanning)
+                if (!self_join_check(predicate, predicate_tail))
+                {
+                    printf("self join\n");
                 }
+
+                // i.e. 0.1=5000 is a filter, not a predicate
+                if ((strchr(predicate_tail, '.') == NULL))
+                {
+                    filters[num_filters] = (char*)malloc((strlen(token)+1)*sizeof(char*));
+                    strcpy(filters[num_filters], token);
+                    num_filters++;
+                    if ((filters = (char*)realloc(filters, sizeof(char*)*(num_filters+1))) == NULL)
+                    {
+                        perror("realloc, Read_Work filters");
+                        exit(-1);
+                    }
+                }
+                // regular predicate, i.e. 0.1=1.2
+                else
+                {
+                    predicates[num_predicates] = (char*)malloc((strlen(token)+1)*sizeof(char*));
+                    strcpy(predicates[num_predicates], token);    
+                    num_predicates++;    
+                    if((predicates = (char**)realloc(predicates, sizeof(char*)*(num_predicates+1))) == NULL){
+                        perror("realloc, Read_Work predicates");
+                        exit(-1);
+                    }
+                }  
+                free(predicate);
+                token = strtok(NULL,seps);
                 continue;
             }
             if ((strchr(token, '>') != NULL) || (strchr(token, '<') != NULL))
@@ -295,7 +351,7 @@ void Read_Work(const char * filename)
                 }
                 continue;
             }
-            if ((strchr(token, '=') == NULL) && (strchr(token, '.') != NULL) && (strchr(token, '>') == NULL) || (strchr(token, '<') == NULL))
+            if ((strchr(token, '=') == NULL) && (strchr(token, '.') != NULL) && (strchr(token, '>') == NULL) && (strchr(token, '<') == NULL))
             {
                 selects[num_selects] = (char*)malloc((strlen(token)+1)*sizeof(char*));
                 strcpy(selects[num_selects], token);
@@ -308,6 +364,11 @@ void Read_Work(const char * filename)
                 }
                 continue;
             }
+        }
+
+        if (F_flag == 1)
+        {
+            break;
         }
 
         for (int i = 0; i < num_parameters; i++)
@@ -326,13 +387,6 @@ void Read_Work(const char * filename)
         {
             printf("selects[%d]: %s\n", i, selects[i]);
         }
-        
-        printf("\n");
-        // if(strcmp(token,"F"))
-        // {
-        //     break;
-        // }
-        // //break;
 
 
         free(parameters);
@@ -369,7 +423,7 @@ void Read_Work(const char * filename)
         free(line);
     }
 
-    printf("\n\n\n");
+    // printf("\n\n\n");
     // close
     if(fclose(file))
     {
