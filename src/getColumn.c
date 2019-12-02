@@ -305,11 +305,16 @@ void Read_Work(const char * filename)
                 predicate_tail = split(predicate, "=");   // predicate_tail: string after delimeter
                                                              // and predicate: string before delimeter
 
+                char * temp_predicate_tail = (char*)malloc(strlen(predicate_tail)+1);
+                strcpy(temp_predicate_tail, predicate_tail);
+
                 // self join, i.e. 0.1=0.2 (scanning)
-                if (!self_join_check(predicate, predicate_tail))
+                if (!self_join_check(predicate, temp_predicate_tail))
                 {
                     printf("self join\n");
                 }
+
+
 
                 // i.e. 0.1=5000 is a filter, not a predicate
                 if ((strchr(predicate_tail, '.') == NULL))
@@ -335,6 +340,7 @@ void Read_Work(const char * filename)
                     }
                 }  
                 free(predicate);
+                free(temp_predicate_tail);
                 token = strtok(NULL,seps);
                 continue;
             }
