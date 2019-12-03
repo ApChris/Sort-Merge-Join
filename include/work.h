@@ -86,4 +86,5 @@ void ParametersRelInit(work_line * wl_ptr);
 void Push_Parameters(work_line * wl_ptr, uint64_t file1_ID, uint64_t counter);
 
 work_line * WorkLineInit();
+void Print_Work(work_line * wl_ptr);
 #endif
