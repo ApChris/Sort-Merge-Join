@@ -240,7 +240,7 @@ uint64_t self_join_check(char * str1, char * str2)
     return -1;
 }
 
-void Read_Work(metadata * md, const char * filename)
+work_line * Read_Work(const char * filename)
 {
 
 
@@ -273,26 +273,13 @@ void Read_Work(metadata * md, const char * filename)
         printf("\nNew query:\t");
         printf("%s",line);
 
-        uint64_t * parameters = (uint64_t*)malloc(sizeof(uint64_t));
-        uint64_t num_parameters = 0;
-
-        char ** predicates = (char**)malloc(sizeof(char*));
-        uint64_t num_predicates = 0;
-
-        char ** filters = (char**)malloc(sizeof(char*));
-        uint64_t num_filters = 0;
-
-        char ** selects = (char**)malloc(sizeof(char*));
-        uint64_t num_selects = 0;
-
         uint64_t F_flag = 0;
-
 
         token = strtok(line,seps);
 
         while(token != NULL)
         {
-            // printf("token: %s\n", token);
+
             if(strchr(token, 'F'))
             {
                 F_flag = 1;
@@ -301,15 +288,19 @@ void Read_Work(metadata * md, const char * filename)
             // PARAMETERS
             if ((strchr(token, '=') == NULL) && (strchr(token, '.') == NULL))
             {
-                printf("EDWWW = %s\n",token);
-                parameters[num_parameters] = atoi(token);
-                num_parameters++;
-                token = strtok(NULL,seps);
-                if((parameters = (uint64_t*)realloc(parameters, sizeof(uint64_t)*(num_parameters+1)))==NULL){
-                    perror("realloc, Read_Work parameters");
-                    exit(-1);
+
+                if(parameter_flag == 0)
+                {
+                    ParametersRelInit(wl_ptr);
+                    Push_Parameters(wl_ptr,atoi(token),1);
+                    parameter_flag = 1;
                 }
-                printf("EDWWW = %s\n",token);
+                else
+                {
+                    Push_Parameters(wl_ptr,atoi(token),0);
+                }
+
+                token = strtok(NULL,seps);
 
                 continue;
             }
@@ -332,42 +323,35 @@ void Read_Work(metadata * md, const char * filename)
                 char * file2_Column = split(file2_ID, ".");
 
 
-
                 char * temp_predicate_tail = (char*)malloc(strlen(predicate_tail)+1);
                 strcpy(temp_predicate_tail, predicate_tail);
 
 
-                // self join, i.e. 0.1=0.2 (scanning)
+                // self join, i.e. 0.1=0.2 (scanning) ---> SELF_JOIN
                 if (!self_join_check(predicate, temp_predicate_tail))
                 {
                     printf("self join\n");
                 }
 
-
-
                 // i.e. 0.1=5000 is a filter, not a predicate
                 if ((strchr(predicate_tail, '.') == NULL))
                 {
-                    filters[num_filters] = (char*)malloc((strlen(token)+1)*sizeof(char*));
-                    strcpy(filters[num_filters], token);
-                    num_filters++;
-                    if ((filters = (char*)realloc(filters, sizeof(char*)*(num_filters+1))) == NULL)
+
+                    if(filter_flag == 0)
                     {
-                        perror("realloc, Read_Work filters");
-                        exit(-1);
+                        FiltersRelInit(wl_ptr);
+                        Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), '=' ,atoi(file2_ID),1);
+                        filter_flag = 1;
                     }
+                    else
+                    {
+                        Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), '=' ,atoi(file2_ID),0);
+                    }
+
                 }
                 // regular predicate, i.e. 0.1=1.2
                 else
                 {
-                    predicates[num_predicates] = (char*)malloc((strlen(token)+1)*sizeof(char*));
-                    strcpy(predicates[num_predicates], token);
-                    num_predicates++;
-                    if((predicates = (char**)realloc(predicates, sizeof(char*)*(num_predicates+1))) == NULL){
-                        perror("realloc, Read_Work predicates");
-                        exit(-1);
-                    }
-
                     if(predicate_flag == 0)
                     {
                         PredicateRelInit(wl_ptr);
@@ -390,15 +374,41 @@ void Read_Work(metadata * md, const char * filename)
             // FILTERS
             if ((strchr(token, '>') != NULL) || (strchr(token, '<') != NULL))
             {
-                filters[num_filters] = (char*)malloc((strlen(token)+1)*sizeof(char*));
-                strcpy(filters[num_filters], token);
-                num_filters++;
-                token = strtok(NULL,seps);
-                if ((filters = (char*)realloc(filters, sizeof(char*)*(num_filters+1))) == NULL)
+                char * filter = (char*)malloc(strlen(token)+1);
+                char * filter_tail;
+                char symbol;
+
+                strcpy(filter, token);  //  temp_token has the string of the token
+                if((strchr(token, '>') != NULL))
                 {
-                    perror("realloc, Read_Work filters");
-                    exit(-1);
+                    filter_tail = split(filter, ">");   // filter_tail: string after delimeter
+                    symbol = '>';
                 }
+                else
+                {
+                    filter_tail = split(filter, "<");   // filter_tail: string after delimeter
+                    symbol = '<';
+                }
+
+                                                             // and filter: string before delimeter
+                char * file1_ID = (char*)malloc(strlen(filter)+1);
+                strcpy(file1_ID, filter);
+                char * file1_Column = split(file1_ID, ".");
+
+
+                if(filter_flag == 0)
+                {
+                    FiltersRelInit(wl_ptr);
+                    Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), symbol ,atoi(filter_tail),1);
+                    filter_flag = 1;
+                }
+                else
+                {
+                    Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), symbol ,atoi(filter_tail),0);
+                }
+                free(filter);
+
+                token = strtok(NULL,seps);
                 continue;
             }
 
@@ -411,22 +421,6 @@ void Read_Work(metadata * md, const char * filename)
                 strcpy(select, token);  //  temp_token has the string of the token
                 select_tail = split(select, ".");   // select_tail: string after delimeter
                                                              // and select: string before delimeter
-
-
-                printf("%s ",select);
-                printf("%s\n",select_tail);
-
-
-                selects[num_selects] = (char*)malloc((strlen(token)+1)*sizeof(char*));
-                strcpy(selects[num_selects], token);
-                num_selects++;
-                token = strtok(NULL,seps);
-                if ((selects = (char*)realloc(selects, sizeof(char*)*(num_selects+1))) == NULL)
-                {
-                    perror("realloc, Read_Work selects");
-                    exit(-1);
-                }
-
                 if(select_flag == 0)
                 {
                     SelectsRelInit(wl_ptr);
@@ -439,6 +433,7 @@ void Read_Work(metadata * md, const char * filename)
                 }
                 free(select);
 
+                token = strtok(NULL,seps);
                 continue;
             }
         }
@@ -450,83 +445,20 @@ void Read_Work(metadata * md, const char * filename)
         predicate_flag = 0;
         select_flag = 0;
         parameter_flag = 0;
-        //wl_ptr -> num_predicates++;
-        //Process_Function(md, parameters, predicates, filters, selects, num_parameters, num_predicates, num_filters, num_selects);
-
-        // for (uint64_t i = 0; i < num_parameters; i++)
-        // {
-        //     printf("parameters[%lu]: %lu\n", i, parameters[i]);
-        // }
-        // for (uint64_t i = 0; i < num_predicates; i++)
-        // {
-        //     printf("predicates[%lu]: %s\n", i, predicates[i]);
-        // }
-        // for (uint64_t i = 0; i < num_filters; i++)
-        // {
-        //     printf("filters[%lu]: %s\n", i, filters[i]);
-        // }
-        // for (uint64_t i = 0; i < num_selects; i++)
-        // {
-        //     printf("selects[%lu]: %s\n", i, selects[i]);
-        // }
-
-
-
-        free(parameters);
-
-        for (int i = 0; i < num_predicates; i++)
-        {
-            free(predicates[i]);
-        }
-        free(predicates);
-
-        for (int i = 0; i < num_filters; i++)
-        {
-            free(filters[i]);
-        }
-        free(filters);
-
-        for (int i = 0; i < num_selects; i++)
-        {
-            free(selects[i]);
-        }
-        free(selects);
+        filter_flag = 0;
 
     }
-
-    //ch = strtok( , "|");
-
-    // length == all bytes in file but we divide with 8 , because we use uint64_t
-    // fseek(file, 0, SEEK_END);
-    // length = ftell(file);
-    // fseek(file, 0, SEEK_SET);
 
     if(line)
     {
         free(line);
     }
 
-    // printf("\n\n\n");
-    // close
     if(fclose(file))
     {
         perror("fclose failed:");
         exit(-1);
     }
-    printf("Queries number: %lu\n", wl_ptr -> num_predicates);
 
-    for (size_t i = 0; i < wl_ptr -> num_predicates; i++)
-    {
-        printf("->%lu\n",wl_ptr -> predicates[i].num_tuples);
-        for (size_t j = 0; j < wl_ptr -> predicates[i].num_tuples; j++)
-        {
-            printf("%lu.",wl_ptr -> predicates[i].tuples[j].file1_ID);
-            printf("%lu=",wl_ptr -> predicates[i].tuples[j].file1_column);
-            printf("%lu.",wl_ptr -> predicates[i].tuples[j].file2_ID);
-            printf("%lu& ",wl_ptr -> predicates[i].tuples[j].file2_column);
-        }
-        printf("\n");
-
-    }
-
+    return wl_ptr;
 }
