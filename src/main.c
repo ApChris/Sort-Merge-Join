@@ -95,15 +95,20 @@ int main(int argc, char const *argv[])
 
     Print_Relation_2(interv_final->final_rel);
     //
+    CheckSum(md,0,2,interv_final->final_rel,1);
     CheckSum(md,3,1,interv_final->final_rel,0);
-
+    printf("\n");
     for (size_t i = 0; i < interv_final->position; i++)
     {
             printf("r%lu|",interv_final->rowId[i]);
     }
     printf("\n");
+    work_line * wl_ptr;
+    wl_ptr = Read_Work("workloads/small/small.work");
+    Print_Work(wl_ptr);
+    
 
-    Read_Work("workloads/small/small.work");
+
     // Update_Tuple_Payload(md,relation_A,1560,99999999,9999);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,789);
     // Update_Tuple_Payload(md,relation_A,1560,99999999,32);
@@ -118,11 +123,7 @@ int main(int argc, char const *argv[])
     // Update_Tuple_Payload(md,relation_A,1558,7777777,78);
 
 
-    //
-    //
-    //
-    //
-    //
+
     // relation struct_B;
     // relation * relation_B = &struct_B;
     //
