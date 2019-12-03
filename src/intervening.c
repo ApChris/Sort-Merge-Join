@@ -182,35 +182,3 @@ uint64_t FindRowID(intervening * final_interv, uint64_t rowID)
 	}
 	return 0;
 }
-
-// uint64_t binarySearch(uint64_t * array,uint64_t start, uint64_t end, uint64_t payload)
-// {
-// 	if(end >= start)
-// 	{
-// 		uint64_t mid = start + (end - start) /2;
-
-// 		if(array[mid] == payload)
-// 		{
-// 			return mid;
-// 		}
-
-// 		if(array[mid] > payload)
-// 		{
-// 			return binarySearch(array, start, mid - 1, payload);
-// 		}
-
-// 		return binarySearch(array, mid + 1, end, payload);
-// 	}
-// 	return -1;
-// }
-
-
-// uint64_t Sum_Column(intervening_array * array)
-// {
-// 	uint64_t sum = 0;
-// 	for (size_t i = 0; i < array -> position; i++)
-// 	{
-// 		sum += array -> payload_array[i];
-// 	}
-// 	return sum;
-// }
