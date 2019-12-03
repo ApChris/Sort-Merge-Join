@@ -10,7 +10,8 @@ OBJS = build/main.o \
 		build/result.o \
 		build/processRelation.o \
 		build/sortMergeJoin.o \
-		build/intervening.o
+		build/intervening.o \
+		build/work.o
 
 
 
@@ -64,6 +65,8 @@ build/sortMergeJoin.o: src/sortMergeJoin.c
 build/intervening.o: src/intervening.c
 	$(CC) $(FLAGS) $< -o $@
 
+build/work.o: src/work.c
+	$(CC) $(FLAGS) $< -o $@
 
 $(TARGET) : $(OBJS)
 		$(CC) $(CFLAGS) $^ -o $@
