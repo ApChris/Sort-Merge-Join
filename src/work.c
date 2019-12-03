@@ -17,6 +17,9 @@ work_line * WorkLineInit()
     wl_ptr -> selects = NULL;
 
     wl_ptr-> num_predicates = 0;
+    wl_ptr-> num_selects = 0;
+    wl_ptr-> num_parameters = 0;
+    wl_ptr-> num_filters = 0;
 	return wl_ptr;
 }
 
@@ -151,7 +154,7 @@ void SelectsRelInit(work_line * wl_ptr)
     {
         if ((wl_ptr -> selects = ((select_rel * )malloc(sizeof(select_rel)))) == NULL)
         {
-            perror("filter_rel.c, first malloc");
+            perror("selects_rel.c, first malloc");
             exit(-1);
         }
 
@@ -163,7 +166,7 @@ void SelectsRelInit(work_line * wl_ptr)
     {
         if ((wl_ptr -> selects = ((select_rel * )realloc(wl_ptr -> selects,sizeof(select_rel)*(wl_ptr -> num_selects+1)))) == NULL)
         {
-            perror("filter_rel.c, realloc");
+            perror("selects_rel.c, realloc");
             exit(-1);
         }
         wl_ptr -> selects[wl_ptr -> num_selects].tuples = NULL;
@@ -256,4 +259,45 @@ void Push_Parameters(work_line * wl_ptr, uint64_t file1_ID, uint64_t counter)
 
 		wl_ptr -> parameters[wl_ptr -> num_parameters - 1].num_tuples++;
 	}
+}
+
+
+void Print_Work(work_line * wl_ptr)
+{
+    printf("Queries number: %lu\n\n", wl_ptr -> num_predicates);
+
+    for (size_t i = 0; i < wl_ptr -> num_parameters; i++)
+    {
+
+        for (size_t j = 0; j < wl_ptr -> parameters[i].num_tuples; j++)
+        {
+            printf("%lu ",wl_ptr -> parameters[i].tuples[j].file1_ID);
+        }
+        printf("|");
+
+        for (size_t j = 0; j < wl_ptr -> predicates[i].num_tuples; j++)
+        {
+            printf("%lu.",wl_ptr -> predicates[i].tuples[j].file1_ID);
+            printf("%lu=",wl_ptr -> predicates[i].tuples[j].file1_column);
+            printf("%lu.",wl_ptr -> predicates[i].tuples[j].file2_ID);
+            printf("%lu&",wl_ptr -> predicates[i].tuples[j].file2_column);
+        }
+
+        for (size_t j = 0; j < wl_ptr -> filters[i].num_tuples; j++)
+        {
+            printf("%lu.",wl_ptr -> filters[i].tuples[j].file1_ID);
+            printf("%lu",wl_ptr -> filters[i].tuples[j].file1_column);
+            printf("%c",wl_ptr -> filters[i].tuples[j].symbol);
+            printf("%lu",wl_ptr -> filters[i].tuples[j].limit);
+        }
+        printf("|");
+        for (size_t j = 0; j < wl_ptr -> selects[i].num_tuples; j++)
+        {
+            printf("%lu.",wl_ptr -> selects[i].tuples[j].file1_ID);
+            printf("%lu ",wl_ptr -> selects[i].tuples[j].file1_column);
+
+        }
+
+        printf("\n\n");
+    }
 }
