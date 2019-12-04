@@ -438,8 +438,10 @@ void Print_Relation(relation * rel, histogram * hist, psum * ps)
     }
 }
 
-relation * Radix_Sort(relation * rel, relation * rel_final)
+relation * Radix_Sort(relation * rel)
 {
+    relation struct_final;
+    relation * rel_final = &struct_final;
     histogram struct_h;
     histogram * hist = &struct_h;
 
@@ -469,9 +471,17 @@ relation * Radix_Sort(relation * rel, relation * rel_final)
 /////////////////////////////////////////////////////////////// PROJECT 2 /////////////////////////////////////////
 
 
-void Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos, relation * rel)
+relation * Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos)
 {
     uint64_t * ptr;
+
+    relation * rel;
+
+    if(((rel = (relation *)malloc(sizeof(relation)))) == NULL)
+    {
+        perror("Create_Relation malloc");
+        exit(-1);
+    }
 
     // We'll create space for rows number of tuples
     if((rel -> tuples = (tuple *)malloc(md[md_pos].num_tuples * sizeof(tuple))) == NULL)
@@ -497,6 +507,8 @@ void Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos, relation
 
     // The number of tuples is the number of rows
     rel -> num_tuples = md[md_pos].num_tuples;
+
+    return rel;
 }
 
 void Print_Relation_2(relation * rel)
@@ -549,7 +561,15 @@ void CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel
         sum += *(ptr + rel -> tuples[i].payload[pos]); // calculate keys
         //sum += rel -> tuples[i].payload[pos]; // calculate payloads
     }
-    printf("Sum = %lu\n",sum);
+    if(sum == 0)
+    {
+        printf("NULL ");
+    }
+    else
+    {
+        printf("%lu ",sum);
+    }
+
 }
 
 
@@ -767,5 +787,237 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
 
     printf("counter = %lu\n", counter);
     return rel_final;
+
+}
+
+
+relation * Init_pointer()
+{
+    relation * rel;
+    if((rel = (relation *)malloc(sizeof(relation))) == NULL)
+    {
+        perror("Init pointer error");
+        exit(-1);
+    }
+    return rel;
+}
+
+query_tuple * Init_Query_Tuple()
+{
+    query_tuple * qt;
+    if((qt = (query_tuple *)malloc(sizeof(query_tuple ))) == NULL)
+    {
+        perror("Query_Tuple error");
+        exit(-1);
+    }
+    qt[0].file1_ID = 0;
+    qt[0].file1_column = 0;
+    qt[0].rel = NULL;
+    return qt;
+}
+
+uint64_t Find_Query_Tuple(query_tuple * qt, uint64_t file_ID, uint64_t file_column,uint64_t counter)
+{
+    for (size_t i = 0; i < counter; i++)
+    {
+        if((qt[i].file1_ID == file_ID) && (qt[i].file1_column == file_column))
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void Execute_Queries(metadata * md, work_line * wl_ptr)
+{
+
+    relation ** relations;
+    uint64_t rel_counter = 0;
+
+
+    //query_tuple * qt;
+    // for every query
+
+    for (size_t i = 0; i < wl_ptr -> num_predicates; i++)
+    {
+
+        // variable to count how many rel are we going to use
+        query_tuple * qt;
+
+        // Filters
+        for (size_t j = 0; j < wl_ptr -> filters[i].num_tuples; j++)
+        {
+        //    rel_counter++;
+        //    Create_Relation(md, wl_ptr -> filters[i].tuples[j].file1_ID, wl_ptr -> filters[i].tuples[j].file1_column, relation_filters[j]);
+            if(rel_counter == 0)
+            {
+
+                if((qt = Init_Query_Tuple()) == NULL)
+                {
+                    perror("Execute_Queries 1st malloc");
+                    exit(-1);
+                }
+
+                qt[rel_counter].file1_ID = wl_ptr -> filters[i].tuples[j].file1_ID;
+                qt[rel_counter].file1_column = wl_ptr -> filters[i].tuples[j].file1_column;
+
+            //    printf("%lu.%lu",qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
+                qt[rel_counter].rel = Init_pointer();
+
+                //qt[rel_counter].rel = &rel_struct[i];
+
+                //Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column,qt[rel_counter].rel);
+
+
+
+
+                rel_counter++;
+                //    printf("g----->\n" );
+            }
+            else
+            {
+                // if((relations = (relation **)realloc(relations,sizeof(relation *) * (rel_counter + 1))) == NULL)
+                // {
+                //     perror("Execute_Queries 1st realloc");
+                //     exit(-1);
+                // }
+                if(Find_Query_Tuple(qt, wl_ptr -> filters[i].tuples[j].file1_ID, wl_ptr -> filters[i].tuples[j].file1_column, rel_counter))
+                {
+                    printf("Already exists!\n");
+                }
+                else
+                {
+                    if((qt = (query_tuple *)realloc(qt,sizeof(query_tuple) * (rel_counter + 1))) == NULL)
+                    {
+                        perror("Execute_Queries 1st realloc");
+                        exit(-1);
+                    }
+                    qt[rel_counter].file1_ID = wl_ptr -> filters[i].tuples[j].file1_ID;
+                    qt[rel_counter].file1_column = wl_ptr -> filters[i].tuples[j].file1_column;
+                    qt[rel_counter].rel = Init_pointer();
+
+
+                    rel_counter++;
+                }
+
+                // relations[rel_counter] = Init_pointer();
+            }
+            //rel_counter_array[rel_counter][0] = wl_ptr -> filters[i].tuples[j].file1_ID;
+        }
+        for (size_t j = 0; j < wl_ptr -> predicates[i].num_tuples; j++)
+        {
+            if(rel_counter == 0)
+            {
+                if((qt = Init_Query_Tuple()) == NULL)
+                {
+                    perror("Execute_Queries 2nd malloc");
+                    exit(-1);
+                }
+                if((qt = (query_tuple *)realloc(qt,sizeof(query_tuple) * (rel_counter + 1))) == NULL)
+                {
+                    perror("Execute_Queries 1st realloc");
+                    exit(-1);
+                }
+                qt[0].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
+                qt[0].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
+                qt[0].rel = NULL;
+
+                if(Find_Query_Tuple(qt, wl_ptr -> predicates[i].tuples[j].file2_ID, wl_ptr -> predicates[i].tuples[j].file2_column, rel_counter))
+                {
+
+                }
+                else
+                {
+                    qt[1].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
+                    qt[1].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
+                    qt[1].rel = NULL;
+                }
+
+                // if((relations = (relation **)malloc(sizeof(relation *) * (rel_counter + 1))) == NULL)
+                // {
+                //     perror("Execute_Queries 1st malloc");
+                //     exit(-1);
+                // }
+                // relations[rel_counter] = Init_pointer();
+                rel_counter+=2;
+            }
+            else
+            {
+                if(Find_Query_Tuple(qt, wl_ptr -> predicates[i].tuples[j].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, rel_counter))
+                {
+                //    printf("Yparxei!!\n");
+                }
+                else
+                {
+                    if((qt = (query_tuple *)realloc(qt,sizeof(query_tuple) * (rel_counter + 1))) == NULL)
+                    {
+                        perror("Execute_Queries 1st realloc");
+                        exit(-1);
+                    }
+
+                    qt[rel_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
+                    qt[rel_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
+                    qt[rel_counter].rel = Init_pointer();
+
+
+                //    Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column,qt[rel_counter].rel);
+
+                    rel_counter++;
+                }
+
+                if(Find_Query_Tuple(qt, wl_ptr -> predicates[i].tuples[j].file2_ID, wl_ptr -> predicates[i].tuples[j].file2_column, rel_counter))
+                {
+                //    printf("Yparxei sth 2h!!\n");
+                }
+                else
+                {
+                    if((qt = (query_tuple *)realloc(qt,sizeof(query_tuple) * (rel_counter + 1))) == NULL)
+                    {
+                        perror("Execute_Queries 1st realloc");
+                        exit(-1);
+                    }
+                    qt[rel_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
+                    qt[rel_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
+                    qt[rel_counter].rel = Init_pointer();
+
+                //    printf("=EDWWW\n");
+                //    Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column,qt[rel_counter].rel);
+
+                    rel_counter++;
+                }
+            }
+        }
+        relation ** rel;
+        rel = (relation **)malloc(sizeof(relation *)*rel_counter);
+        for (size_t j = 0; j < rel_counter; j++)
+        {
+            printf("%lu.%lu--->", qt[j].file1_ID, qt[j].file1_column);
+            rel[j] = Create_Relation(md,qt[j].file1_ID,qt[j].file1_column);
+
+        //    qt[j].rel = Radix_Sort(qt[j].rel);
+        }
+        printf("\n");
+        // }
+        // for (size_t i = 0; i < rel_counter; i++)
+        // {
+        //     free(qt -> rel);
+        // }
+        // free(qt);
+
+        //free(relations);
+        printf("%lu->%lu\n",i,rel_counter );
+        rel_counter =0;
+
+        for (size_t j = 0; j < rel_counter; j++)
+        {
+            free(rel[j]);
+        }
+        free(rel);
+        //break;
+        //relation_filters = &relation_filters_struct;
+        //free(relation_filters);
+    }
+
+
 
 }
