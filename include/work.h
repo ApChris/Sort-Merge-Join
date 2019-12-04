@@ -72,6 +72,13 @@ typedef struct work_line
 
 }work_line;
 
+typedef struct query_tuple
+{
+    uint64_t file1_ID;
+    uint64_t file1_column;
+    relation * rel;
+}query_tuple;
+
 
 void Push_Predicates(work_line * wl_ptr, uint64_t file1_ID, uint64_t file1_column, uint64_t file2_ID, uint64_t file2_column, uint64_t counter);
 void PredicateRelInit(work_line * wl_ptr);
