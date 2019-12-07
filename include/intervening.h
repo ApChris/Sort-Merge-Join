@@ -14,7 +14,7 @@ typedef struct intervening
 	relation * final_rel;
 }intervening;
 
-// intervening_array * intervening_Array_Init();
+
 intervening * interveningInit();
 
 uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B, uint64_t rowIdA, uint64_t rowIdB);
