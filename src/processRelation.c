@@ -23,7 +23,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
         if(size < L1_CACHE)
         {
-            printf("--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",i,hist -> hist_tuples[i].sum,size);
+        //    printf("--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",i,hist -> hist_tuples[i].sum,size);
             if(i == hist -> num_tuples - 1)
             {
                Quicksort(rel_new, ps -> psum_tuples[i].position,ps -> psum_tuples[i].position + hist -> hist_tuples[i].sum - 1);
@@ -37,7 +37,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
         }
         else        // SPLIT
         {
-            printf("--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",i,hist -> hist_tuples[i].sum,size);
+        //     printf("--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",i,hist -> hist_tuples[i].sum,size);
             histogram struct_h1;
             histogram *hist1 = &struct_h1;
             psum struct_p1;
@@ -68,7 +68,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                 {
 
 
-                    printf("\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b1,hist1 -> hist_tuples[b1].sum,size);
+                //     printf("\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b1,hist1 -> hist_tuples[b1].sum,size);
                     if(b1 == hist1 -> num_tuples - 1)
                     {
                         Quicksort(rel_new, ps1 -> psum_tuples[b1].position,ps1 -> psum_tuples[b1].position + hist1 -> hist_tuples[b1].sum - 1);
@@ -80,7 +80,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                 }
                 else    // SPLIT
                 {
-                    printf("\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b1,hist1 -> hist_tuples[b1].sum,size);
+                //     printf("\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b1,hist1 -> hist_tuples[b1].sum,size);
                     histogram struct_h2;
                     histogram *hist2 = &struct_h2;
                     psum struct_p2;
@@ -110,7 +110,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                         if(size < L1_CACHE)
                         {
 
-                            printf("\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b2,hist2 -> hist_tuples[b2].sum,size);
+                        //     printf("\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b2,hist2 -> hist_tuples[b2].sum,size);
                             if(i == hist2 -> num_tuples - 1)
                             {
                                 Quicksort(rel_new, ps2 -> psum_tuples[b2].position,ps2 -> psum_tuples[b2].position + hist2 -> hist_tuples[b2].sum - 1);
@@ -122,7 +122,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                         }
                         else    // SPLIT
                         {
-                            printf("\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b2,hist2 -> hist_tuples[b2].sum,size);
+                        //     printf("\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b2,hist2 -> hist_tuples[b2].sum,size);
                             histogram struct_h3;
                             histogram *hist3 = &struct_h3;
                             psum struct_p3;
@@ -147,7 +147,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                 if(size < L1_CACHE)
                                 {
 
-                                    printf("\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b3,hist3 -> hist_tuples[b3].sum,size);
+                                //     printf("\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b3,hist3 -> hist_tuples[b3].sum,size);
                                     if(i == hist3 -> num_tuples - 1)
                                     {
                                         Quicksort(rel_new, ps3 -> psum_tuples[b3].position,ps3 -> psum_tuples[b3].position + hist3 -> hist_tuples[b3].sum - 1);
@@ -159,7 +159,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                 }
                                 else    // SPLIT
                                 {
-                                    printf("\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b3,hist3 -> hist_tuples[b3].sum,size);
+                                //     printf("\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b3,hist3 -> hist_tuples[b3].sum,size);
                                     histogram struct_h4;
                                     histogram *hist4 = &struct_h4;
                                     psum struct_p4;
@@ -185,7 +185,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                         if(size < L1_CACHE)
                                         {
 
-                                            printf("\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b4,hist4 -> hist_tuples[b4].sum,size);
+                                        //     printf("\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b4,hist4 -> hist_tuples[b4].sum,size);
                                             if(i == hist4 -> num_tuples - 1)
                                             {
                                                 Quicksort(rel_new, ps4 -> psum_tuples[b4].position,ps4 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum - 1);
@@ -197,7 +197,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                         }
                                         else    // SPLIT
                                         {
-                                            printf("\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b4,hist4 -> hist_tuples[b4].sum,size);
+                                        //     printf("\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b4,hist4 -> hist_tuples[b4].sum,size);
                                             histogram struct_h5;
                                             histogram *hist5 = &struct_h5;
                                             psum struct_p5;
@@ -227,7 +227,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                 {
 
 
-                                                    printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b5,hist5 -> hist_tuples[b5].sum,size);
+                                                //     printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b5,hist5 -> hist_tuples[b5].sum,size);
                                                     if(i == hist5 -> num_tuples - 1)
                                                     {
                                                         Quicksort(rel_new, ps5 -> psum_tuples[b5].position,ps5 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum - 1);
@@ -239,7 +239,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                 }
                                                 else    // SPLIT
                                                 {
-                                                    printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------123\n",b5,hist5 -> hist_tuples[b5].sum,size);
+                                                //     printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------123\n",b5,hist5 -> hist_tuples[b5].sum,size);
                                                     histogram struct_h6;
                                                     histogram *hist6 = &struct_h6;
                                                     psum struct_p6;
@@ -270,7 +270,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                         if(size < L1_CACHE)
                                                         {
 
-                                                            printf("\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b6,hist6 -> hist_tuples[b6].sum,size);
+                                                        //     printf("\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b6,hist6 -> hist_tuples[b6].sum,size);
                                                             if(i == hist6 -> num_tuples - 1)
                                                             {
                                                                 Quicksort(rel_new, ps6 -> psum_tuples[b6].position,ps6 -> psum_tuples[b6].position + hist6 -> hist_tuples[b6].sum - 1);
@@ -282,7 +282,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                         }
                                                         else    // SPLIT
                                                         {
-                                                            printf("\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b6,hist6 -> hist_tuples[b6].sum,size);
+                                                        //     printf("\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b6,hist6 -> hist_tuples[b6].sum,size);
                                                             histogram struct_h7;
                                                             histogram *hist7 = &struct_h7;
                                                             psum struct_p7;
@@ -308,7 +308,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                 if(size < L1_CACHE)
                                                                 {
 
-                                                                    printf("\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b7,hist7 -> hist_tuples[b7].sum,size);
+                                                                //     printf("\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b7,hist7 -> hist_tuples[b7].sum,size);
 
                                                                     if(i == hist7 -> num_tuples - 1)
                                                                     {
@@ -321,7 +321,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                 }
                                                                 else    // SPLIT
                                                                 {
-                                                                    printf("\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b7,hist7 -> hist_tuples[b7].sum,size);
+                                                                //     printf("\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b7,hist7 -> hist_tuples[b7].sum,size);
                                                                     histogram struct_h8;
                                                                     histogram *hist8 = &struct_h8;
                                                                     psum struct_p8;
@@ -346,7 +346,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                         if(size < L1_CACHE)
                                                                         {
 
-                                                                            printf("\t\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b8,hist8 -> hist_tuples[b8].sum,size);
+                                                                        //     printf("\t\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b8,hist8 -> hist_tuples[b8].sum,size);
                                                                             if(i == hist8 -> num_tuples - 1)
                                                                             {
                                                                                 Quicksort(rel_new, ps8 -> psum_tuples[b8].position,ps8 -> psum_tuples[b8].position + hist8 -> hist_tuples[b8].sum - 1);
@@ -438,10 +438,16 @@ void Print_Relation(relation * rel, histogram * hist, psum * ps)
     }
 }
 
+//relation * Radix_Sort(relation * rel)
 relation * Radix_Sort(relation * rel)
 {
-    relation struct_final;
-    relation * rel_final = &struct_final;
+
+    relation * rel_final;
+    if(((rel_final = (relation *)malloc(sizeof(relation)))) == NULL)
+    {
+        perror("Create_Relation malloc");
+        exit(-1);
+    }
     histogram struct_h;
     histogram * hist = &struct_h;
 
@@ -449,10 +455,10 @@ relation * Radix_Sort(relation * rel)
     psum *ps = &struct_p;
 
     Histogram(rel,hist,7,0,rel -> num_tuples);
-    Print_Histogram(hist);
+    //Print_Histogram(hist);
 
     Psum(hist,ps,0);
-    Print_Psum(hist,ps);
+    //Print_Psum(hist,ps);
 
     ReorderedColumn(rel,rel_final,ps);
 
@@ -474,8 +480,9 @@ relation * Radix_Sort(relation * rel)
 relation * Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos)
 {
     uint64_t * ptr;
-
-    relation * rel;
+    //relation rel_struct;
+    relation * rel;// = &rel_struct;
+    //;
 
     if(((rel = (relation *)malloc(sizeof(relation)))) == NULL)
     {
@@ -785,7 +792,7 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
 
     rel = rel_final;
 
-    printf("counter = %lu\n", counter);
+//    printf("counter = %lu\n", counter);
     return rel_final;
 
 }
@@ -822,21 +829,23 @@ uint64_t Find_Query_Tuple(query_tuple * qt, uint64_t file_ID, uint64_t file_colu
     {
         if((qt[i].file1_ID == file_ID) && (qt[i].file1_column == file_column))
         {
-            return 1;
+            return i;
         }
     }
-    return 0;
+    return TAG;
 }
 
 void Execute_Queries(metadata * md, work_line * wl_ptr)
 {
 
     uint64_t rel_counter = 0;
-
+    uint64_t rel_A_pos = 0;
+    uint64_t rel_B_pos = 0;
     // For every Query
     for (uint64_t i = 0; i < wl_ptr -> num_predicates; i++)
     {
-
+        rel_counter = 0;
+        intervening * interv_final = interveningInit();
         // variable to count how many rel are we going to use
         query_tuple * qt;
 
@@ -857,11 +866,12 @@ void Execute_Queries(metadata * md, work_line * wl_ptr)
                 qt[rel_counter].file1_ID = wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID;
                 qt[rel_counter].file1_column = wl_ptr -> filters[i].tuples[j].file1_column;
                 qt[rel_counter].rel = Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
-
-                printf("mphka40 --- %lu.%lu\n",qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
+                qt[rel_counter].rel = Radix_Sort(qt[rel_counter].rel);
+                qt[rel_counter].rel = Filter(qt[rel_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
+            //    printf("mphka40 --- %lu.%lu\n",qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
                 rel_counter++;
 
-                //    printf("g----->\n" );
+
             }
             else
             {
@@ -870,7 +880,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr)
                 //     perror("Execute_Queries 1st realloc");
                 //     exit(-1);
                 // }
-                if(Find_Query_Tuple(qt, wl_ptr -> filters[i].tuples[j].file1_ID, wl_ptr -> filters[i].tuples[j].file1_column, rel_counter))
+                if(Find_Query_Tuple(qt, wl_ptr -> filters[i].tuples[j].file1_ID, wl_ptr -> filters[i].tuples[j].file1_column, rel_counter) != TAG)
                 {
                     printf("Already exists!\n");
                 }
@@ -888,9 +898,10 @@ void Execute_Queries(metadata * md, work_line * wl_ptr)
                     qt[rel_counter].file1_ID = wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID;
                     qt[rel_counter].file1_column = wl_ptr -> filters[i].tuples[j].file1_column;
                     qt[rel_counter].rel = Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
-
+                    qt[rel_counter].rel = Radix_Sort(qt[rel_counter].rel);
+                    qt[rel_counter].rel = Filter(qt[rel_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
                     rel_counter++;
-                    printf("mphka30\n" );
+                //    printf("mphka30\n" );
                 }
 
                 // relations[rel_counter] = Init_pointer();
@@ -918,8 +929,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr)
                 qt[rel_counter].file1_ID = wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID;
                 qt[rel_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
                 qt[rel_counter].rel = Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
-
-                if(Find_Query_Tuple(qt, wl_ptr -> predicates[i].tuples[j].file2_ID, wl_ptr -> predicates[i].tuples[j].file2_column, rel_counter))
+                qt[rel_counter].rel = Radix_Sort(qt[rel_counter].rel);
+                if(Find_Query_Tuple(qt, wl_ptr -> predicates[i].tuples[j].file2_ID, wl_ptr -> predicates[i].tuples[j].file2_column, rel_counter) != TAG)
                 {
 
                 }
@@ -929,17 +940,20 @@ void Execute_Queries(metadata * md, work_line * wl_ptr)
                     qt[rel_counter + 1].file1_ID = wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID;
                     qt[rel_counter + 1].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
                     qt[rel_counter + 1].rel = Create_Relation(md,qt[rel_counter + 1].file1_ID,qt[rel_counter + 1].file1_column);
+                    qt[rel_counter + 1].rel = Radix_Sort(qt[rel_counter + 1].rel);
                 }
 
-                printf("mphka0\n" );
+            //    printf("mphka0\n" );
                 rel_counter+=2;
             }
-            else
+            else        // A filter already exists
             {
-                if(Find_Query_Tuple(qt,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, rel_counter))
+                // Example: if we have the query: 0.1 = 1.0 & 0.1 > 3000
+                if(Find_Query_Tuple(qt,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, rel_counter) != TAG)
                 {
                 //    printf("Yparxei!!\n");
                 }
+                // Example: if we have the query: 1.0 = x & 0.1 > 3000
                 else
                 {
                     if((qt = (query_tuple *)realloc(qt,sizeof(query_tuple) * (rel_counter + 1))) == NULL)
@@ -951,17 +965,18 @@ void Execute_Queries(metadata * md, work_line * wl_ptr)
                     //qt[rel_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                     qt[rel_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
                     qt[rel_counter].rel = Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
-
-                    printf("mphka1 --- %lu.%lu\n",qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
+                    qt[rel_counter].rel = Radix_Sort(qt[rel_counter].rel);
+                //    printf("mphka1 --- %lu.%lu\n",qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
                 //    Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column,qt[rel_counter].rel);
 
                     rel_counter++;
                 }
-
-                if(Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, rel_counter))
+                // Example: if we have the query: x = 0.1 & 0.1 > 3000
+                if(Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, rel_counter) != TAG)
                 {
                 //    printf("Yparxei sth 2h!!\n");
                 }
+                // Example: if we have the query: x = 1.0 & 0.1 > 3000
                 else
                 {
                     if((qt = (query_tuple *)realloc(qt,sizeof(query_tuple) * (rel_counter + 1))) == NULL)
@@ -973,34 +988,187 @@ void Execute_Queries(metadata * md, work_line * wl_ptr)
                     //qt[rel_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                     qt[rel_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
                     qt[rel_counter].rel = Create_Relation(md,qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
-                    printf("mphka2--- %lu.%lu\n",qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
-
+                    qt[rel_counter].rel = Radix_Sort(qt[rel_counter].rel);
+                //    printf("mphka2--- %lu.%lu\n",qt[rel_counter].file1_ID,qt[rel_counter].file1_column);
 
                     rel_counter++;
                 }
             }
         }
 
-        printf("\n");
-
-        for (uint64_t j = 0; j < rel_counter; j++)
+    //    printf("\n\nStarting:%lu\n",rel_counter);
+        //
+        // for (size_t j = 0; j < rel_counter; j++)
+        // {
+        //     printf("%lu.%lu   Pos->%lu\n", qt[j].file1_ID,qt[j].file1_column,j);
+        // }
+        // printf("\n\n");
+        for (uint64_t j = 0; j < wl_ptr -> predicates[i].num_tuples; j++)
         {
+            // for first predicate only
+            if(j == 0)
+            {
+                //Join_v2()
+                // EDW EXEI THEMA
+                rel_A_pos = Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file1_column,rel_counter);
+            //    printf("%lu.%lu   PosA->%lu\n", wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file1_column,rel_A_pos);
+
+                rel_B_pos = Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column,rel_counter);
+            //    printf("%lu.%lu   PosB=>%lu\n", wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column,rel_B_pos);
+                Join_v2(interv_final, qt[rel_A_pos].rel, qt[rel_B_pos].rel, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID);
+            //    printf("sou %lu\n",interv_final -> position);
+
+
+
+                // wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID
+                // wl_ptr -> predicates[i].tuples[j].file2_column
+                // Join_v2(interv_final, )
+            ///    printf("1st breakpoint\n");
+
+            }
+            else    // for the rest predicates
+            {
+
+                // search which id exists in qt
+                for (size_t z = 0; z < rel_counter; z++)
+                {
+                //    printf("1.1 breakpoint\n");
+
+                    //
+                    if(wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID == qt[z].file1_ID)
+                    {
+                        // Update
+                    //    printf("1.1.1 breakpoint\n");
+                        // find the position of
+                    //    printf("%lu\n",interv_final -> position);
+                        for (size_t k = 0; k < interv_final -> position; k++)
+                    	{
+
+                    		if(interv_final -> rowId[k] == qt[z].file1_ID)
+                    		{
+                            //    Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file1_column,interv_final ->final_rel,k);
+                                Update_Relation_Keys(md,qt[z].file1_ID,wl_ptr -> predicates[i].tuples[j].file1_column,interv_final ->final_rel,k);
+                                interv_final ->final_rel = Radix_Sort(interv_final ->final_rel);
+                                // Radix
+                                rel_A_pos = Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column,rel_counter);
+
+                            //    printf("\n%lu,%lu To vrhka %lu\n",wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column, rel_A_pos);
+
+
+                                Join_v2(interv_final, interv_final -> final_rel, qt[rel_A_pos].rel  , qt[z].file1_ID, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID);
+
+                                // CheckSum(md,0,2,interv_final->final_rel,1);
+                                // CheckSum(md,3,1,interv_final->final_rel,0);
+                                //
+                                // printf("\n");
+                                // for (uint64_t x = 0; x < interv_final -> position; x++)   // Search in interval final in rowid
+                                // {
+                                //     printf("x = %lu\n",interv_final -> rowId[x]);
+                                // }
+                                printf("sto 1o\n");
+
+                                //exit(-1);
+                                break;
+                    		}
+                    	}
+                        break;
+
+                    //    Join_v2(interv_final, interv_final -> final_rel, qt[z].rel, qt[z].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column);
+                    }
+                //    printf("1.2 breakpoint\n");
+                    if(wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID == qt[z].file1_ID)
+
+                    {
+                        // Update
+                    //    Update_Relation_Keys(md,qt[z].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column,interv_final ->final_rel,z);
+                    //    Join_v2(interv_final, interv_final -> final_rel, qt[z].rel, qt[z].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column);
+                    //    printf("%lu\n",interv_final -> position);
+                        for (size_t k = 0; k < interv_final -> position; k++)
+                        {
+                        //    printf("%lu,",interv_final -> rowId[k]);
+                            if(interv_final -> rowId[k] == qt[z].file1_ID)
+                            {
+                                if(i == 1)
+                                {
+                                    printf("sto 2o\n");
+                                }
+                                Update_Relation_Keys(md,qt[z].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column,interv_final ->final_rel,k);
+                                interv_final ->final_rel = Radix_Sort(interv_final ->final_rel);
+                                // Radix
+                                rel_A_pos = Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file1_column,rel_counter);
+                                //qt[rel_A_pos].rel = Radix_Sort(qt[rel_A_pos].rel);
+                            //    printf("\n%lu,%lu To vrhka %lu\n",wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column, rel_A_pos);
+
+
+                                Join_v2(interv_final, interv_final -> final_rel, qt[rel_A_pos].rel  , qt[z].file1_ID, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID);
+                                printf("g\n");
+                                break;
+
+                            }
+                        }
+
+                    }
+                    break;
+                //    printf("2nd breakpoint\n");
+
+                }
+                // if(rel_A_pos = Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file1_column,rel_counter))
+                // {
+                //     if(rel_B_pos = Find_Query_Tuple(qt, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column,rel_counter))
+                //     {
+                //     //    Join_v2(interv_final, interv_final -> final_rel, qt[rel_B_pos].rel, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID);
+                //     }
+                // }
+            }
+
+            printf("\n");
             // if(j == 0)
             // {
             //     qt[j].rel = Create_Relation(md,qt[j].file1_ID,qt[j].file1_column);
             // }
-            printf("%lu %lu\n",qt[j].file1_ID, qt[j].file1_column);
+        //    printf("%lu %lu\n",qt[j].file1_ID, qt[j].file1_column);
         //    Print_Relation_2(qt[i].rel);
         }
-        //free(relations);
-        printf("%lu->%lu\n",i,rel_counter );
-        //exit(-1);
-        rel_counter =0;
+        printf("%lu)",i);
 
-        for (uint64_t j = 0; j < rel_counter; j++)
+
+        for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
         {
+        //    printf("z = %lu\n",z);
+            /* code */
+
+                for (uint64_t x = 0; x < interv_final -> position; x++)   // Search in interval final in rowid
+                {
+                //    printf("x = %lu\n",x);
+                //    printf("LOL %lu\n", interv_final -> position);
+                    if(interv_final -> rowId[x] == wl_ptr -> parameters[i].tuples[wl_ptr -> selects[i].tuples[z].file1_ID].file1_ID)
+                    {
+                    //    printf("-%lu)%lu\n%lu)%lu\n",x ,interv_final -> rowId[x], z, qt[z].file1_ID);
+                        // printf("-->%lu---%lu\n",wl_ptr -> parameters[i].tuples[wl_ptr -> selects[i].tuples[z].file1_ID].file1_ID,wl_ptr -> selects[i].tuples[z].file1_column);
+                        // printf("-x = %lu\n",x);
+                        CheckSum(md,wl_ptr -> parameters[i].tuples[wl_ptr -> selects[i].tuples[z].file1_ID].file1_ID,wl_ptr -> selects[i].tuples[z].file1_column,interv_final -> final_rel,0);
+
+                        break;
+                    }
+                }
+
 
         }
+
+        printf("\n");
+
+        if(i == 1)
+        {
+            Print_Relation_2(qt[0].rel);
+            exit(-1);
+        }
+        //free(relations);
+        //printf("%lu->%lu\n",i,rel_counter );
+        //exit(-1);
+        rel_counter = 0;
+        free(qt);
+
+
         //break;
         //relation_filters = &relation_filters_struct;
         //free(relation_filters);
