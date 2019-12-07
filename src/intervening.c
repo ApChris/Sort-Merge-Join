@@ -119,7 +119,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 						relation struct_final;
 						final_interv -> final_rel = &struct_final;
 						final_interv -> final_rel -> num_tuples = 0;
-						printf("join malloc\n");
+					//	printf("join malloc\n");
 
 					}
 					else
@@ -140,7 +140,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 						relation struct_final;
 						final_interv -> final_rel = &struct_final;
 						final_interv -> final_rel -> num_tuples = 0;
-						printf("join realloc\n");
+					//	printf("join realloc\n");
 					}
 					join_flag = 1;
 
@@ -172,7 +172,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 
 uint64_t FindRowID(intervening * final_interv, uint64_t rowID)
 {
-	printf("pos = %lu\n", final_interv -> position);
+//	printf("pos = %lu\n", final_interv -> position);
 	for (size_t i = 0; i < final_interv -> position; i++)
 	{
 		if(final_interv -> rowId[i] == rowID)
