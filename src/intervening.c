@@ -119,27 +119,49 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 						relation struct_final;
 						final_interv -> final_rel = &struct_final;
 						final_interv -> final_rel -> num_tuples = 0;
-					//	printf("join malloc\n");
+						printf("join malloc\n");
 
 					}
 					else
 					{
-						final_interv -> rowId = (uint64_t*)realloc(final_interv->rowId, (sizeof(uint64_t)*((final_interv -> position) + 1)));
-						if(!FindRowID(final_interv,rowIdA))
+
+						if(FindRowID(final_interv,rowIdA)) // if doesn;t exists
 						{
+							if(FindRowID(final_interv,rowIdB)) // if doesn;t exists
+							{
+								printf("Yparxoun!!!\n");
+								temp_rel = (relation *)malloc(sizeof(relation));
+								relation struct_final;
+								final_interv -> final_rel = &struct_final;
+								final_interv -> final_rel -> num_tuples = 0;
+							}
+							else
+							{
+								final_interv -> rowId = (uint64_t*)realloc(final_interv->rowId, (sizeof(uint64_t)*((final_interv -> position) + 1)));
+								final_interv -> rowId[final_interv -> position] = rowIdB;
+
+								final_interv -> position += 1;
+								temp_rel = (relation *)malloc(sizeof(relation));
+								relation struct_final;
+								final_interv -> final_rel = &struct_final;
+								final_interv -> final_rel -> num_tuples = 0;
+							}
+
+						}
+						else // if you find it
+						{
+							final_interv -> rowId = (uint64_t*)realloc(final_interv->rowId, (sizeof(uint64_t)*((final_interv -> position) + 1)));
 							final_interv -> rowId[final_interv -> position] = rowIdA;
-						}
-						else
-						{
-							final_interv -> rowId[final_interv -> position] = rowIdB;
+
+							final_interv -> position += 1;
+							temp_rel = (relation *)malloc(sizeof(relation));
+							relation struct_final;
+							final_interv -> final_rel = &struct_final;
+							final_interv -> final_rel -> num_tuples = 0;
 						}
 
 
-						final_interv -> position += 1;
-						temp_rel = (relation *)malloc(sizeof(relation));
-						relation struct_final;
-						final_interv -> final_rel = &struct_final;
-						final_interv -> final_rel -> num_tuples = 0;
+
 					//	printf("join realloc\n");
 					}
 					join_flag = 1;
