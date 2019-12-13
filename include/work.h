@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "relation.h"
 
 typedef struct parameter_tuple
 {
@@ -76,6 +77,7 @@ typedef struct query_tuple
 {
     uint64_t file1_ID;
     uint64_t file1_column;
+    uint64_t used;
     relation * rel;
 }query_tuple;
 
@@ -85,6 +87,7 @@ void PredicateRelInit(work_line * wl_ptr);
 
 void FiltersRelInit(work_line * wl_ptr);
 void Push_Filters(work_line * wl_ptr, uint64_t file1_ID, uint64_t file1_column, char symbol, uint64_t limit, uint64_t counter);
+void Push_Filters_Self(work_line * wl_ptr, uint64_t file1_ID, uint64_t file1_column, uint64_t file2_ID, uint64_t file2_column, uint64_t counter);
 
 void SelectsRelInit(work_line * wl_ptr);
 void Push_Selects(work_line * wl_ptr, uint64_t file1_ID, uint64_t file1_column, uint64_t counter);
