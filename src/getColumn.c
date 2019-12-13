@@ -265,7 +265,7 @@ work_line * Read_Work(const char * filename)
     uint64_t select_flag = 0;
 
     work_line * wl_ptr = WorkLineInit();
-
+    uint64_t i = 0;
     while ((read = getline(&line, &length, file)) != -1)
     {
 
@@ -284,6 +284,7 @@ work_line * Read_Work(const char * filename)
             {
                 F_flag = 1;
                 break;
+                //continue;
             }
             // PARAMETERS
             if ((strchr(token, '=') == NULL) && (strchr(token, '.') == NULL))
@@ -352,22 +353,44 @@ work_line * Read_Work(const char * filename)
                 // regular predicate, i.e. 0.1=1.2
                 else
                 {
-                    if(predicate_flag == 0)
-                    {
-                        PredicateRelInit(wl_ptr);
-                        Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),1);
-                        predicate_flag = 1;
-                    }
-                    else
-                    {
-                        Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),0);
-                    }
+                    //
+                    // if(wl_ptr -> parameters[i].tuples[atoi(file1_ID)].file1_ID == wl_ptr -> parameters[i].tuples[atoi(file2_ID)].file1_ID)
+                    // {
+                    //     if(filter_flag == 0)
+                    //     {
+                    //         FiltersRelInit(wl_ptr);
+                    //     //    Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), '=' ,atoi(file2_ID),1);
+                    //         Push_Filters_Self(wl_ptr,atoi(file1_ID),atoi(file1_Column), atoi(file2_ID), atoi(file2_Column),1);
+                    //         filter_flag = 1;
+                    //     }
+                    //     else
+                    //     {
+                    //     //    Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), '=' ,atoi(file2_ID),0);
+                    //         Push_Filters_Self(wl_ptr,atoi(file1_ID),atoi(file1_Column), atoi(file2_ID), atoi(file2_Column), 0);
+                    //     }
+                    //     // exit(-1);
+                    // }
+                    // else
+                    // {
+                        if(predicate_flag == 0)
+                        {
+                            PredicateRelInit(wl_ptr);
+                            Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),1);
+                            predicate_flag = 1;
+                        }
+                        else
+                        {
+                            Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),0);
+                        }
+                    // }
+
                 }
                 free(predicate);
                 free(temp_predicate_tail);
                 free(file1_ID);
                 free(file2_ID);
                 token = strtok(NULL,seps);
+
                 continue;
             }
 
@@ -440,12 +463,15 @@ work_line * Read_Work(const char * filename)
 
         if (F_flag == 1)
         {
+            F_flag = 0;
+            continue;
             break;
         }
         predicate_flag = 0;
         select_flag = 0;
         parameter_flag = 0;
         filter_flag = 0;
+        i++;
 
     }
 
