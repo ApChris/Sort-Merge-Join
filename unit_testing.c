@@ -16,8 +16,9 @@
 #include "./include/histogram.h"
 #include "./include/psum.h"
 #include "./include/work.h"
+#include "./include/execute_query.h"
 
-// compilation method: gcc -o unit_test unit_testing.c ./src/getColumn.c ./src/initArray.c ./src/reorderedColumn.c ./src/quicksort.c ./src/splitBucket.c ./src/result.c ./src/sortMergeJoin.c ./src/processRelation.c ./src/intervening.c ./src/histogram.c ./src/psum.c ./src/work.c -lcunit
+// compilation method: gcc -o unit_test unit_testing.c ./src/getColumn.c ./src/initArray.c ./src/reorderedColumn.c ./src/quicksort.c ./src/splitBucket.c ./src/result.c ./src/sortMergeJoin.c ./src/processRelation.c ./src/intervening.c ./src/histogram.c ./src/psum.c ./src/work.c ./src/execute_query.c -lcunit
 
 
 
@@ -44,14 +45,10 @@ void Join_v2_Simple(void){
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
-    relation struct_A;
-    relation * relation_A = &struct_A;
-    Create_Relation(md,3,2,relation_A);
+    relation * relation_A = Create_Relation(md,3,2);
 
     // Radix sort to r3.2
-    relation struct_A_final;
-    relation * relation_A_final = &struct_A_final;
-    relation_A = Radix_Sort(relation_A, relation_A_final);
+    relation_A = Radix_Sort(relation_A);
 
     // r3.2 < 2
     relation_A = Filter(relation_A, 2, '<');
@@ -59,14 +56,10 @@ void Join_v2_Simple(void){
     // Print_Relation_2(relation_A);
 
     // r1.0
-    relation struct_B;
-    relation * relation_B = &struct_B;
-    Create_Relation(md,0,0,relation_B);
+    relation * relation_B = Create_Relation(md,0,0);
 
     // Radix Sort to r1.0
-    relation struct_B_final;
-    relation * relation_B_final = &struct_B_final;
-    relation_B = Radix_Sort(relation_B, relation_B_final);
+    relation_B = Radix_Sort(relation_B);
 
     intervening * interv_final = interveningInit();
     Join_v2(interv_final, relation_A, relation_B, 3, 0);
@@ -121,14 +114,10 @@ void Join_v2_AfterUpdating(void){
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
-    relation struct_A;
-    relation * relation_A = &struct_A;
-    Create_Relation(md,3,2,relation_A);
+    relation * relation_A = Create_Relation(md,3,2);
 
     // Radix sort to r3.2
-    relation struct_A_final;
-    relation * relation_A_final = &struct_A_final;
-    relation_A = Radix_Sort(relation_A, relation_A_final);
+    relation_A = Radix_Sort(relation_A);
 
     // r3.2 < 2
     relation_A = Filter(relation_A, 2, '<');
@@ -136,31 +125,21 @@ void Join_v2_AfterUpdating(void){
     // Print_Relation_2(relation_A);
 
     // r1.0
-    relation struct_B;
-    relation * relation_B = &struct_B;
-    Create_Relation(md,0,0,relation_B);
+    relation * relation_B = Create_Relation(md,0,0);
 
     // Radix Sort to r1.0
-    relation struct_B_final;
-    relation * relation_B_final = &struct_B_final;
-    relation_B = Radix_Sort(relation_B, relation_B_final);
+    relation_B = Radix_Sort(relation_B);
 
     intervening * interv_final = interveningInit();
     Join_v2(interv_final, relation_A, relation_B, 3, 0);
 
     Update_Relation_Keys(md,3,1,interv_final->final_rel,0);
 
-    relation struct_D_final;
-    relation * relation_D_final = &struct_D_final;
-    interv_final -> final_rel = Radix_Sort(interv_final->final_rel, relation_D_final);
+    interv_final->final_rel = Radix_Sort(interv_final->final_rel);
 
-    relation struct_C;
-    relation * relation_C = &struct_C;
-    Create_Relation(md,1,0,relation_C);
+    relation * relation_C = Create_Relation(md,1,0);
 
-    relation struct_C_final;
-    relation * relation_C_final = &struct_C_final;
-    relation_C = Radix_Sort(relation_C, relation_C_final);
+    relation_C = Radix_Sort(relation_C);
     
     Join_v2(interv_final, interv_final->final_rel, relation_C, 3, 1);
 
@@ -223,14 +202,10 @@ void CheckSum_Simple(void){
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
-    relation struct_A;
-    relation * relation_A = &struct_A;
-    Create_Relation(md,3,2,relation_A);
+    relation * relation_A = Create_Relation(md,3,2);
 
     // Radix sort to r3.2
-    relation struct_A_final;
-    relation * relation_A_final = &struct_A_final;
-    relation_A = Radix_Sort(relation_A, relation_A_final);
+    relation_A = Radix_Sort(relation_A);
 
     // r3.2 < 2
     relation_A = Filter(relation_A, 2, '<');
@@ -238,31 +213,22 @@ void CheckSum_Simple(void){
     // Print_Relation_2(relation_A);
 
     // r1.0
-    relation struct_B;
-    relation * relation_B = &struct_B;
-    Create_Relation(md,0,0,relation_B);
+    relation * relation_B = Create_Relation(md,0,0);
 
     // Radix Sort to r1.0
-    relation struct_B_final;
-    relation * relation_B_final = &struct_B_final;
-    relation_B = Radix_Sort(relation_B, relation_B_final);
+    relation_B = Radix_Sort(relation_B);
 
     intervening * interv_final = interveningInit();
     Join_v2(interv_final, relation_A, relation_B, 3, 0);
 
     Update_Relation_Keys(md,3,1,interv_final->final_rel,0);
 
-    relation struct_D_final;
-    relation * relation_D_final = &struct_D_final;
-    interv_final -> final_rel = Radix_Sort(interv_final->final_rel, relation_D_final);
 
-    relation struct_C;
-    relation * relation_C = &struct_C;
-    Create_Relation(md,1,0,relation_C);
+    interv_final -> final_rel = Radix_Sort(interv_final->final_rel);
 
-    relation struct_C_final;
-    relation * relation_C_final = &struct_C_final;
-    relation_C = Radix_Sort(relation_C, relation_C_final);
+    relation * relation_C = Create_Relation(md,1,0);
+
+    relation_C = Radix_Sort(relation_C);
     
     Join_v2(interv_final, interv_final->final_rel, relation_C, 3, 1);
 
