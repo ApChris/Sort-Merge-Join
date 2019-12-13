@@ -3,7 +3,6 @@
 
 ---
 
-<hr>
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
 <p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:</p>
