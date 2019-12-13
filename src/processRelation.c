@@ -835,6 +835,10 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
     rel = rel_final;
 
 //    printf("counter = %lu\n", counter);
+    if(counter == 0)
+    {
+        return NULL;
+    }
     return rel_final;
 
 }
