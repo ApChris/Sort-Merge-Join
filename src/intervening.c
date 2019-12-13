@@ -63,7 +63,7 @@ void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation 
 }
 
 
-void pushJoinedElements_Self(relation * temp_rel, relation * relation_A, uint64_t posA, uint64_t counter, uint64_t key)
+void pushJoinedElements_Self(relation * temp_rel, relation * relation_A, relation * relation_B, uint64_t posA, uint64_t posB,uint64_t rowIdB, uint64_t counter, uint64_t key)
 {
 	uint64_t number_of_paylods = 0;
 	if (counter == 0)
@@ -74,7 +74,14 @@ void pushJoinedElements_Self(relation * temp_rel, relation * relation_A, uint64_
 
 		for (size_t i = 0; i < relation_A -> tuples[posA].position; i++)
 		{
-			temp_rel->tuples[counter].payload[number_of_paylods] = relation_A -> tuples[posA].payload[i];
+			if(i == rowIdB)
+			{
+				temp_rel->tuples[counter].payload[number_of_paylods] = relation_B -> tuples[posB].payload[0];
+			}
+			else
+			{
+				temp_rel->tuples[counter].payload[number_of_paylods] = relation_A -> tuples[posA].payload[i];
+			}
 			number_of_paylods++;
 		}
 		temp_rel -> tuples[counter].key = key;
@@ -88,7 +95,14 @@ void pushJoinedElements_Self(relation * temp_rel, relation * relation_A, uint64_
 		temp_rel -> tuples[counter].payload = (uint64_t*)malloc(sizeof(uint64_t)*temp_rel -> tuples[counter].position);
 		for (size_t i = 0; i < relation_A -> tuples[posA].position; i++)
 		{
-			temp_rel->tuples[counter].payload[number_of_paylods] = relation_A -> tuples[posA].payload[i];
+			if(i == rowIdB)
+			{
+				temp_rel->tuples[counter].payload[number_of_paylods] = relation_B -> tuples[posB].payload[0];
+			}
+			else
+			{
+				temp_rel->tuples[counter].payload[number_of_paylods] = relation_A -> tuples[posA].payload[i];
+			}
 			number_of_paylods++;
 		}
 		temp_rel -> tuples[counter].key = key;
@@ -156,7 +170,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 						relation struct_final;
 						final_interv -> final_rel = &struct_final;
 						final_interv -> final_rel -> num_tuples = 0;
-						printf("join malloc\n");
+					//	printf("join malloc\n");
 
 					}
 					// rest joins
@@ -167,7 +181,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 						{
 							if(FindRowID(final_interv,rowIdB) != TAG) // if exists
 							{
-								printf("Yparxoun!!!\n");
+							//	printf("Yparxoun!!!\n");
 								temp_rel = (relation *)malloc(sizeof(relation));
 								relation struct_final;
 								final_interv -> final_rel = &struct_final;
@@ -207,16 +221,16 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 
 				}
 
-				// // push
-				// if(flag)
-				// {
-				// 	pushJoinedElements_Self(temp_rel, rel_A, a, counter,rel_A->tuples[a].key);
-				// }
-				// else
-				// {
+				// push
+				if(flag)
+				{
+					pushJoinedElements_Self(temp_rel, rel_A, rel_B, a, b, rowIdB, counter,rel_A->tuples[a].key);
+				}
+				else
+				{
 					pushJoinedElements_v2(temp_rel, rel_A, rel_B, a, b, counter,rel_A->tuples[a].key);
 
-				// }
+				}
 
 				if(b==rel_B->num_tuples)
 				{
@@ -259,20 +273,22 @@ uint64_t Self_Join(intervening * final_interv, relation * rel_A, relation * rel_
 	relation struct_A;
 	relation * temp_rel = &struct_A;
 
-	int join_flag = 0;
+	uint64_t join_flag = 0;
 
 	uint64_t counter = 0;
 
 	uint64_t mark = 0, a = 0, b = 0;
 	uint64_t flag = 0;
-	printf("tuples %lu\n",rel_A -> num_tuples);
+//	printf("----------------------tuples %lu\n",rel_A -> num_tuples);
 	for (size_t i = 0; i < rel_A -> num_tuples; i++)
 	{
+	//	printf("%lu)%lu ---- %lu)%lu\n",rel_A->tuples[i].payload[1],rel_A->tuples[i].key, rel_A->tuples[i].payload[0],rel_B->tuples[i].key);
 	//	printf("%lu) %lu ---- %lu \n",i, rel_A->tuples[i].key, rel_B->tuples[i].key);
 		if(rel_A->tuples[i].key == rel_B->tuples[i].key)
 		{
 			if (join_flag == 0)
 			{
+				// printf("MPHKA\n");
 				// 1st join
 				if (final_interv -> position == NULL)
 				{
@@ -286,7 +302,7 @@ uint64_t Self_Join(intervening * final_interv, relation * rel_A, relation * rel_
 					relation struct_final;
 					final_interv -> final_rel = &struct_final;
 					final_interv -> final_rel -> num_tuples = 0;
-					printf("join malloc\n");
+				//	printf("join malloc\n");
 
 				}
 				// rest joins
@@ -297,7 +313,7 @@ uint64_t Self_Join(intervening * final_interv, relation * rel_A, relation * rel_
 					{
 						if(FindRowID(final_interv,rowIdB) != TAG) // if exists
 						{
-								printf("Yparxoun!!!\n");
+							//	printf("Yparxoun!!!\n");
 							temp_rel = (relation *)malloc(sizeof(relation));
 							relation struct_final;
 							final_interv -> final_rel = &struct_final;
@@ -335,8 +351,8 @@ uint64_t Self_Join(intervening * final_interv, relation * rel_A, relation * rel_
 
 			if(flag)
 			{
-				printf("Mpainei!!\n");
-				pushJoinedElements_Self(temp_rel, rel_A, i, counter,rel_A->tuples[a].key);
+			//	printf("Mpainei!!\n");
+				 pushJoinedElements_Self(temp_rel, rel_A, rel_B, i, i,rowIdB, counter,rel_A->tuples[a].key);
 			}
 			else
 			{
@@ -346,6 +362,8 @@ uint64_t Self_Join(intervening * final_interv, relation * rel_A, relation * rel_
 		}
 
 	}
+//	printf("counter %lu\n",counter);
+
 	final_interv -> final_rel = temp_rel;
 	return counter;
 }
@@ -445,7 +463,7 @@ relation * Scan(relation * rel_A, relation * rel_B)
 	{
 		if(rel_A->tuples[i].key == rel_B->tuples[i].key)
 		{
-			pushJoinedElements_Self(temp_rel, rel_A, i, counter,rel_A->tuples[i].key);
+			// pushJoinedElements_Self(temp_rel, rel_A, i, counter,rel_A->tuples[i].key);
 
 			counter++;
 		}
