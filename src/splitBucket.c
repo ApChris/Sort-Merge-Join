@@ -7,7 +7,7 @@ void Split_Bucket(relation * rel_old, histogram * hist, psum *ps, relation *rel_
 
     for(int64_t i = start; i < end; i++)
     {
-        swap(&rel_old -> tuples[i],&rel_new -> tuples[i]);
+        swap(&(rel_old -> tuples[i]),&(rel_new -> tuples[i]));
     }
 
     // Create a new histogram in range start:end
@@ -40,6 +40,10 @@ void printBucket(relation * rel, int64_t start, int64_t end)
 {
 	for(int64_t i = start; i < end; i++)
 	{
-		printf("%lu, %lu\n", rel -> tuples[i].key, rel -> tuples[i].payload);
+        for (size_t j = 0; j < rel -> tuples[i].position; j++) {
+            /* code */
+            printf("%lu, %lu\n", rel -> tuples[i].key, rel -> tuples[i].payload[j]);
+
+        }
 	}
 }
