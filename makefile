@@ -12,7 +12,7 @@ OBJS = build/main.o \
 		build/sortMergeJoin.o \
 		build/intervening.o \
 		build/work.o \
-		build/execute_query.o
+		build/executeQuery.o
 
 
 
@@ -66,7 +66,7 @@ build/sortMergeJoin.o: src/sortMergeJoin.c
 build/intervening.o: src/intervening.c
 	$(CC) $(FLAGS) $< -o $@
 
-build/execute_query.o: src/execute_query.c
+build/executeQuery.o: src/executeQuery.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/work.o: src/work.c
