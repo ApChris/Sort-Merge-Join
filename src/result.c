@@ -32,8 +32,8 @@ result *pushJoinedElements(result *head, uint64_t key, uint64_t * payload_A, uin
 	if(current_result->num_results < ROWS)
 	{
 		current_result->buffer[current_result->num_results][0] = key;
-		current_result->buffer[current_result->num_results][1] = payload_A;
-		current_result->buffer[current_result->num_results][2] = payload_B;
+		current_result->buffer[current_result->num_results][1] = payload_A[0];
+		current_result->buffer[current_result->num_results][2] = payload_B[0];
 
 		current_result->num_results++;
 	}
@@ -45,8 +45,8 @@ result *pushJoinedElements(result *head, uint64_t key, uint64_t * payload_A, uin
 		current_result = previous_result->next_result;
 
 		current_result->buffer[current_result->num_results][0] = key;
-		current_result->buffer[current_result->num_results][1] = payload_A;
-		current_result->buffer[current_result->num_results][2] = payload_B;
+		current_result->buffer[current_result->num_results][1] = payload_A[0];
+		current_result->buffer[current_result->num_results][2] = payload_B[0];
 
 		current_result->num_results++;
 

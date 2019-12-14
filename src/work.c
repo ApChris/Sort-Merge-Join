@@ -211,7 +211,7 @@ void ParametersRelInit(work_line * wl_ptr)
 {
     if(wl_ptr -> num_parameters == 0)
     {
-        if ((wl_ptr -> parameters = ((select_rel * )malloc(sizeof(select_rel)))) == NULL)
+        if ((wl_ptr -> parameters = ((parameter_rel * )malloc(sizeof(parameter_rel)))) == NULL)
         {
             perror("filter_rel.c, first malloc");
             exit(-1);
@@ -223,7 +223,7 @@ void ParametersRelInit(work_line * wl_ptr)
     }
     else
     {
-        if ((wl_ptr -> parameters = ((select_rel * )realloc(wl_ptr -> parameters,sizeof(select_rel)*(wl_ptr -> num_parameters+1)))) == NULL)
+        if ((wl_ptr -> parameters = ((parameter_rel * )realloc(wl_ptr -> parameters,sizeof(parameter_rel)*(wl_ptr -> num_parameters+1)))) == NULL)
         {
             perror("filter_rel.c, realloc");
             exit(-1);
@@ -239,7 +239,7 @@ void Push_Parameters(work_line * wl_ptr, uint64_t file1_ID, uint64_t counter)
 
 	if (counter == 1)
 	{
-		if((wl_ptr -> parameters[wl_ptr -> num_parameters - 1].tuples = (select_tuple*)malloc(sizeof(select_tuple))) == NULL)
+		if((wl_ptr -> parameters[wl_ptr -> num_parameters - 1].tuples = (parameter_tuple*)malloc(sizeof(parameter_tuple))) == NULL)
         {
             perror("push_parameters.c, first malloc");
             exit(-1);
@@ -250,7 +250,7 @@ void Push_Parameters(work_line * wl_ptr, uint64_t file1_ID, uint64_t counter)
     }
 	else
 	{
-		if((wl_ptr -> parameters[wl_ptr -> num_parameters - 1].tuples = (select_tuple*)realloc(wl_ptr -> parameters[wl_ptr -> num_parameters - 1].tuples, (sizeof(select_tuple)*(wl_ptr -> parameters[wl_ptr -> num_parameters - 1].num_tuples+1)))) == NULL)
+		if((wl_ptr -> parameters[wl_ptr -> num_parameters - 1].tuples = (parameter_tuple*)realloc(wl_ptr -> parameters[wl_ptr -> num_parameters - 1].tuples, (sizeof(parameter_tuple)*(wl_ptr -> parameters[wl_ptr -> num_parameters - 1].num_tuples+1)))) == NULL)
         {
             perror("push_parameters.c, realloc");
             exit(-1);
