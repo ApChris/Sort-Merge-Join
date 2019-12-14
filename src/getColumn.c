@@ -2,33 +2,6 @@
 #include <stdlib.h>
 #include "../include/getColumn.h"
 
-void GetColumn(uint64_t ** array, uint64_t rows, uint64_t selected_column, relation *rel)
-{
-
-    // We'll create space for rows number of tuples
-    if((rel -> tuples = (tuple *)malloc(rows * sizeof(tuple))) == NULL)
-    {
-        perror("getQolumn.c , first malloc\n");
-        exit(-1);
-    }
-
-    uint64_t i = 0;
-
-    // For each row
-    while(i < rows)
-    {
-        // key is the value
-        rel -> tuples[i].key = array[i][selected_column];
-
-        // payload is the rowID
-        rel -> tuples[i].payload = i;
-        i++;
-    }
-
-    // The number of tuples is the number of rows
-    rel -> num_tuples = rows;
-
-}
 
 
 void GetColumn_FromFILE(const char * filename, relation *rel)
@@ -69,7 +42,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
     {
         fscanf(file, "%lu,%lu",&key,&payload);
         rel -> tuples[i].key = key; // key is the value
-        rel -> tuples[i].payload = payload; // payload
+        // rel -> tuples[i].payload = payload; // payload
 
     }
 
@@ -89,7 +62,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
 
 
 
-metadata * Read_Init_Binary(const char * filename)
+metadata * Read_Init_Binary(const char * filename, char * fileFlag)
 {
 
     // variables for init file
@@ -129,7 +102,7 @@ metadata * Read_Init_Binary(const char * filename)
     rewind(file_init);
 
 
-    if((md = (uint64_t *)malloc(rows*sizeof(metadata))) == NULL)
+    if((md = (metadata *)malloc(rows*sizeof(metadata))) == NULL)
     {
         perror("Read_binary_file malloc failed:");
         exit(-1);
@@ -140,7 +113,18 @@ metadata * Read_Init_Binary(const char * filename)
     {
         fscanf(file_init,"%s\n",current_path);
         //printf("%s\n",current_path);
-        char final_path[22] = "workloads/small/";
+        // if(fileFlag == 'm')
+        // {
+        //     char final_path[23] = "workloads/medium/";
+        // }
+        // else
+        // {
+        //     char final_path[22] = "workloads/small/";
+        // }
+        // printf("Edw\n");
+        char final_path[23];// = "workloads/small/"
+         strcpy(final_path,fileFlag);
+         // printf("%s\n",final_path);
         strcat(final_path,current_path);
 
         if((file_binary = fopen(final_path,"rb+")) == NULL)
@@ -178,25 +162,12 @@ metadata * Read_Init_Binary(const char * filename)
         }
         for (size_t j = 0; j < array[1]; j++)
         {
-        //    printf("value = %lu --> address = %p\n",array[offset_metadata],&array[offset_metadata]);
-            md[i].array[j] = &array[offset_metadata];
+            md[i].array[j] = (uint64_t)&array[offset_metadata];
             offset_metadata += array[0];
 
         }
 
         offset_metadata = 2;
-        // print
-        // for (size_t i = 2; i < array[0] + 2; i++)
-        // {
-        //     for (size_t j = 0; j < array[1]; j++)
-        //     {
-        //         printf("%lu|",array[i+offset]);
-        //         offset += array[0];
-        //     }
-        //     offset = 0;
-        //     printf("\n");
-        // }
-
 
         // close
         if(fclose(file_binary))
@@ -226,19 +197,19 @@ char * split(char * str, const char * delim)
     return p + strlen(delim);
 }
 
-uint64_t self_join_check(char * str1, char * str2)
-{
-    char * tail_str1, * tail_str2;
-
-    tail_str1 = split(str1, ".");
-    tail_str2 = split(str2, ".");
-
-    if (!strcmp(str1, str2))
-    {
-        return 0;
-    }
-    return -1;
-}
+// uint64_t self_join_check(char * str1, char * str2)
+// {
+//     char * tail_str1, * tail_str2;
+//
+//     tail_str1 = split(str1, ".");
+//     tail_str2 = split(str2, ".");
+//
+//     if (!strcmp(str1, str2))
+//     {
+//         return 0;
+//     }
+//     return -1;
+// }
 
 work_line * Read_Work(const char * filename)
 {
@@ -247,7 +218,7 @@ work_line * Read_Work(const char * filename)
     // variables for init file
     FILE * file;
     uint64_t length = 0;
-    uint64_t read;
+    int64_t read;
     char seps[] = "\n,()&|_ ";
     char * line = NULL;
 
@@ -270,8 +241,8 @@ work_line * Read_Work(const char * filename)
     {
 
         char * token;
-        printf("\nNew query:\t");
-        printf("%s",line);
+        // printf("\nNew query:\t");
+        // printf("%s",line);
 
         uint64_t F_flag = 0;
 
@@ -329,10 +300,10 @@ work_line * Read_Work(const char * filename)
 
 
                 // self join, i.e. 0.1=0.2 (scanning) ---> SELF_JOIN
-                if (!self_join_check(predicate, temp_predicate_tail))
-                {
-                    printf("self join\n");
-                }
+                // if (!self_join_check(predicate, temp_predicate_tail))
+                // {
+                //     printf("self join\n");
+                // }
 
                 // i.e. 0.1=5000 is a filter, not a predicate
                 if ((strchr(predicate_tail, '.') == NULL))
@@ -353,36 +324,18 @@ work_line * Read_Work(const char * filename)
                 // regular predicate, i.e. 0.1=1.2
                 else
                 {
-                    //
-                    // if(wl_ptr -> parameters[i].tuples[atoi(file1_ID)].file1_ID == wl_ptr -> parameters[i].tuples[atoi(file2_ID)].file1_ID)
-                    // {
-                    //     if(filter_flag == 0)
-                    //     {
-                    //         FiltersRelInit(wl_ptr);
-                    //     //    Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), '=' ,atoi(file2_ID),1);
-                    //         Push_Filters_Self(wl_ptr,atoi(file1_ID),atoi(file1_Column), atoi(file2_ID), atoi(file2_Column),1);
-                    //         filter_flag = 1;
-                    //     }
-                    //     else
-                    //     {
-                    //     //    Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), '=' ,atoi(file2_ID),0);
-                    //         Push_Filters_Self(wl_ptr,atoi(file1_ID),atoi(file1_Column), atoi(file2_ID), atoi(file2_Column), 0);
-                    //     }
-                    //     // exit(-1);
-                    // }
-                    // else
-                    // {
-                        if(predicate_flag == 0)
-                        {
-                            PredicateRelInit(wl_ptr);
-                            Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),1);
-                            predicate_flag = 1;
-                        }
-                        else
-                        {
-                            Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),0);
-                        }
-                    // }
+
+                    if(predicate_flag == 0)
+                    {
+                        PredicateRelInit(wl_ptr);
+                        Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),1);
+                        predicate_flag = 1;
+                    }
+                    else
+                    {
+                        Push_Predicates(wl_ptr,atoi(file1_ID),atoi(file1_Column),atoi(file2_ID),atoi(file2_Column),0);
+                    }
+
 
                 }
                 free(predicate);

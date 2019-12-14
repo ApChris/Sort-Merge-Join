@@ -22,6 +22,6 @@ void pushJoinedElements_v2(relation * temp_rel, relation * relation_A, relation 
 uint64_t FindRowID(intervening * final_interv, uint64_t rowID);
 
 void pushJoinedElements_Self(relation * temp_rel, relation * relation_A, relation * relation_B, uint64_t posA, uint64_t posB,uint64_t rowIdB, uint64_t counter, uint64_t key);
-uint64_t Self_Join(intervening * final_interv, relation * rel_A, relation * rel_B, uint64_t rowIdA, uint64_t rowIdB);
-relation * Scan(relation * rel_A, relation * rel_B);
+uint64_t Scan(intervening * final_interv, relation * rel_A, relation * rel_B, uint64_t rowIdA, uint64_t rowIdB);
+// relation * Scan(relation * rel_A, relation * rel_B);
 #endif
