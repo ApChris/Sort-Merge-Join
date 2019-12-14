@@ -16,9 +16,9 @@ relation * Init_pointer();
 
 query_tuple * Init_Query_Tuple();
 
-relation * Update_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos, intervening * interv_final,uint64_t interv_pos, uint64_t payload_pos);
+// relation * UpdateRel(metadata * md, uint64_t md_pos,uint64_t array_pos, intervening * interv_final,uint64_t interv_pos, uint64_t payload_pos);
 
-void Execute_Queries(metadata * md, work_line * wl_ptr);
-
+void Execute_Queries(metadata * md, work_line * wl_ptr, uint64_t query);
+void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter);
 
 #endif
