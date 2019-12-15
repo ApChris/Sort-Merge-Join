@@ -3,9 +3,11 @@
 <p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:</p>
 <pre><code>make rebuild
 </code></pre>
-<p>Execution command:<br>
+<p>Sort-Merge-Join execution command:<br>
 ./smj small<br>
 ./smj medium (incorrect results)</p>
+<p>Unit_testing execution command:<br>
+./unit_test<br></p>
 <h2 id="adjustments-of-part-one">Adjustments of Part One</h2>
 <p>In Part One, every relations had an array of tuples{key, payload}. However, in Part Two, where we had to execute more realistic SQL queries, we needed the “payload” to change from uint64_t to an array of uint64_t. The reason behind this adjustment was the existence of an intervening struct, which holded the result of each predicate.</p>
 <h2 id="preprocessing-of-datasets">Preprocessing of Datasets</h2>
