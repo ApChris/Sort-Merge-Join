@@ -14,21 +14,26 @@ OBJS = build/main.o \
 		build/work.o \
 		build/executeQuery.o
 
-
+TEST_OBJS = $(filter-out build/main.o, $(OBJS))
 
 CC = gcc
 FLAGS = -Wall -Wextra -g -c
+CUNIT_FLAG = -lcunit
 
 
 TARGET = smj
+TARGET_TEST = unit_test
 
-all: $(TARGET)
+all: $(TARGET) $(TARGET_TEST)
 
 clean:
-	$(RM) -r $(TARGET) build/*
+	$(RM) -r $(TARGET) $(TARGET_TEST) build/*
 
 build/main.o: src/main.c
 	$(CC) $(FLAGS) $< -o $@
+
+build/unit_testing.o: unit_testing.c
+	$(CC) $(FLAGS) $< -o $@ $(CUNIT_FLAG)
 
 build/getColumn.o: src/getColumn.c
 	$(CC) $(FLAGS) $< -o $@
@@ -73,6 +78,9 @@ build/work.o: src/work.c
 	$(CC) $(FLAGS) $< -o $@
 
 $(TARGET) : $(OBJS)
-		$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
+
+$(TARGET_TEST) : unit_testing.c $(TEST_OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ $(CUNIT_FLAG)
 
 rebuild: clean all
