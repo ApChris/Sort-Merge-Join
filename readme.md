@@ -1,13 +1,24 @@
+---
+
+
+---
+
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
-<p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:</p>
-<pre><code>make rebuild
-</code></pre>
-<p>Sort-Merge-Join execution command:<br>
-./smj small<br>
-./smj medium (incorrect results)</p>
-<p>Unit_testing execution command:<br>
-./unit_test<br></p>
+<p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:<br>
+<code>make all</code><br>
+and execute for either small or medium datasets:<br>
+<code>./smj small</code><br>
+<code>./smj medium</code>(not working entirely)</p>
+<p>To compile Sort-Merge-Join and unit testing seperately:<br>
+<code>make smj</code><br>
+<code>make unit_test</code></p>
+<p>To remove all object files:<br>
+<code>make clean</code></p>
+<p>To remove all object files and compile them all together:<br>
+<code>make rebuild</code></p>
+<p>To execute unit testing, after compiling for unit_test:<br>
+<code>./unit_test</code></p>
 <h2 id="adjustments-of-part-one">Adjustments of Part One</h2>
 <p>In Part One, every relations had an array of tuples{key, payload}. However, in Part Two, where we had to execute more realistic SQL queries, we needed the “payload” to change from uint64_t to an array of uint64_t. The reason behind this adjustment was the existence of an intervening struct, which holded the result of each predicate.</p>
 <h2 id="preprocessing-of-datasets">Preprocessing of Datasets</h2>
