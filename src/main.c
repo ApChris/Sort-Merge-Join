@@ -68,3 +68,6 @@ int main(int argc, char const *argv[])
     // printf("Time %f\n", time_spent);
     return 0;
 }
+
+// correct medium results
+// i = 1, 4, 12, 18, 20, 22, 27, 31, 32, 33, 37, 40, 42, 46
