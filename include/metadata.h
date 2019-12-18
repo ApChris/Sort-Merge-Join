@@ -6,6 +6,7 @@ typedef struct metadata
     uint64_t num_tuples;
     uint64_t num_columns;
     uint64_t * array;
+    uint64_t * full_array;
 }metadata;
 
 
