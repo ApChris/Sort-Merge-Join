@@ -470,12 +470,12 @@ relation * Radix_Sort(relation * rel)
 
     free(hist -> hist_tuples);
     free(ps -> psum_tuples);
-    for(size_t i = 0; i < rel -> num_tuples; i++)
-    {
-        free(rel->tuples[i].payload);
-    }
-    free(rel -> tuples);
-    free(rel);
+    // for(size_t i = 0; i < rel -> num_tuples; i++)
+    // {
+    //     free(rel->tuples[i].payload);
+    // }
+    // free(rel -> tuples);
+    // free(rel);
     return rel_final;
 
 }

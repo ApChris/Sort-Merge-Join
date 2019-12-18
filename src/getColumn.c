@@ -112,24 +112,16 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * n
     for (size_t i = 0; i < rows; i++)
     {
         fscanf(file_init,"%s\n",current_path);
-        //printf("%s\n",current_path);
-        // if(fileFlag == 'm')
-        // {
-        //     char final_path[23] = "workloads/medium/";
-        // }
-        // else
-        // {
-        //     char final_path[22] = "workloads/small/";
-        // }
-        // printf("Edw\n");
-        char final_path[23];// = "workloads/small/"
-         strcpy(final_path,fileFlag);
-         // printf("%s\n",final_path);
+
+
+        char final_path[26];
+        strcpy(final_path,fileFlag);
+
         strcat(final_path,current_path);
 
         if((file_binary = fopen(final_path,"rb+")) == NULL)
         {
-            perror("fopen failed:");
+            perror("-fopen failed:");
             exit(-1);
         }
 
@@ -137,7 +129,6 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * n
         fseek(file_binary, 0, SEEK_END);
         length_binary = ftell(file_binary);
         fseek(file_binary, 0, SEEK_SET);
-
 
         // Allocate memory
         if((md[i].full_array = (uint64_t *)malloc((length_binary/8 + 1)*sizeof(uint64_t))) == NULL)
@@ -166,7 +157,7 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * n
             offset_metadata += md[i].full_array[0];
 
         }
-        // free(array);
+
         offset_metadata = 2;
         // close
         if(fclose(file_binary))
@@ -174,7 +165,7 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * n
             perror("fclose failed:");
             exit(-1);
         }
-        // free(array);
+
     }
     // close
     if(fclose(file_init))
