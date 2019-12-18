@@ -470,8 +470,12 @@ relation * Radix_Sort(relation * rel)
 
     free(hist -> hist_tuples);
     free(ps -> psum_tuples);
+    for(size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        free(rel->tuples[i].payload);
+    }
     free(rel -> tuples);
-
+    free(rel);
     return rel_final;
 
 }
@@ -499,11 +503,12 @@ relation * Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos)
         exit(-1);
     }
 
-    ptr =  (uint64_t *)md[md_pos].array[array_pos];
-
+    ptr =  (uint64_t *)(md[md_pos].array[array_pos]);
     for(size_t i = 0; i < md[md_pos].num_tuples; i++)
     {
-        rel -> tuples[i].key = *(ptr + i); // key is the value
+        rel -> tuples[i].key = *(ptr); // key is the value
+        // printf("->%lu\n",rel -> tuples[i].key);
+
         if((rel -> tuples[i].payload = (uint64_t *)malloc(sizeof(uint64_t))) == NULL)
         {
             perror("Create_Relation.c , first malloc\n");
@@ -511,7 +516,7 @@ relation * Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos)
         }
         rel -> tuples[i].payload[0] = i;// payload
         rel -> tuples[i].position = 1;
-
+        ptr++;
     }
 
     // The number of tuples is the number of rows
@@ -833,13 +838,15 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
     }
     rel_final -> num_tuples = counter;
 
-    rel = rel_final;
-
-//    printf("counter = %lu\n", counter);
-    if(counter == 0)
+    // rel = rel_final;
+    for(size_t i = 0; i < rel -> num_tuples; i++)
     {
-        return NULL;
+        free(rel->tuples[i].payload);
     }
+    free(rel -> tuples);
+    free(rel);
+//    printf("counter = %lu\n", counter);
+
     return rel_final;
 
 }
