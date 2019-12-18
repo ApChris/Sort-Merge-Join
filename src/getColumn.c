@@ -62,7 +62,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
 
 
 
-metadata * Read_Init_Binary(const char * filename, char * fileFlag)
+metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * num_rows)
 {
 
     // variables for init file
@@ -107,7 +107,7 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag)
         perror("Read_binary_file malloc failed:");
         exit(-1);
     }
-
+    * num_rows = rows;
     // for every binary file
     for (size_t i = 0; i < rows; i++)
     {
@@ -140,42 +140,41 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag)
 
 
         // Allocate memory
-        if((array = (uint64_t *)malloc((length_binary/8 + 1)*sizeof(uint64_t))) == NULL)
+        if((md[i].full_array = (uint64_t *)malloc((length_binary/8 + 1)*sizeof(uint64_t))) == NULL)
         {
             perror("File:malloc failed:");
             exit(-1);
         }
-        for (size_t i = 0; i < length_binary/8; i++)
+        for (size_t j = 0; j < length_binary/8; j++)
         {
-            array[i] = 0;
+            md[i].full_array[j] = 0;
         }
 
         // start reading
-        fread(array,length_binary,1,file_binary);
+        fread(md[i].full_array,length_binary,1,file_binary);
 
-        md[i].num_tuples = array[0];
-        md[i].num_columns = array[1];
-        if((md[i].array = (uint64_t *)malloc(array[1]*sizeof(uint64_t *))) == NULL)
+        md[i].num_tuples = md[i].full_array[0];
+        md[i].num_columns = md[i].full_array[1];
+        if((md[i].array = (uint64_t *)malloc(md[i].full_array[1]*sizeof(uint64_t *))) == NULL)
         {
             perror("File:malloc2 failed:");
             exit(-1);
         }
-        for (size_t j = 0; j < array[1]; j++)
+        for (size_t j = 0; j < md[i].full_array[1]; j++)
         {
-            md[i].array[j] = (uint64_t)&array[offset_metadata];
-            offset_metadata += array[0];
+            md[i].array[j] = (uint64_t)&md[i].full_array[offset_metadata];
+            offset_metadata += md[i].full_array[0];
 
         }
-
+        // free(array);
         offset_metadata = 2;
-
         // close
         if(fclose(file_binary))
         {
             perror("fclose failed:");
             exit(-1);
         }
-
+        // free(array);
     }
     // close
     if(fclose(file_init))
@@ -183,6 +182,7 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag)
         perror("finit failed:");
         exit(-1);
     }
+
     return md;
 }
 
@@ -383,7 +383,7 @@ work_line * Read_Work(const char * filename)
                     Push_Filters(wl_ptr,atoi(file1_ID),atoi(file1_Column), symbol ,atoi(filter_tail),0);
                 }
                 free(filter);
-
+                free(file1_ID);
                 token = strtok(NULL,seps);
                 continue;
             }
