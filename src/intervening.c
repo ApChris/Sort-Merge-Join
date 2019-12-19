@@ -154,6 +154,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 			b = mark;
 			while (rel_A->tuples[a].key == rel_B->tuples[b].key)
 			{
+				// printf("a:%lu, b:%lu\n", a, b);
 				// 1st iteration
 				if (join_flag == 0)
 				{
@@ -231,14 +232,16 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 					pushJoinedElements_v2(temp_rel, rel_A, rel_B, a, b, counter,rel_A->tuples[a].key);
 
 				}
-
+				counter++;
+				b++;
 				if(b==rel_B->num_tuples)
 				{
-					final_interv -> final_rel = temp_rel;
-					return counter;
+					//final_interv -> final_rel = temp_rel;
+					//return counter;
+					break;
 				}
-				b++;
-				counter++;
+				// b++;
+				// counter++;
 			}
 			a++;
 			if(a==rel_A->num_tuples)

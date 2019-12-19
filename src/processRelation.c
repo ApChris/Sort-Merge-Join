@@ -113,7 +113,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                         {
 
                         //     printf("\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b2,hist2 -> hist_tuples[b2].sum,size);
-                            if(i == hist2 -> num_tuples - 1)
+                            if(b2 == hist2 -> num_tuples - 1)
                             {
                                 Quicksort(rel_new, ps2 -> psum_tuples[b2].position,ps2 -> psum_tuples[b2].position + hist2 -> hist_tuples[b2].sum - 1);
                             }
@@ -150,7 +150,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                 {
 
                                 //     printf("\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b3,hist3 -> hist_tuples[b3].sum,size);
-                                    if(i == hist3 -> num_tuples - 1)
+                                    if(b3 == hist3 -> num_tuples - 1)
                                     {
                                         Quicksort(rel_new, ps3 -> psum_tuples[b3].position,ps3 -> psum_tuples[b3].position + hist3 -> hist_tuples[b3].sum - 1);
                                     }
@@ -188,7 +188,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                         {
 
                                         //     printf("\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b4,hist4 -> hist_tuples[b4].sum,size);
-                                            if(i == hist4 -> num_tuples - 1)
+                                            if(b4 == hist4 -> num_tuples - 1)
                                             {
                                                 Quicksort(rel_new, ps4 -> psum_tuples[b4].position,ps4 -> psum_tuples[b4].position + hist4 -> hist_tuples[b4].sum - 1);
                                             }
@@ -230,7 +230,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
 
                                                 //     printf("\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b5,hist5 -> hist_tuples[b5].sum,size);
-                                                    if(i == hist5 -> num_tuples - 1)
+                                                    if(b5 == hist5 -> num_tuples - 1)
                                                     {
                                                         Quicksort(rel_new, ps5 -> psum_tuples[b5].position,ps5 -> psum_tuples[b5].position + hist5 -> hist_tuples[b5].sum - 1);
                                                     }
@@ -273,17 +273,20 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                         {
 
                                                         //     printf("\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b6,hist6 -> hist_tuples[b6].sum,size);
-                                                            if(i == hist6 -> num_tuples - 1)
+                                                            if(b6 == hist6 -> num_tuples - 1)
                                                             {
                                                                 Quicksort(rel_new, ps6 -> psum_tuples[b6].position,ps6 -> psum_tuples[b6].position + hist6 -> hist_tuples[b6].sum - 1);
                                                             }
                                                             else
                                                             {
+                                                                // printf("b6: %lu, b6+1: %lu, i:%lu\n", b6, b6+1, i);
+                                                                //printf("ps6 -> psum_tuples[b6 + 1].position -1 : %lu\n", ps6 -> psum_tuples[b6 + 1].position-1);
                                                                 Quicksort(rel_new,ps6 -> psum_tuples[b6].position,ps6 -> psum_tuples[b6 + 1].position -1);
                                                             }
                                                         }
                                                         else    // SPLIT
                                                         {
+
                                                         //     printf("\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b6,hist6 -> hist_tuples[b6].sum,size);
                                                             histogram struct_h7;
                                                             histogram *hist7 = &struct_h7;
@@ -312,7 +315,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
                                                                 //     printf("\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b7,hist7 -> hist_tuples[b7].sum,size);
 
-                                                                    if(i == hist7 -> num_tuples - 1)
+                                                                    if(b7 == hist7 -> num_tuples - 1)
                                                                     {
                                                                         Quicksort(rel_new, ps7 -> psum_tuples[b7].position,ps7 -> psum_tuples[b7].position + hist7 -> hist_tuples[b7].sum - 1);
                                                                     }
@@ -349,7 +352,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                                         {
 
                                                                         //     printf("\t\t\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------QUICKSORT------\n",b8,hist8 -> hist_tuples[b8].sum,size);
-                                                                            if(i == hist8 -> num_tuples - 1)
+                                                                            if(b8 == hist8 -> num_tuples - 1)
                                                                             {
                                                                                 Quicksort(rel_new, ps8 -> psum_tuples[b8].position,ps8 -> psum_tuples[b8].position + hist8 -> hist_tuples[b8].sum - 1);
                                                                             }
@@ -470,6 +473,7 @@ relation * Radix_Sort(relation * rel)
 
     free(hist -> hist_tuples);
     free(ps -> psum_tuples);
+    free_relation(rel);
     // for(size_t i = 0; i < rel -> num_tuples; i++)
     // {
     //     free(rel->tuples[i].payload);
@@ -478,6 +482,15 @@ relation * Radix_Sort(relation * rel)
     // free(rel);
     return rel_final;
 
+}
+
+void free_relation(relation * rel){
+    for(size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        free(rel->tuples[i].payload);
+    }
+    free(rel -> tuples);
+    free(rel);
 }
 
 /////////////////////////////////////////////////////////////// PROJECT 2 /////////////////////////////////////////
@@ -512,7 +525,7 @@ relation * Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos)
         if((rel -> tuples[i].payload = (uint64_t *)malloc(sizeof(uint64_t))) == NULL)
         {
             perror("Create_Relation.c , first malloc\n");
-            exit(-1);
+            exit(-1);   
         }
         rel -> tuples[i].payload[0] = i;// payload
         rel -> tuples[i].position = 1;

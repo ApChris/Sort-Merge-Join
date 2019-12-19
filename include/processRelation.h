@@ -26,6 +26,7 @@ relation * Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos);
 void Print_Relation_2(relation * rel);
 void Update_Tuple_Payload(relation * rel, uint64_t pos, uint64_t key, uint64_t payload);
 relation * Filter(relation * rel, uint64_t limit, char symbol);
+void free_relation(relation * rel);
 
 void Update_Relation_Keys(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos);
 
