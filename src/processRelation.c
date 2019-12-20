@@ -474,12 +474,6 @@ relation * Radix_Sort(relation * rel)
     free(hist -> hist_tuples);
     free(ps -> psum_tuples);
     free_relation(rel);
-    // for(size_t i = 0; i < rel -> num_tuples; i++)
-    // {
-    //     free(rel->tuples[i].payload);
-    // }
-    // free(rel -> tuples);
-    // free(rel);
     return rel_final;
 
 }
@@ -852,12 +846,7 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
     rel_final -> num_tuples = counter;
 
     // rel = rel_final;
-    for(size_t i = 0; i < rel -> num_tuples; i++)
-    {
-        free(rel->tuples[i].payload);
-    }
-    free(rel -> tuples);
-    free(rel);
+    free_relation(rel);
 //    printf("counter = %lu\n", counter);
 
     return rel_final;

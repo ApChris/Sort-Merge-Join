@@ -51,7 +51,7 @@ uint64_t Find_Query_Tuple(query_tuple * qt, uint64_t file_ID,uint64_t counter)
 {
     for (uint64_t i = 0; i < counter; i++)
     {
-        if((qt[i].file1_ID == file_ID) && (qt[i].used != 0))// && (qt[i].file1_column == file_column))
+        if((qt[i].file1_ID == file_ID) && (qt[i].rel != NULL))// && (qt[i].file1_column == file_column))
         {
             return i;
         }
@@ -119,7 +119,7 @@ void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter)
     printf("We can use these filters:\n");
     for (uint64_t z = 0; z < filter_counter; z++)
     {
-        if(qt_filters[z].used == 0)
+        if(qt_filters[z].rel == NULL)
         {
             flag++;
             if(flag == filter_counter)
@@ -186,8 +186,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
                 qt_filters[filter_counter].file1_column = wl_ptr -> filters[i].tuples[j].file1_column;
                 qt_filters[filter_counter].used = 1;
-                qt_filters[filter_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,qt_filters[filter_counter].file1_column);
-                qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                relation *tmp_rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,qt_filters[filter_counter].file1_column);
+                // qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                //tmp_rel = qt_filters[filter_counter].rel;
+                qt_filters[filter_counter].rel = Radix_Sort(tmp_rel);
+                // free_relation(tmp_rel);
                 qt_filters[filter_counter].rel = Filter(qt_filters[filter_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
 
                 filter_counter++;
@@ -198,7 +201,10 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                 if((pos = Find_Query_Tuple(qt_filters,wl_ptr -> filters[i].tuples[j].file1_ID, filter_counter)) != TAG)
                 {
                     Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,wl_ptr -> filters[i].tuples[j].file1_column,qt_filters[pos].rel,pos);
-                    qt_filters[pos].rel = Radix_Sort(qt_filters[pos].rel);
+                    // qt_filters[pos].rel = Radix_Sort(qt_filters[pos].rel);
+                    relation *tmp_rel = qt_filters[pos].rel;
+                    qt_filters[pos].rel = Radix_Sort(tmp_rel);
+                    // free_relation(tmp_rel);
                     qt_filters[pos].rel = Filter(qt_filters[pos].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
 
                 }
@@ -216,8 +222,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
 
                     qt_filters[filter_counter].used = 1;
-                    qt_filters[filter_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,qt_filters[filter_counter].file1_column);
-                    qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                    relation *tmp_rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,qt_filters[filter_counter].file1_column);
+                    // qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                    //tmp_rel = qt_filters[filter_counter].rel;
+                    qt_filters[filter_counter].rel = Radix_Sort(tmp_rel);
+                    // free_relation(tmp_rel);
                     qt_filters[filter_counter].rel = Filter(qt_filters[filter_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
                     filter_counter++;
 
@@ -256,19 +265,22 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                         qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
 
+                        relation *tmp_rel = qt_filters[posL].rel;
 
-                        qt_predicates[predicate_counter].rel = Init_pointer();
-                        qt_predicates[predicate_counter].rel = qt_filters[posL].rel;
-                        if(qt_predicates[predicate_counter].rel == NULL)
+                        if(tmp_rel == NULL)
                         {
                             printf("Exit because I have found an empty filter\n");
                             exit(-1);
                         }
 
-                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        // qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        
+                        qt_predicates[predicate_counter].rel = Radix_Sort(tmp_rel);
+                        // free_relation(tmp_rel);
                         // printf("Prin to update %lu %lu, tuples : %lu\n",wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file1_column,qt_predicates[predicate_counter].rel ->num_tuples);
 
-                        qt_filters[posL].used = 0;
+                        qt_filters[posL].rel = NULL;
+                        // qt_filters[posL].used = 0;
 
                     }
                     else
@@ -284,8 +296,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                 {
                     qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                     qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
-                    qt_predicates[predicate_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
-                    qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    relation *tmp_rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
+                    // qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    // tmp_rel = qt_predicates[predicate_counter].rel;
+                    qt_predicates[predicate_counter].rel = Radix_Sort(tmp_rel);
+                    // free_relation(tmp_rel);
 
 
                 }
@@ -306,14 +321,17 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         qt_predicates[predicate_counter + 1].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                         qt_predicates[predicate_counter + 1].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
 
+                        relation *tmp_rel = Init_pointer();
 
-                        qt_predicates[predicate_counter + 1].rel = Init_pointer();
+                        tmp_rel = qt_filters[posR].rel;
 
-                        qt_predicates[predicate_counter + 1].rel = qt_filters[posR].rel;
+                        //qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                        
+                        qt_predicates[predicate_counter+1].rel = Radix_Sort(tmp_rel);
+                        // free_relation(tmp_rel);
 
-                        qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
-
-                        qt_filters[posR].used = 0;
+                        qt_filters[posR].rel = NULL;
+                        // qt_filters[posR].used = 0;
 
                         // Print_Available_Filters(qt_filters, filter_counter);
                     }
@@ -334,8 +352,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     qt_predicates[predicate_counter + 1].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                     qt_predicates[predicate_counter + 1].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
 
-                    qt_predicates[predicate_counter + 1].rel = Create_Relation(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column);
-                    qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                    relation *tmp_rel = Create_Relation(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column);
+                    // qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                    //tmp_rel = qt_predicates[predicate_counter+1].rel;
+                    qt_predicates[predicate_counter+1].rel = Radix_Sort(tmp_rel);
+                    // free_relation(tmp_rel);
 
 
                     // Print_Available_Filters(qt_filters, filter_counter);
@@ -349,8 +370,10 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     }
                     else
                     {
+
                         for (uint64_t z = 0; z < interv_final -> position; z++)
                         {
+                            free_relation(qt_predicates[z].rel);
                             qt_predicates[z].rel = Update_Predicates(interv_final -> final_rel, z);
 
                         }
@@ -385,11 +408,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file1_column,qt_filters[posL].rel,0);
                     qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                     qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
-                    qt_predicates[predicate_counter].rel = Init_pointer();
-                    qt_predicates[predicate_counter].rel = qt_filters[posL].rel;
-                    qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    relation *tmp_rel = Init_pointer();
+                    tmp_rel = qt_filters[posL].rel;
+                    qt_predicates[predicate_counter].rel = Radix_Sort(tmp_rel);
+                    // free_relation(tmp_rel);
 
-                    qt_filters[posL].used = 0;
+                    qt_filters[posL].rel = NULL;
+                    // qt_filters[posL].used = 0;
                     predicate_counter++;
                     Lflag = 1;
                 }
@@ -404,7 +429,10 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
                         qt_predicates[posL].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
                         // printf("Lpart)  I have found it %lu.%lu-> %lu\n",qt_predicates[posL].file1_ID, qt_predicates[posL].file1_column,posL);
-                        qt_predicates[posL].rel = Radix_Sort(qt_predicates[posL].rel);
+                        // qt_predicates[posL].rel = Radix_Sort(qt_predicates[posL].rel);
+                        relation *tmp_rel = qt_predicates[posL].rel;
+                        qt_predicates[posL].rel = Radix_Sort(tmp_rel);
+                        // free_relation(tmp_rel);
                         Lflag = 2;
                         Lcolumn_tmp = qt_predicates[posL].file1_column;
 
@@ -418,8 +446,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         }
                         qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                         qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
-                        qt_predicates[predicate_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
-                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        relation *tmp_rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
+                        // qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        // tmp_rel = qt_predicates[predicate_counter].rel;
+                        qt_predicates[predicate_counter].rel = Radix_Sort(tmp_rel);
+                        // free_relation(tmp_rel);
                         posL = predicate_counter;
                         predicate_counter++;
                         Lflag = 3;
@@ -441,12 +472,19 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file2_column,qt_filters[posR].rel,0);
                     qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                     qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
-                    qt_predicates[predicate_counter].rel = Init_pointer();
-                    qt_predicates[predicate_counter].rel = qt_filters[posR].rel;
-                    qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+
+                    relation *tmp_rel = Init_pointer();
+
+                    tmp_rel = qt_filters[posR].rel;
+
+                    qt_predicates[predicate_counter].rel = Radix_Sort(tmp_rel);
+                    // free_relation(tmp_rel);
+                    // qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+
 
                     posR = predicate_counter;
-                    qt_filters[posR].used = 0;
+                    qt_filters[posR].rel = NULL;
+                    // qt_filters[posR].used = 0;
                     predicate_counter++;
                     Rflag = 1;
 
@@ -460,7 +498,10 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file2_column,qt_predicates[posR].rel,0);
                         qt_predicates[posR].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                         qt_predicates[posR].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
-                        qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                        // qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                        relation *tmp_rel = qt_predicates[posR].rel;
+                        qt_predicates[posR].rel = Radix_Sort(tmp_rel);
+                        // free_relation(tmp_rel);
 
 
                         Rflag = 2;
@@ -475,8 +516,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         }
                         qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                         qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
-                        qt_predicates[predicate_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
-                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        relation *tmp_rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
+                        //tmp_rel = qt_predicates[predicate_counter].rel;
+                        qt_predicates[predicate_counter].rel = Radix_Sort(tmp_rel);
+                        // free_relation(tmp_rel);
+                        // qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
                         posR = predicate_counter;
                         predicate_counter++;
 
@@ -550,9 +594,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                             Update_Relation_Keys(md, qt_predicates[posL].file1_ID, Lcolumn_tmp, interv_final -> final_rel, pos);
                             interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
 
+                            // free_relation(qt_predicates[posR].rel);
+
                             qt_predicates[posR].rel = Update_Predicates(interv_final -> final_rel, pos);
                             Update_Relation_Keys(md, qt_predicates[posR].file1_ID, qt_predicates[posR].file1_column, qt_predicates[posR].rel, 0);
-                            qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                            // qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                            relation *tmp_rel = qt_predicates[posR].rel;
+                            qt_predicates[posR].rel = Radix_Sort(tmp_rel);
 
                             if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                             {
@@ -567,6 +615,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         {
                             pos = FindRowID(interv_final, qt_predicates[posL].file1_ID);
                             Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, interv_final -> final_rel, pos);
+
+                            // free_relation(qt_predicates[posR].rel);
 
                             qt_predicates[posR].rel = Update_Predicates(interv_final -> final_rel, posR);
                             Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, qt_predicates[posR].rel, 0);
@@ -600,7 +650,9 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
                     // printf("Eimaste edww ---> %lu\n",pos);
                     Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, interv_final -> final_rel, pos);
-                    interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    // interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    relation *tmp_rel = interv_final -> final_rel;
+                    interv_final -> final_rel = Radix_Sort(tmp_rel);
 
                     // printf("%lu.%lu=%lu.%lu\n",qt_predicates[posL].file1_ID,qt_predicates[posL].file1_column,qt_predicates[posR].file1_ID,qt_predicates[posR].file1_column);
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
@@ -696,15 +748,17 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
         }
         printf("\n");
 
-        for (uint64_t z = 0; z < filter_counter; z++)
-        {
-            for (size_t k = 0; k < qt_filters[z].rel -> num_tuples; k++)
-            {
-                free(qt_filters[z].rel -> tuples[k].payload);
-            }
-            free(qt_filters[z].rel -> tuples);
-            free(qt_filters[z].rel);
-        }
+        printf("filter counter:%lu, predicate counter:%lu\n", filter_counter, predicate_counter);
+
+        // for (uint64_t z = 0; z < filter_counter; z++)
+        // {
+        //     for (size_t k = 0; k < qt_filters[z].rel -> num_tuples; k++)
+        //     {
+        //         free(qt_filters[z].rel -> tuples[k].payload);
+        //     }
+        //     free(qt_filters[z].rel -> tuples);
+        //     free(qt_filters[z].rel);
+        // }
         free(qt_filters);
 
 
