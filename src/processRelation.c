@@ -279,14 +279,11 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
                                                             }
                                                             else
                                                             {
-                                                                // printf("b6: %lu, b6+1: %lu, i:%lu\n", b6, b6+1, i);
-                                                                //printf("ps6 -> psum_tuples[b6 + 1].position -1 : %lu\n", ps6 -> psum_tuples[b6 + 1].position-1);
                                                                 Quicksort(rel_new,ps6 -> psum_tuples[b6].position,ps6 -> psum_tuples[b6 + 1].position -1);
                                                             }
                                                         }
                                                         else    // SPLIT
                                                         {
-
                                                         //     printf("\t\t\t\t\t\t>--------- Bucket : %lu -> %lu elements -> %lu bytes------SPLIT------\n",b6,hist6 -> hist_tuples[b6].sum,size);
                                                             histogram struct_h7;
                                                             histogram *hist7 = &struct_h7;
@@ -403,6 +400,7 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 }
 
 
+
 void Print_Relation(relation * rel, histogram * hist, psum * ps)
 {
     for (uint64_t i = 0; i < ps -> num_tuples; i++)
@@ -473,18 +471,14 @@ relation * Radix_Sort(relation * rel)
 
     free(hist -> hist_tuples);
     free(ps -> psum_tuples);
-    free_relation(rel);
-    return rel_final;
-
-}
-
-void free_relation(relation * rel){
     for(size_t i = 0; i < rel -> num_tuples; i++)
     {
         free(rel->tuples[i].payload);
     }
     free(rel -> tuples);
     free(rel);
+    return rel_final;
+
 }
 
 /////////////////////////////////////////////////////////////// PROJECT 2 /////////////////////////////////////////
@@ -519,7 +513,7 @@ relation * Create_Relation(metadata * md, uint64_t md_pos,uint64_t array_pos)
         if((rel -> tuples[i].payload = (uint64_t *)malloc(sizeof(uint64_t))) == NULL)
         {
             perror("Create_Relation.c , first malloc\n");
-            exit(-1);   
+            exit(-1);
         }
         rel -> tuples[i].payload[0] = i;// payload
         rel -> tuples[i].position = 1;
@@ -613,6 +607,56 @@ relation * Update_Predicates(relation * final_rel, uint64_t column)
 
     return rel;
 }
+
+relation * Update_Interv(relation * final_rel)
+{
+    //relation rel_struct;
+    relation * rel;// = &rel_struct;
+    //;
+
+    if(((rel = (relation *)malloc(sizeof(relation)))) == NULL)
+    {
+        perror("Create_Relation malloc");
+        exit(-1);
+    }
+
+    // We'll create space for rows number of tuples
+    if((rel -> tuples = (tuple *)malloc(final_rel -> num_tuples * sizeof(tuple))) == NULL)
+    {
+        perror("Create_Relation.c , first malloc\n");
+        exit(-1);
+    }
+
+    //ptr =  md[md_pos].array[array_pos];
+
+    for(size_t i = 0; i < final_rel -> num_tuples; i++)
+    {
+        rel -> tuples[i].key = final_rel -> tuples[i].key; // key is the value
+        if((rel -> tuples[i].payload = (uint64_t *)malloc(sizeof(uint64_t)* final_rel -> tuples[i].position)) == NULL)
+        {
+            perror("Create_Relation.c , first malloc\n");
+            exit(-1);
+        }
+        for (size_t j = 0; j < final_rel -> tuples[i].position; j++)
+        {
+            rel -> tuples[i].payload[j] = final_rel -> tuples[i].payload[j];// payload
+
+        }
+        rel -> tuples[i].position = final_rel -> tuples[i].position;
+
+    }
+
+    // The number of tuples is the number of rows
+    rel -> num_tuples = final_rel -> num_tuples;
+
+    for(size_t i = 0; i < final_rel -> num_tuples; i++)
+	{
+		free(final_rel->tuples[i].payload);
+	}
+	free(final_rel -> tuples);
+	free(final_rel);
+    return rel;
+}
 //
 // uint64_t CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos)
 // {
@@ -642,9 +686,9 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
 
     uint64_t j = 0;
 
-    relation struct_A;
-	relation * rel_final = &struct_A;
-    rel_final = (relation *)malloc(sizeof(relation));
+    // relation struct_A;
+	// relation * rel_final = &struct_A;
+    relation * rel_final = (relation *)malloc(sizeof(relation));
 
 
     for (size_t i = 0; i < rel -> num_tuples; i++)
@@ -846,7 +890,12 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
     rel_final -> num_tuples = counter;
 
     // rel = rel_final;
-    free_relation(rel);
+    for(size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        free(rel->tuples[i].payload);
+    }
+    free(rel -> tuples);
+    free(rel);
 //    printf("counter = %lu\n", counter);
 
     return rel_final;
