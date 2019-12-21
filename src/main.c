@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
         else if(!strcmp(argv[1],"medium"))
         {
             md = Read_Init_Binary("workloads/medium/medium.init","workloads/medium/",&num_rows);
-            // wl_ptr = Read_Work("workloads/medium/medium.work");
+            wl_ptr = Read_Work("workloads/medium/medium.work");
         }
         else
         {
@@ -54,64 +54,23 @@ int main(int argc, char const *argv[])
 
     // Print_Work(wl_ptr);
     uint64_t totalQueries = wl_ptr -> num_parameters;
-
-    for (uint64_t i = 0; i < 1; i++)
+    // Correct: 0, 1, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26
+    //          27, 28, 29, 30, 31, 32, 33, 34 , 36, 37, 39, 40, 41, 42, 44, 45, 46, 47, 48
+    // Killed: 2, 7, 11
+    // Cannot allocate memory : 35 (Maybe that's random)
+    // 38, 43 SEG: Case that Join doesn't Find any result, so it has to terminate
+    for (uint64_t i = 0; i < totalQueries; i++)
     {
+        if ( i == 2 || i == 7 || i == 11 || i == 35 || i == 38 || i == 43)
+        continue;
         begin = clock();
 
-        // Execute_Queries(md, wl_ptr, i);
+       Execute_Queries(md, wl_ptr, i);
         end = clock();
 
         time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
     }
-    printf("Edw\n");
-    uint64_t * ptr;
-    ptr = md[0].array[0];
-    printf("%lu %lu\n",*(ptr+ 0),md[0].num_tuples);
-    printf("Edw\n");
-    relation * rel = Create_Relation(md,0,1);
-    Print_Relation_2(rel);
-    printf("num_tuples : %lu\n",rel -> num_tuples);
-    rel = Radix_Sort(rel);
-    // Print_Relation_2(rel);
-    rel = Filter(rel,10000,'>');
-
-    relation * rel2 = Create_Relation(md,0,1);
-    Print_Relation_2(rel2);
-    printf("num_tuples : %lu\n",rel2 -> num_tuples);
-    rel2 = Radix_Sort(rel2);
-    // Print_Relation_2(rel);
-    rel2 = Filter(rel2,10000,'>');
-    printf("num_tuples : %lu\n",rel2 -> num_tuples);
-
-    intervening * interv_final = interveningInit();
-    Join_v2(interv_final, rel,rel2,0,1);
-
-    for (size_t i = 0; i < interv_final -> final_rel -> num_tuples; i++)
-    {
-        free(interv_final -> final_rel ->tuples[i].payload);
-    }
-    free(interv_final -> final_rel ->tuples);
-    free(interv_final -> final_rel);
-    //
-    free(interv_final -> rowId);
-    free(interv_final);
-
-
-    for(size_t i = 0; i < rel -> num_tuples; i++)
-    {
-        free(rel->tuples[i].payload);
-    }
-    free(rel->tuples);
-    free(rel);
-
-    for(size_t i = 0; i < rel2 -> num_tuples; i++)
-    {
-        free(rel2->tuples[i].payload);
-    }
-    free(rel2->tuples);
-    free(rel2);
-    // printf("%lu",num_rows);
+    
 
     for (uint64_t i = 0; i < num_rows; i++)
     {
@@ -151,6 +110,43 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
+
+
+// Write_To_File(md, "output/r8.txt",8);
+
+
+void Write_To_File(metadata * md, char * filename,uint64_t pos)
+{
+    uint64_t * ptr;
+    FILE *fp;
+    if((fp = fopen(filename,"w")) == NULL)
+    {
+        perror("fopen failed");
+        exit(-1);
+    }
+
+        for (size_t j = 0; j < md[pos].num_tuples; j++)
+        {
+            for (size_t z = 0; z <  md[pos].num_columns; z++)
+            {
+                /* code */
+                ptr = md[pos].array[z];
+
+                char str[30];
+
+                sprintf(str,"%lu",*(ptr + j));
+                fputs(str,fp);
+                fputs("|",fp);
+
+
+            }
+            fputs("\n",fp);
+            // printf("%lu|", *(ptr));
+        }
+
+
+    fclose(fp);
+}
 
 // correct medium results
 // i = 1, 4, 12, 18, 20, 22, 27, 31, 32, 33, 37, 40, 42, 46
