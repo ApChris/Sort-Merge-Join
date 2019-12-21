@@ -116,8 +116,8 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 	// final_interv has intervening results before joining relA and relB.
 	// In the end, final_interv will also have the result of the relA=relB
 
-	relation struct_A;
-	relation * temp_rel = &struct_A;
+	//relation struct_A;
+	relation * temp_rel;
 
 	uint64_t join_flag = 0;
 	uint64_t flag = 0;
@@ -131,8 +131,21 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 			while(rel_A->tuples[a].key < rel_B->tuples[b].key)
 			{
 				a++;
-				if(a==rel_A->num_tuples){
-					final_interv -> final_rel = temp_rel;
+				if(a==rel_A->num_tuples)
+				{
+					final_interv -> final_rel = Update_Interv(temp_rel);
+					
+					if(rel_A->tuples[0].position > 1)
+					{
+						for(size_t i = 0; i < rel_A -> num_tuples; i++)
+						{
+							free(rel_A->tuples[i].payload);
+						}
+						free(rel_A -> tuples);
+						free(rel_A);
+					}
+					// final_interv -> final_rel = temp_rel;
+
 					return counter;
 				}
 
@@ -141,7 +154,19 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 			{
 				b++;
 				if(b==rel_B->num_tuples){
-					final_interv -> final_rel = temp_rel;
+					final_interv -> final_rel = Update_Interv(temp_rel);
+
+					if(rel_A->tuples[0].position > 1)
+					{
+						for(size_t i = 0; i < rel_A -> num_tuples; i++)
+						{
+							free(rel_A->tuples[i].payload);
+						}
+						free(rel_A -> tuples);
+						free(rel_A);
+					}
+
+					// final_interv -> final_rel = temp_rel;
 					return counter;
 				}
 
@@ -154,7 +179,6 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 			b = mark;
 			while (rel_A->tuples[a].key == rel_B->tuples[b].key)
 			{
-				// printf("a:%lu, b:%lu\n", a, b);
 				// 1st iteration
 				if (join_flag == 0)
 				{
@@ -167,10 +191,9 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 						final_interv -> rowId[1] = rowIdB;
 						final_interv -> position = 2;
 
-						temp_rel = (relation *)malloc(sizeof(relation));
-						relation struct_final;
-						final_interv -> final_rel = &struct_final;
-						final_interv -> final_rel -> num_tuples = 0;
+						temp_rel = Init_pointer();
+						// final_interv -> final_rel = Init_pointer();
+						// final_interv -> final_rel -> num_tuples = 0;
 					//	printf("join malloc\n");
 
 					}
@@ -183,10 +206,16 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 							if(FindRowID(final_interv,rowIdB) != TAG) // if exists
 							{
 							//	printf("Yparxoun!!!\n");
-								temp_rel = (relation *)malloc(sizeof(relation));
-								relation struct_final;
-								final_interv -> final_rel = &struct_final;
-								final_interv -> final_rel -> num_tuples = 0;
+								temp_rel = Init_pointer();
+								// for(size_t i = 0; i < temp_rel -> num_tuples; i++)
+								// {
+								// 	realloc(temp_rel->tuples[i].payload,0);
+								// }
+								// realloc(temp_rel -> tuples,0);
+								// free(temp_rel);
+								//free(temp_rel);
+								// final_interv -> final_rel = Init_pointer();
+								// final_interv -> final_rel -> num_tuples = 0;
 								flag = 1;
 							}
 							else
@@ -195,10 +224,15 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 								final_interv -> rowId[final_interv -> position] = rowIdB;
 
 								final_interv -> position += 1;
-								temp_rel = (relation *)malloc(sizeof(relation));
-								relation struct_final;
-								final_interv -> final_rel = &struct_final;
-								final_interv -> final_rel -> num_tuples = 0;
+								temp_rel = Init_pointer();
+								// for(size_t i = 0; i < final_interv -> final_rel -> num_tuples; i++)
+								// {
+								// 	free(final_interv -> final_rel->tuples[i].payload);
+								// }
+								// free(final_interv -> final_rel -> tuples);
+								// free(final_interv -> final_rel);
+								// final_interv -> final_rel = Init_pointer();
+								// final_interv -> final_rel -> num_tuples = 0;
 							}
 
 						}
@@ -208,10 +242,9 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 							final_interv -> rowId[final_interv -> position] = rowIdA;
 
 							final_interv -> position += 1;
-							temp_rel = (relation *)malloc(sizeof(relation));
-							relation struct_final;
-							final_interv -> final_rel = &struct_final;
-							final_interv -> final_rel -> num_tuples = 0;
+							temp_rel = Init_pointer();
+							// final_interv -> final_rel = Init_pointer();
+							// final_interv -> final_rel -> num_tuples = 0;
 						}
 
 
@@ -222,7 +255,6 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 
 				}
 
-				// push
 				if(flag)
 				{
 					pushJoinedElements_Self(temp_rel, rel_A, rel_B, a, b, rowIdB, counter,rel_A->tuples[a].key);
@@ -236,23 +268,60 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 				b++;
 				if(b==rel_B->num_tuples)
 				{
-					//final_interv -> final_rel = temp_rel;
-					//return counter;
+					// final_interv -> final_rel = temp_rel;
+					// return counter;
 					break;
 				}
 				// b++;
-				// counter++;
+
 			}
 			a++;
 			if(a==rel_A->num_tuples)
 			{
-				final_interv -> final_rel = temp_rel;
+
+				final_interv -> final_rel = Update_Interv(temp_rel);
+				if(rel_A->tuples[0].position > 1)
+				{
+					for(size_t i = 0; i < rel_A -> num_tuples; i++)
+					{
+						free(rel_A->tuples[i].payload);
+					}
+					free(rel_A -> tuples);
+					free(rel_A);
+				}
+				// final_interv -> final_rel = temp_rel;
+				// printf("Temp rel %lu\n",temp_rel -> num_tuples);
+				// for(size_t i = 0; i < temp_rel -> num_tuples; i++)
+				// {
+				// 	realloc(temp_rel->tuples[i].payload,0);
+				// }
+				// realloc(temp_rel -> tuples,0);
+				// free(temp_rel);
+				//free(temp_rel);
 				return counter;
 			}
 		}
 
 	}
-	final_interv -> final_rel = temp_rel;
+	// for (size_t i = 0; i < final_interv -> position; i++)
+	// {
+	// 	/* code */
+	// 	final_interv -> final_rel = Update_Predicates(temp_rel,i);
+	// }
+	// free(final_interv -> final_rel );
+	// final_interv -> final_rel = temp_rel;
+
+	if(rel_A->tuples[0].position > 1)
+	{
+		for(size_t i = 0; i < rel_A -> num_tuples; i++)
+		{
+			free(rel_A->tuples[i].payload);
+		}
+		free(rel_A -> tuples);
+		free(rel_A);
+	}
+	final_interv -> final_rel = Update_Interv(temp_rel);
+
 	return counter;
 }
 
