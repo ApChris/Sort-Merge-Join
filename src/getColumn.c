@@ -143,7 +143,6 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * n
 
         // start reading
         fread(md[i].full_array,length_binary,1,file_binary);
-
         md[i].num_tuples = md[i].full_array[0];
         md[i].num_columns = md[i].full_array[1];
         if((md[i].array = (uint64_t *)malloc(md[i].full_array[1]*sizeof(uint64_t *))) == NULL)
