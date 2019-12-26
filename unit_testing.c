@@ -39,7 +39,8 @@ void Init_relation(relation *rel, int size){
 // Scan testing for this particular query:  1 0|0.0=1.1&0.0=1.2&0.0<4450&1.1<4450
 void Scan_Simple(void){
 	uint64_t num_rows;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
+    statistics * stats;
+    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows,stats);
 
     relation * relation_A = Create_Relation(md,1,0);
     relation_A = Radix_Sort(relation_A);
@@ -79,7 +80,8 @@ void Scan_Simple(void){
 // Join_v2 testing for this particular query: 3 0 1|0.2=1.0&0.2<2
 void Join_v2_Simple(void){
 		uint64_t num_rows;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
+    statistics * stats;
+    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows,stats);
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
@@ -149,7 +151,8 @@ void Join_v2_Simple(void){
 // Join_v2 testing for this particular query: 3 0 1|0.2=1.0&0.1=2.0&0.2<2
 void Join_v2_AfterUpdating(void){
 		uint64_t num_rows;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
+    statistics * stats;
+    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows,stats);
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
@@ -238,7 +241,8 @@ void Join_v2_AfterUpdating(void){
 // Checksum testing for this particular query: 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 void CheckSum_Simple(void){
 		uint64_t num_rows;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/", &num_rows);
+    statistics *stats;
+    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/", &num_rows, stats);
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
