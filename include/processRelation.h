@@ -29,4 +29,5 @@ relation * Filter(relation * rel, uint64_t limit, char symbol);
 
 void Update_Relation_Keys(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos);
 relation * Update_Interv(relation * final_rel);
+void Free_Relation(relation * rel);
 #endif

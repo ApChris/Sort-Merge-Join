@@ -145,7 +145,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                 if((qt_filters = Init_Query_Tuple()) == NULL)
                 {
                     perror("Execute_Queries 1st malloc");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
 
                 qt_filters[filter_counter].file1_ID = wl_ptr -> filters[i].tuples[j].file1_ID;
@@ -174,7 +175,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     if((qt_filters = (query_tuple *)realloc(qt_filters,sizeof(query_tuple) * (filter_counter + 1))) == NULL)
                     {
                         perror("Execute_Queries 1st realloc");
-                        exit(-1);
+                        break;
+                        // exit(-1);
                     }
 
                     qt_filters[filter_counter].file1_ID = wl_ptr -> filters[i].tuples[j].file1_ID;
@@ -232,7 +234,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                 if((qt_predicates = Init_Query_Tuple()) == NULL)
                 {
                     perror("Execute_Queries 2nd malloc");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
 
                 // Lpart of current predicate has been found in filters
@@ -256,7 +259,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         if(qt_predicates[predicate_counter].rel == NULL)
                         {
                             printf("Exit because I have found an empty filter\n");
-                            exit(-1);
+                            break;
+                            // exit(-1);
                         }
                         // printf("edw\n");
 
@@ -287,7 +291,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         // return;
 
                         qt_filters[posL].used = 0;
-
+                        // filter_counter--;
 
 
 
@@ -314,11 +318,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
                 if((posR = Find_Query_Tuple(qt_filters, wl_ptr -> predicates[i].tuples[j].file2_ID, filter_counter )) != TAG)
                 {
-
                     if((qt_predicates = (query_tuple *)realloc(qt_predicates,sizeof(query_tuple) * (predicate_counter + 2))) == NULL)
                     {
                         perror("Execute_Queries 1st realloc");
-                        exit(-1);
+                        break;
+                        // exit(-1);
                     }
                     if(qt_filters[posR].rel -> num_tuples != 0)
                     {
@@ -332,11 +336,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
 
                         qt_filters[posR].used = 0;
+                        // filter_counter--;
 
                     }
                     else
                     {
                         qt_predicates[predicate_counter + 1].rel = NULL;
+                        qt_filters[posR].used = 0;
+                        // filter_counter--;
                     }
 
                 }
@@ -345,7 +352,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     if((qt_predicates = (query_tuple *)realloc(qt_predicates,sizeof(query_tuple) * (predicate_counter + 2))) == NULL)
                     {
                         perror("Execute_Queries 1st realloc");
-                        exit(-1);
+                        break;
+                        // exit(-1);
                     }
 
                     qt_predicates[predicate_counter + 1].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
@@ -365,19 +373,20 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     // Check 1st predicate for self join or scan
                     if(!Join_v2(interv_final, qt_predicates[predicate_counter].rel, qt_predicates[predicate_counter + 1].rel, qt_predicates[predicate_counter].file1_ID, qt_predicates[predicate_counter + 1].file1_ID))
                     {
+                        printf("Join_v2 line 376\n");
+                        Show_Results(null_flag, wl_ptr, interv_final, md, i);
+                        Free_Execute_Memory(qt_filters, qt_predicates, interv_final, filter_counter, predicate_counter);
+                        filter_counter = 0;
+                        predicate_counter = 0;
                         printf("None Results\n" );
+                        return;
                     }
                     else
                     {
 
                         for (uint64_t z = 0; z < interv_final -> position; z++)
                         {
-                            for(size_t i = 0; i < qt_predicates[z].rel -> num_tuples; i++)
-                            {
-                                free(qt_predicates[z].rel->tuples[i].payload);
-                            }
-                            free(qt_predicates[z].rel -> tuples);
-                            free(qt_predicates[z].rel);
+                            Free_Relation(qt_predicates[z].rel);
                             qt_predicates[z].rel = Update_Predicates(interv_final -> final_rel, z);
 
                         }
@@ -406,7 +415,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     if((qt_predicates = (query_tuple *)realloc(qt_predicates,sizeof(query_tuple) * (predicate_counter + 1))) == NULL)
                     {
                         perror("Execute_Queries 1st realloc");
-                        exit(-1);
+                        break;
+                        // exit(-1);
                     }
 
                     Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file1_column,qt_filters[posL].rel,0);
@@ -419,6 +429,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
 
                     qt_filters[posL].used = 0;
+                    // filter_counter--;
                     predicate_counter++;
                     Lflag = 1;
                 }
@@ -443,7 +454,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         if((qt_predicates = (query_tuple *)realloc(qt_predicates,sizeof(query_tuple) * (predicate_counter + 1))) == NULL)
                         {
                             perror("Execute_Queries 1st realloc");
-                            exit(-1);
+                            break;
+                            // exit(-1);
                         }
                         qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                         qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
@@ -464,7 +476,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     if((qt_predicates = (query_tuple *)realloc(qt_predicates,sizeof(query_tuple) * (predicate_counter + 1))) == NULL)
                     {
                         perror("Execute_Queries 1st realloc");
-                        exit(-1);
+                        break;
+                        // exit(-1);
                     }
 
                     Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file2_column,qt_filters[posR].rel,0);
@@ -474,6 +487,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
 
                     qt_filters[posR].used = 0;
+                    // filter_counter--;
                     posR = predicate_counter;
 
                     predicate_counter++;
@@ -500,7 +514,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         if((qt_predicates = (query_tuple *)realloc(qt_predicates,sizeof(query_tuple) * (predicate_counter + 1))) == NULL)
                         {
                             perror("Execute_Queries 1st realloc");
-                            exit(-1);
+                            break;
+                            // exit(-1);
                         }
                         qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                         qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
@@ -518,17 +533,20 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                 if(Lflag == 1 && Rflag == 1)
                 {
                     printf("Case: 1,1!!\n");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
                 else if(Lflag == 1 && Rflag == 2)    // intervening is going to take Rpart
                 {
                     printf("Case: 1,2!!\n");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
                 else if(Lflag == 1 && Rflag == 3)
                 {
                     printf("Case: 1,3!!\n");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
                 if(Lflag == 2 && Rflag == 1) //  intervening is going to take Lpart
                 {
@@ -543,7 +561,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
+                        printf("Join_v2 line 563\n");
+                        Show_Results(null_flag, wl_ptr, interv_final, md, i);
+                        Free_Execute_Memory(qt_filters, qt_predicates, interv_final, filter_counter, predicate_counter);
+                        filter_counter = 0;
+                        predicate_counter = 0;
                         printf("None Results\n" );
+                        return;
                     }
                     else
                     {
@@ -564,6 +588,10 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
                         if(!Scan(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                         {
+                            // Show_Results(null_flag, wl_ptr, interv_final, md, i);
+                            // Free_Execute_Memory(qt_filters, qt_predicates, interv_final, filter_counter, predicate_counter);
+                            // filter_counter = 0;
+                            // predicate_counter = 0;
                             printf("None Results\n" );
                         }
                         else
@@ -583,19 +611,21 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                             Update_Relation_Keys(md, qt_predicates[posL].file1_ID, Lcolumn_tmp, interv_final -> final_rel, pos);
                             interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
 
-                            for(size_t k = 0; k < qt_predicates[posR].rel -> num_tuples; k++)
-                            {
-                                free(qt_predicates[posR].rel->tuples[k].payload);
-                            }
-                            free(qt_predicates[posR].rel -> tuples);
-                            free(qt_predicates[posR].rel);
+                            Free_Relation(qt_predicates[posR].rel);
+
                             qt_predicates[posR].rel = Update_Predicates(interv_final -> final_rel, pos);
                             Update_Relation_Keys(md, qt_predicates[posR].file1_ID, qt_predicates[posR].file1_column, qt_predicates[posR].rel, 0);
                             qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
 
                             if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                             {
+                                printf("Join_v2 line 620\n");
+                                Show_Results(null_flag, wl_ptr, interv_final, md, i);
+                                Free_Execute_Memory(qt_filters, qt_predicates, interv_final, filter_counter, predicate_counter);
+                                filter_counter = 0;
+                                predicate_counter = 0;
                                 printf("None Results\n" );
+                                return;
                             }
                             else
                             {
@@ -606,19 +636,19 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                         {
                             pos = FindRowID(interv_final, qt_predicates[posL].file1_ID);
                             Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, interv_final -> final_rel, pos);
-                            for(size_t k = 0; k < qt_predicates[posR].rel -> num_tuples; k++)
-                            {
-                                free(qt_predicates[posR].rel->tuples[k].payload);
-                            }
-                            free(qt_predicates[posR].rel -> tuples);
-                            free(qt_predicates[posR].rel);
+                            Free_Relation(qt_predicates[posR].rel);
                             qt_predicates[posR].rel = Update_Predicates(interv_final -> final_rel, posR);
                             Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, qt_predicates[posR].rel, 0);
 
                             if(!Scan(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                             {
+                            // Show_Results(null_flag, wl_ptr, interv_final, md, i);
+                            // Free_Execute_Memory(qt_filters, qt_predicates, interv_final, filter_counter, predicate_counter);
+                            // filter_counter = 0;
+                            // predicate_counter = 0;
                                 printf("None Results\n" );
-                                exit(-1);
+                                break;
+                                // exit(-1);
                             }
                             else
                             {
@@ -649,8 +679,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                     // printf("%lu.%lu=%lu.%lu\n",qt_predicates[posL].file1_ID,qt_predicates[posL].file1_column,qt_predicates[posR].file1_ID,qt_predicates[posR].file1_column);
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
+                        printf("Join_v2 line 679\n");
+                        Show_Results(null_flag, wl_ptr, interv_final, md, i);
+                        Free_Execute_Memory(qt_filters, qt_predicates, interv_final, filter_counter, predicate_counter);
+                        filter_counter = 0;
+                        predicate_counter = 0;
                     //    Join_v2(interv_final, interv_final -> final_rel, qt_predicates[predicate_counter + 1].rel, qt_predicates[predicate_counter].file1_ID, qt_predicates[predicate_counter + 1].file1_ID);
                         printf("None Results\n" );
+                        return;
                     }
                     else
                     {
@@ -674,17 +710,20 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                 if(Lflag == 3 && Rflag == 1)
                 {
                     printf("Case: 3,1!!\n");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
                 else if(Lflag == 3 && Rflag == 2)   //  intervening is going to take Rpart
                 {
                     printf("Case: 3,2!!\n");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
                 else if(Lflag == 3 && Rflag == 3)    //
                 {
                     printf("Case: 3,3!!\n");
-                    exit(-1);
+                    break;
+                    // exit(-1);
                 }
                 Lflag = 0;
                 Rflag = 0;
@@ -700,9 +739,85 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
 
 
     //    exit(-1);
+        // if(null_flag == 1)
+        // {
+        //     // printf("%lu)",i);
+        //     for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
+        //     {
+
+        //         printf("NULL");
+        //         if(z + 1 ==  wl_ptr -> selects[i].num_tuples)
+        //         break;
+        //         else
+        //         printf(" ");
+
+
+        //     }
+        //     printf("\n");
+        //     // break;
+        // }
+        // else
+        // {
+        //     // printf("%lu)",i);
+        //     for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
+        //     {
+        //         for (uint64_t x = 0; x < interv_final -> position; x++)   // Search in interval final in rowid
+        //         {
+
+        //             if(interv_final -> rowId[x] == wl_ptr -> selects[i].tuples[z].file1_ID)
+        //             {
+
+        //                 CheckSum(md,wl_ptr -> parameters[i].tuples[wl_ptr -> selects[i].tuples[z].file1_ID].file1_ID,wl_ptr -> selects[i].tuples[z].file1_column,interv_final -> final_rel,x);
+        //                 if(z + 1 ==  wl_ptr -> selects[i].num_tuples)
+        //                 break;
+        //                 else
+        //                 printf(" ");
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
+        printf("asduhsaduihs\n");
+        // Print_Available_Filters(qt_filters, filter_counter);
+        Show_Results(null_flag, wl_ptr, interv_final, md, i);
+        printf("\n");
+        // Print_Available_Filters(qt_filters, filter_counter);
+        Free_Execute_Memory(qt_filters, qt_predicates, interv_final, filter_counter, predicate_counter);
+
+
+        filter_counter = 0;
+        predicate_counter = 0;
+        // printf("-------------------------------------------------------------------\n",i);
+    }
+}
+
+void Free_Execute_Memory(query_tuple * qt_filters, query_tuple * qt_predicates, intervening *interv_final, 
+    uint64_t filter_counter, uint64_t predicate_counter){
+
+        // printf("filter counter %lu\n", filter_counter);
+        for (uint64_t z = 0; z < filter_counter; z++)
+        {
+            Free_Relation(qt_filters[z].rel);
+        }
+        free(qt_filters);
+
+        for (uint64_t z = 0; z < predicate_counter; z++)
+        {
+            Free_Relation(qt_predicates[z].rel);
+        }
+        free(qt_predicates);
+
+
+        Free_Relation(interv_final -> final_rel);
+
+        free(interv_final -> rowId);
+        free(interv_final);
+}
+
+void Show_Results(uint64_t null_flag, work_line * wl_ptr, intervening * interv_final, metadata * md, uint64_t i){
         if(null_flag == 1)
         {
-            // printf("%lu)",i);
+            printf("%lu)",i);
             for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
             {
 
@@ -719,7 +834,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
         }
         else
         {
-            // printf("%lu)",i);
+            printf("%lu)",i);
             for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
             {
                 for (uint64_t x = 0; x < interv_final -> position; x++)   // Search in interval final in rowid
@@ -738,48 +853,4 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query)
                 }
             }
         }
-        printf("\n");
-        // Print_Available_Filters(qt_filters, filter_counter);
-        for (uint64_t z = 0; z < filter_counter; z++)
-        {
-            for (size_t k = 0; k < qt_filters[z].rel -> num_tuples; k++)
-            {
-                free(qt_filters[z].rel -> tuples[k].payload);
-            }
-            free(qt_filters[z].rel -> tuples);
-            free(qt_filters[z].rel);
-        }
-        free(qt_filters);
-
-
-
-        for (uint64_t z = 0; z < predicate_counter; z++)
-        {
-            for (size_t k = 0; k < qt_predicates[z].rel -> num_tuples; k++)
-            {
-                free(qt_predicates[z].rel -> tuples[k].payload);
-            }
-            free(qt_predicates[z].rel -> tuples);
-            free(qt_predicates[z].rel);
-        }
-        free(qt_predicates);
-
-        // if()
-        for (size_t z = 0; z < interv_final -> final_rel -> num_tuples; z++)
-        {
-            free(interv_final -> final_rel ->tuples[z].payload);
-        }
-        free(interv_final -> final_rel ->tuples);
-        free(interv_final -> final_rel);
-        // //
-        free(interv_final -> rowId);
-        free(interv_final);
-
-
-        filter_counter = 0;
-        predicate_counter = 0;
-        // printf("-------------------------------------------------------------------\n",i);
-    }
-
-
 }

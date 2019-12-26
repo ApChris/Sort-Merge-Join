@@ -1,5 +1,6 @@
 #include "../include/intervening.h"
 #include "../include/relation.h"
+#include "../include/processRelation.h"
 
 intervening * interveningInit()
 {
@@ -137,12 +138,13 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 					
 					if(rel_A->tuples[0].position > 1)
 					{
-						for(size_t i = 0; i < rel_A -> num_tuples; i++)
-						{
-							free(rel_A->tuples[i].payload);
-						}
-						free(rel_A -> tuples);
-						free(rel_A);
+						Free_Relation(rel_A);
+						// for(size_t i = 0; i < rel_A -> num_tuples; i++)
+						// {
+						// 	free(rel_A->tuples[i].payload);
+						// }
+						// free(rel_A -> tuples);
+						// free(rel_A);
 					}
 					// final_interv -> final_rel = temp_rel;
 
@@ -158,12 +160,13 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 
 					if(rel_A->tuples[0].position > 1)
 					{
-						for(size_t i = 0; i < rel_A -> num_tuples; i++)
-						{
-							free(rel_A->tuples[i].payload);
-						}
-						free(rel_A -> tuples);
-						free(rel_A);
+						Free_Relation(rel_A);
+						// for(size_t i = 0; i < rel_A -> num_tuples; i++)
+						// {
+						// 	free(rel_A->tuples[i].payload);
+						// }
+						// free(rel_A -> tuples);
+						// free(rel_A);
 					}
 
 					// final_interv -> final_rel = temp_rel;
@@ -282,6 +285,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 				final_interv -> final_rel = Update_Interv(temp_rel);
 				if(rel_A->tuples[0].position > 1)
 				{
+					// Free_Relation(rel_A);
 					for(size_t i = 0; i < rel_A -> num_tuples; i++)
 					{
 						free(rel_A->tuples[i].payload);
@@ -313,6 +317,7 @@ uint64_t Join_v2(intervening * final_interv, relation * rel_A, relation * rel_B,
 
 	if(rel_A->tuples[0].position > 1)
 	{
+		// Free_Relation(rel_A);
 		for(size_t i = 0; i < rel_A -> num_tuples; i++)
 		{
 			free(rel_A->tuples[i].payload);

@@ -29,11 +29,33 @@ int main(int argc, char const *argv[])
         {
             md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
             wl_ptr = Read_Work("workloads/small/small.work");
+            uint64_t totalQueries = wl_ptr -> num_parameters;
+            for (uint64_t i = 0; i < 5; i++)
+            {
+                begin = clock();
+                Execute_Queries(md, wl_ptr, i);
+                end = clock();
+                time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+            }
         }
         else if(!strcmp(argv[1],"medium"))
         {
             md = Read_Init_Binary("workloads/medium/medium.init","workloads/medium/",&num_rows);
             wl_ptr = Read_Work("workloads/medium/medium.work");
+            uint64_t totalQueries = wl_ptr -> num_parameters;
+            for (uint64_t i = 43; i < 44; i++)
+            {
+                // i == 43
+                // i == 38
+                if ( i == 2 || i == 7 || i == 11 || i == 35)
+                continue;
+                begin = clock();
+
+                Execute_Queries(md, wl_ptr, i);
+                end = clock();
+
+                time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+            }
         }
         else
         {
@@ -53,23 +75,23 @@ int main(int argc, char const *argv[])
     }
 
     // Print_Work(wl_ptr);
-    uint64_t totalQueries = wl_ptr -> num_parameters;
+    // uint64_t totalQueries = wl_ptr -> num_parameters;
     // Correct: 0, 1, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26
     //          27, 28, 29, 30, 31, 32, 33, 34 , 36, 37, 39, 40, 41, 42, 44, 45, 46, 47, 48
     // Killed: 2, 7, 11
     // Cannot allocate memory : 35 (Maybe that's random)
     // 38, 43 SEG: Case that Join doesn't Find any result, so it has to terminate
-    for (uint64_t i = 0; i < totalQueries; i++)
-    {
-        if ( i == 2 || i == 7 || i == 11 || i == 35 || i == 38 || i == 43)
-        continue;
-        begin = clock();
+    // for (uint64_t i = 0; i < totalQueries; i++)
+    // {
+    //     if ( i == 2 || i == 7 || i == 11 || i == 35 || i == 38 || i == 43)
+    //     continue;
+    //     begin = clock();
 
-       Execute_Queries(md, wl_ptr, i);
-        end = clock();
+    //    Execute_Queries(md, wl_ptr, i);
+    //     end = clock();
 
-        time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-    }
+    //     time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+    // }
     
 
     for (uint64_t i = 0; i < num_rows; i++)
