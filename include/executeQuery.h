@@ -20,8 +20,5 @@ query_tuple * Init_Query_Tuple();
 
 void Execute_Queries(metadata * md, work_line * wl_ptr, uint64_t query);
 void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter);
-void Free_Execute_Memory(query_tuple * qt_filters, query_tuple * qt_predicates, intervening *interv_final,
-	uint64_t filter_counter, uint64_t predicate_counter);
-void Show_Results(uint64_t null_flag, work_line * wl_ptr, intervening * interv_final, metadata * md, uint64_t i);
 
 #endif
