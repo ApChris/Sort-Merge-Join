@@ -12,7 +12,8 @@ OBJS = build/main.o \
 		build/sortMergeJoin.o \
 		build/intervening.o \
 		build/work.o \
-		build/executeQuery.o
+		build/executeQuery.o \
+		build/statistics.o
 
 TEST_OBJS = $(filter-out build/main.o, $(OBJS))
 
@@ -75,6 +76,9 @@ build/executeQuery.o: src/executeQuery.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/work.o: src/work.c
+	$(CC) $(FLAGS) $< -o $@
+
+build/statistics.o: src/statistics.c
 	$(CC) $(FLAGS) $< -o $@
 
 $(TARGET) : $(OBJS)
