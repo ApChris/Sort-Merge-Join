@@ -399,14 +399,6 @@ void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation *
 
 }
 
-void Free_Relation(relation * rel){
-    for(size_t i = 0; i < rel -> num_tuples; i++)
-    {
-        free(rel->tuples[i].payload);
-    }
-    free(rel -> tuples);
-    free(rel);
-}
 
 
 void Print_Relation(relation * rel, histogram * hist, psum * ps)
@@ -479,7 +471,12 @@ relation * Radix_Sort(relation * rel)
 
     free(hist -> hist_tuples);
     free(ps -> psum_tuples);
-    Free_Relation(rel);
+    for(size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        free(rel->tuples[i].payload);
+    }
+    free(rel -> tuples);
+    free(rel);
     return rel_final;
 
 }
@@ -652,8 +649,12 @@ relation * Update_Interv(relation * final_rel)
     // The number of tuples is the number of rows
     rel -> num_tuples = final_rel -> num_tuples;
 
-    Free_Relation(final_rel);
-    
+    for(size_t i = 0; i < final_rel -> num_tuples; i++)
+	{
+		free(final_rel->tuples[i].payload);
+	}
+	free(final_rel -> tuples);
+	free(final_rel);
     return rel;
 }
 //
@@ -888,9 +889,12 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
     }
     rel_final -> num_tuples = counter;
 
-    // rel = rel_final;
-    Free_Relation(rel);
-//    printf("counter = %lu\n", counter);
+    for(size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        free(rel->tuples[i].payload);
+    }
+    free(rel -> tuples);
+    free(rel);
 
     return rel_final;
 
