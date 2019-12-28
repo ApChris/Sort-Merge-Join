@@ -1,7 +1,10 @@
 #ifndef _STATISTICS_H
 #define _STATISTICS_H
-#include "stdbool.h"
-
+#include <stdio.h>
+#include <stdbool.h>
+#include <inttypes.h>
+#include "metadata.h"
+#include "executeQuery.h"
 #define N 50000000
 
 typedef struct statistics
@@ -14,5 +17,6 @@ typedef struct statistics
 	uint64_t * num_da;
 }statistics;
 
+statistics * Calculate_Statistics(metadata * md, uint64_t rows);
 
 #endif
