@@ -1,5 +1,4 @@
 #include"../include/statistics.h"
-
 statistics * Calculate_Statistics(metadata * md, uint64_t rows)
 {
     statistics * stats;
@@ -18,20 +17,17 @@ statistics * Calculate_Statistics(metadata * md, uint64_t rows)
     for (size_t i = 0; i < rows; i++)
     {
 
-
-            /* ------------------------------------- PART 3 FOR STATISTICS ------------------------------------- */
-
             // # values of row i
-            if ((stats[i].fa = (uint64_t *)malloc((md[i].num_columns*sizeof(uint64_t)))) == NULL)
+            if ((stats[i].fa = (double *)malloc((md[i].num_columns*sizeof(double)))) == NULL)
             {
                 perror("stats[i].fa malloc failed:");
                 exit(-1);
             }
 
             // min value of row i
-            if ((stats[i].Ia = (uint64_t *)malloc((md[i].num_columns*sizeof(uint64_t)))) == NULL)
+            if ((stats[i].la = (uint64_t *)malloc((md[i].num_columns*sizeof(uint64_t)))) == NULL)
             {
-                perror("stats[i].Ia malloc failed:");
+                perror("stats[i].la malloc failed:");
                 exit(-1);
             }
             // max value of row i
@@ -40,7 +36,7 @@ statistics * Calculate_Statistics(metadata * md, uint64_t rows)
                 perror("stats[i].ua malloc failed:");
                 exit(-1);
             }
-
+            stats[i].num_columns = md[i].num_columns;
             uint64_t min_value, max_value;
             uint64_t current_value;
 
@@ -61,24 +57,24 @@ statistics * Calculate_Statistics(metadata * md, uint64_t rows)
                         max_value = current_value;
                     }
                 }
-                stats[i].Ia[k] = min_value;
+                stats[i].la[k] = min_value;
                 stats[i].ua[k] = max_value;
                 stats[i].fa[k] = md[i].num_tuples;
-                printf("r%lu|%lu\ttotal values:%lu\tmin:%lu\tmax:%lu\n", i, k, stats[i].fa[k], stats[i].Ia[k], stats[i].ua[k]);
+                printf("r%lu|%lu\ttotal values:%lf\tmin:%lu\tmax:%lu\n", i, k, stats[i].fa[k], stats[i].la[k], stats[i].ua[k]);
             }
             // printf("\n");
-
+            bool **da;
             // for every i create arrays of distinct(boolean) arrays
-            if ((stats[i].da = (bool **)malloc((md[i].num_columns*sizeof(bool *)))) == NULL)
+            if ((da = (bool **)malloc((md[i].num_columns*sizeof(bool *)))) == NULL)
             {
                 perror("stats[i].da malloc failed:");
                 exit(-1);
             }
 
             // i-th number of distinct values
-            if ((stats[i].num_da = (uint64_t *)malloc((md[i].num_columns*sizeof(uint64_t)))) == NULL)
+            if ((stats[i].da = (double *)malloc((md[i].num_columns*sizeof(double)))) == NULL)
             {
-                perror("stats[i].num_da malloc failed:");
+                perror("stats[i].da malloc failed:");
                 exit(-1);
             }
             // the size of every distinct value array (we need to know the exact number of distinct values in order to free them)
@@ -93,12 +89,12 @@ statistics * Calculate_Statistics(metadata * md, uint64_t rows)
             uint64_t size = N;
             for (uint64_t k = 0; k < md[i].num_columns; k++)
             {
-                // if ua - Ia + 1 > N, then allocate N bytes
-                if ((stats[i].ua[k] - stats[i].Ia[k] + 1) < N)
+                // if ua - la + 1 > N, then allocate N bytes
+                if ((stats[i].ua[k] - stats[i].la[k] + 1) < N)
                 {
-                    size = stats[i].ua[k] - stats[i].Ia[k] + 1;
+                    size = stats[i].ua[k] - stats[i].la[k] + 1;
                 }
-                if ((stats[i].da[k] = (bool *)malloc(size*sizeof(bool))) == NULL)
+                if ((da[k] = (bool *)malloc(size*sizeof(bool))) == NULL)
                 {
                     perror("bool malloc failed:");
                     exit(-1);
@@ -107,30 +103,253 @@ statistics * Calculate_Statistics(metadata * md, uint64_t rows)
                 // init bool array to false
                 for (size_t w = 0; w < stats[i].size_da[k]; w++)
                 {
-                    stats[i].da[k][w] = false;
+                    da[k][w] = false;
                 }
             }
 
             for (size_t k = 0; k < md[i].num_columns; k++)
             {
-                stats[i].num_da[k] = 0;
+                stats[i].da[k] = 0;
                 for (size_t w = 0; w < md[i].num_tuples; w++)
                 {
                     current_value = md[i].full_array[(k*md[i].num_tuples)+2+w];
-                    // make current cell true: current_value - Ia % N(size)
-                    if (stats[i].da[k][(current_value - stats[i].Ia[k]) % stats[i].size_da[k]] == false)
+                    // make current cell true: current_value - la % N(size)
+                    if (da[k][(current_value - stats[i].la[k]) % stats[i].size_da[k]] == false)
                     {
-                        stats[i].da[k][(current_value - stats[i].Ia[k]) % stats[i].size_da[k]] = true;
-                        stats[i].num_da[k]++;
+                        da[k][(current_value - stats[i].la[k]) % stats[i].size_da[k]] = true;
+                        stats[i].da[k]++;
                     }
                 }
-                printf("r%lu|%lu\tdistinct values:%lu\n", i, k, stats[i].num_da[k]);
+                printf("r%lu|%lu\tdistinct values:%.2lf\n", i, k, stats[i].da[k]);
             }
 
-            /* ------------------------------------- END OF STATISTICS ------------------------------------- */
-
+            for (size_t j = 0; j < md[i].num_columns; j++)
+            {
+                free(da[j]);
+            }
+            free(da);
 
 
     }
     return stats;
+}
+
+
+
+
+statistics * Init_Query_Stats(statistics * stats, work_line * wl_ptr, uint64_t pos)
+{
+    statistics * query_stats;
+    if((query_stats = (statistics *)malloc(sizeof(statistics) * wl_ptr -> parameters[pos].num_tuples)) == NULL)
+    {
+        perror("InitQuery_Stats error");
+        exit(-1);
+    }
+
+    for (size_t i = 0; i < wl_ptr -> parameters[pos].num_tuples; i++)
+    {
+
+        // min value of row i
+        if ((query_stats[i].la = (uint64_t *)malloc((stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].num_columns*sizeof(uint64_t)))) == NULL)
+        {
+            perror("query_stats[i].la malloc failed:");
+            exit(-1);
+        }
+        // max value of row i
+        if ((query_stats[i].ua = (uint64_t *)malloc((stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].num_columns*sizeof(uint64_t)))) == NULL)
+        {
+            perror("query_stats[i].ua malloc failed:");
+            exit(-1);
+        }
+
+        if ((query_stats[i].fa = (double *)malloc((stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].num_columns*sizeof(double)))) == NULL)
+        {
+            perror("query_stats[i].fa malloc failed:");
+            exit(-1);
+        }
+
+        if ((query_stats[i].da = (double *)malloc((stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].num_columns*sizeof(double)))) == NULL)
+        {
+            perror("query_stats[i].da malloc failed:");
+            exit(-1);
+        }
+        // the size of every distinct value array (we need to know the exact number of distinct values in order to free them)
+        if ((query_stats[i].size_da = (uint64_t *)malloc((stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].num_columns*sizeof(uint64_t)))) == NULL)
+        {
+            perror("query_stats[i].size_da malloc failed:");
+            exit(-1);
+        }
+        for (size_t j = 0; j < stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].num_columns; j++)
+        {
+            query_stats[i].la[j] = stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].la[j];
+            query_stats[i].ua[j] = stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].ua[j];
+            query_stats[i].fa[j] = stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].fa[j];
+            query_stats[i].da[j] = stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].da[j];
+            query_stats[i].size_da[j] = stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].size_da[j];
+            // printf("r%lu.%lu -> la = %lu\n",i, j, query_stats[i].la[j]);
+            // printf("r%lu.%lu -> ua = %lu\n",i, j, query_stats[i].ua[j]);
+            // printf("r%lu.%lu -> fa = %.2lf\n",i, j, query_stats[i].fa[j]);
+            // printf("r%lu.%lu -> da = %.2lf\n",i, j, query_stats[i].da[j]);
+            // printf("r%lu.%lu -> size_da = %lu\n",i, j, query_stats[i].size_da[j]);
+
+        }
+        query_stats[i].num_columns = stats[wl_ptr -> parameters[pos].tuples[i].file1_ID].num_columns;
+        printf("%lu->%lu\n",i,wl_ptr -> parameters[pos].tuples[i].file1_ID);
+    }
+
+    return query_stats;
+
+}
+
+void Update_Query_Stats(statistics * query_stats, work_line * wl_ptr, uint64_t pos)
+{
+
+    // uint64_t flag = TAG;
+
+    // for all filters
+    for (uint64_t i = 0; i < wl_ptr -> filters[pos].num_tuples; i++)
+    {
+        printf("------ BEFORE UPDATE ----------------\n");
+        for (size_t j = 0; j < query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].num_columns; j++)
+        {
+            printf("%lu)la->%lu\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[j]);
+            printf("%lu)ua->%lu\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[j]);
+            printf("%lu)da->%lf\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j]);
+            printf("%lu)fa->%lf\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j]);
+        }
+        printf("-------------------------------------\n");
+        double old_fa_global = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column];
+        if(wl_ptr -> filters[pos].tuples[i].symbol == '>' || wl_ptr -> filters[pos].tuples[i].symbol == '<')
+        {
+            uint64_t k1, k2;
+            double old_fa = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column];
+
+            if(wl_ptr -> filters[pos].tuples[i].symbol == '<')
+            {
+                if(wl_ptr -> filters[pos].tuples[i].limit > query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column])
+                {
+                    k2 = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column];
+                }
+                else
+                {
+                    k2 = wl_ptr -> filters[pos].tuples[i].limit;
+                }
+                k1 = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column];
+            }
+            else
+            {
+                if(wl_ptr -> filters[pos].tuples[i].limit < query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column])
+                {
+                    k1 = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column];
+                }
+                else
+                {
+                    k1 = wl_ptr -> filters[pos].tuples[i].limit;
+                }
+                k2 = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column];
+            }
+
+            if(query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column] - query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column] == 0)
+            {
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column] = 0;
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column] = 0;
+            }
+            else
+            {
+                uint64_t old_min = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column];
+                uint64_t old_max = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column];
+                double old_da = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column];
+                double old_fa = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column];
+
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column] = (((double)(k2 - k1)/(old_max - old_min)) * (old_da));
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column] = (((double)(k2 - k1)/(old_max - old_min)) * (old_fa));
+            }
+
+            query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column] = k1;
+            query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column] = k2;
+
+            printf("la->%lu\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column]);
+            printf("ua->%lu\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column]);
+            printf("da->%lf\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column]);
+            printf("fa->%lf\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column]);
+        }
+        else if(wl_ptr -> filters[pos].tuples[i].symbol = '=')
+        {
+            // double old_fa_global = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column];
+            // if k exists in da
+            // if limit >= min && limit <= max
+            if(wl_ptr -> filters[pos].tuples[i].limit >= query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column] &&
+            wl_ptr -> filters[pos].tuples[i].limit <= query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column])
+            {
+                double old_da = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column];
+                double old_fa = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column];
+
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column] = 1;
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column] = old_fa/old_da;
+                // printf("Anhkei edw mesa %lf -> %lf\n" , query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column],query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column]);
+            }
+            else
+            {
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column] = 0;
+                query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column] = 0;
+                // printf("Den Anhkei edw mesa\n");
+            }
+
+            query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column] = wl_ptr -> filters[pos].tuples[i].limit;
+            query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column] = wl_ptr -> filters[pos].tuples[i].limit;
+            printf("->%lu\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column]);
+            printf("->%lu\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column]);
+        }
+
+        for (size_t j = 0; j < query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].num_columns; j++)
+        {
+            printf("--------------------------> %lu ,,,, %lu\n",wl_ptr -> filters[pos].tuples[i].file1_ID, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].num_columns);
+            double old_da = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j];
+            double old_fa = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column];
+            printf("-->%lf\n",old_fa);
+            // if you find the column that have been already fixed, just skip it
+            if(j == wl_ptr -> filters[pos].tuples[i].file1_column)
+            {
+                printf("%lu)la->%lu\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[j]);
+                printf("%lu)ua->%lu\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[j]);
+                printf("%lu)da->%lf\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j]);
+                printf("%lu)fa->%lf\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j]);
+                continue;
+            }
+            double new_fa = old_fa;
+            printf("=>%lf\n",new_fa/old_fa_global);
+            printf("ekthetis %lf\n",(query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j]/query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j]));
+            printf("vash %lf\n",1 - (new_fa/old_fa_global));
+
+            printf("<>%lf\n",1 - pow((1 - (new_fa/old_fa_global)),(query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j]/query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j])));
+            printf("%lf\n", (old_da * (1 - pow((1 - (new_fa/old_fa_global)),(query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j]/query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j])))));
+            query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j] = (old_da * (1 - powl((1 - (new_fa/old_fa_global)),(query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j]/query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j]))));
+            // f'c = f'a
+            query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j] = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[wl_ptr -> filters[pos].tuples[i].file1_column];
+        }
+        printf("------ AFTER UPDATE ----------------\n");
+        for (size_t j = 0; j < query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].num_columns; j++)
+        {
+            printf("%lu)la->%lu\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[j]);
+            printf("%lu)ua->%lu\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[j]);
+            printf("%lu)da->%lf\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[j]);
+            printf("%lu)fa->%lf\n",j, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].fa[j]);
+        }
+        printf("-------------------------------------\n");
+
+    }
+
+    // // Self Join and Join
+    // for (uint64_t i = 0; i < wl_ptr -> predicates[pos].num_tuples; i++)
+    // {
+    //     if(wl_ptr -> filters[pos].tuples[i].symbol == '>' || wl_ptr -> filters[pos].tuples[i].symbol == '<')
+    //     {
+    //
+    //     }
+    //     else if(wl_ptr -> filters[pos].tuples[i].symbol = '=')
+    //     {
+    //
+    //     }
+    // }
+
 }
