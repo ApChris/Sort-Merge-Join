@@ -249,6 +249,7 @@ void Update_Query_Stats(statistics * query_stats, work_line * wl_ptr, uint64_t p
                 k2 = query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column];
             }
 
+            // min & max are the same number , none distinct values
             if(query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column] - query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column] == 0)
             {
                 query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].da[wl_ptr -> filters[pos].tuples[i].file1_column] = 0;
@@ -300,7 +301,7 @@ void Update_Query_Stats(statistics * query_stats, work_line * wl_ptr, uint64_t p
             printf("->%lu\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].la[wl_ptr -> filters[pos].tuples[i].file1_column]);
             printf("->%lu\n",query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].ua[wl_ptr -> filters[pos].tuples[i].file1_column]);
         }
-
+        // for any other column of relation
         for (size_t j = 0; j < query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].num_columns; j++)
         {
             printf("--------------------------> %lu ,,,, %lu\n",wl_ptr -> filters[pos].tuples[i].file1_ID, query_stats[wl_ptr -> filters[pos].tuples[i].file1_ID].num_columns);
@@ -339,17 +340,115 @@ void Update_Query_Stats(statistics * query_stats, work_line * wl_ptr, uint64_t p
 
     }
 
-    // // Self Join and Join
-    // for (uint64_t i = 0; i < wl_ptr -> predicates[pos].num_tuples; i++)
-    // {
-    //     if(wl_ptr -> filters[pos].tuples[i].symbol == '>' || wl_ptr -> filters[pos].tuples[i].symbol == '<')
-    //     {
-    //
-    //     }
-    //     else if(wl_ptr -> filters[pos].tuples[i].symbol = '=')
-    //     {
-    //
-    //     }
-    // }
+    // Self Join and Join
+    // for all predicates of current query
+    for (uint64_t i = 0; i < wl_ptr -> predicates[pos].num_tuples; i++)
+    {
+        // For example 0.1 = 0.2 ! We have to fill this gap later. In small dataset we don;t have an example for this case!
+        if(wl_ptr -> predicates[pos].tuples[i].file1_ID == wl_ptr -> predicates[pos].tuples[i].file2_ID)
+        {
+
+        }
+        // regular join for example 0.1 = 1.0
+        else
+        {
+            uint64_t file1_ID = wl_ptr -> predicates[pos].tuples[i].file1_ID;
+            uint64_t file2_ID = wl_ptr -> predicates[pos].tuples[i].file2_ID;
+            uint64_t file1_column = wl_ptr -> predicates[pos].tuples[i].file1_column;
+            uint64_t file2_column = wl_ptr -> predicates[pos].tuples[i].file2_column;
+
+            double old_da_global_file1 = query_stats[file1_ID].da[file1_column];
+            double old_da_global_file2 = query_stats[file2_ID].da[file2_column];
+            // l'a = l'b = la = lb
+            if(query_stats[file1_ID].la[file1_column] > query_stats[file2_ID].la[file2_column])
+            {
+                printf("%lu - %lu\n",query_stats[file1_ID].la[file1_column], query_stats[file2_ID].la[file2_column]);
+                printf("Mphka if, la %lu.%lu = %lu.%lu\n\n",file1_ID,file1_column,file2_ID,file2_column);
+                query_stats[file2_ID].la[file2_column] = query_stats[file1_ID].la[file1_column];
+
+            }
+            else
+            {
+                printf("%lu - %lu\n",query_stats[file1_ID].la[file1_column], query_stats[file2_ID].la[file2_column]);
+                printf("Mphka else, la %lu.%lu = %lu.%lu\n\n",file1_ID,file1_column,file2_ID,file2_column);
+                query_stats[file1_ID].la[file1_column] = query_stats[file2_ID].la[file2_column];
+            }
+            // u'a = u'b = ua = ub
+            if(query_stats[file1_ID].ua[file1_column] > query_stats[file2_ID].ua[file2_column])
+            {
+                printf("%lu - %lu\n",query_stats[file1_ID].ua[file1_column], query_stats[file2_ID].ua[file2_column]);
+                printf("Mphka if, ua %lu.%lu = %lu.%lu\n\n",file1_ID,file1_column,file2_ID,file2_column);
+                query_stats[file2_ID].ua[file2_column] = query_stats[file1_ID].ua[file1_column];
+
+            }
+            else
+            {
+                printf("%lu - %lu\n",query_stats[file1_ID].ua[file1_column], query_stats[file2_ID].ua[file2_column]);
+                printf("Mphka else, ua %lu.%lu = %lu.%lu\n\n",file1_ID,file1_column,file2_ID,file2_column);
+                query_stats[file1_ID].ua[file1_column] = query_stats[file2_ID].ua[file2_column];
+            }
+
+            double n = ((query_stats[file1_ID].ua[file1_column] - query_stats[file1_ID].la[file1_column]) + 1);
+
+            // f'a = f'b = fa*fb/n
+            query_stats[file1_ID].fa[file1_column] = query_stats[file2_ID].fa[file2_column] = (query_stats[file1_ID].fa[file1_column] * query_stats[file2_ID].fa[file2_column])/n;
+
+            // d'a = d'b = da*db/n
+            query_stats[file1_ID].da[file1_column] = query_stats[file2_ID].da[file2_column] = (query_stats[file1_ID].da[file1_column] * query_stats[file2_ID].da[file2_column])/n;
+
+
+            for (size_t j = 0; j < query_stats[file1_ID].num_columns; j++)
+            {
+                printf("--------------------------> %lu ,,,, %lu\n",file1_ID, query_stats[file1_ID].num_columns);
+                double new_da = query_stats[file1_ID].da[file1_ID];
+                // double old_fa = query_stats[file1_ID].fa[file1_column];
+
+                // if you find the column that have been already fixed, just skip it
+                if(j == file1_column)
+                {
+                    printf("-%lu)la->%lu\n",j, query_stats[file1_ID].la[j]);
+                    printf("-%lu)ua->%lu\n",j, query_stats[file1_ID].ua[j]);
+                    printf("-%lu)da->%lf\n",j, query_stats[file1_ID].da[j]);
+                    printf("-%lu)fa->%lf\n",j, query_stats[file1_ID].fa[j]);
+                    continue;
+                }
+
+                double base = fabs(1 - (new_da/old_da_global_file1));
+                double exponent = (query_stats[file1_ID].fa[j]/query_stats[file1_ID].da[j]);
+                query_stats[file1_ID].da[j] = fabs(query_stats[file1_ID].da[j] * (1 - powl((base),exponent)));
+
+                printf("d'a[file1]->%lf\n",query_stats[file1_ID].da[j]);
+
+                // f'c = f'a
+                query_stats[file1_ID].fa[j] = query_stats[file1_ID].fa[file1_column];
+            }
+
+            for (size_t j = 0; j < query_stats[file2_ID].num_columns; j++)
+            {
+                double new_da = query_stats[file2_ID].da[file2_column];
+
+                // if you find the column that have been already fixed, just skip it
+                if(j == file2_column)
+                {
+                    printf("()%lu)la->%lu\n",j, query_stats[file2_ID].la[j]);
+                    printf("()%lu)ua->%lu\n",j, query_stats[file2_ID].ua[j]);
+                    printf("()%lu)da->%lf\n",j, query_stats[file2_ID].da[j]);
+                    printf("()%lu)fa->%lf\n",j, query_stats[file2_ID].fa[j]);
+                    continue;
+                }
+
+                double base = fabs(1 - (new_da/old_da_global_file2));
+                double exponent = (query_stats[file2_ID].fa[j]/query_stats[file2_ID].da[j]);
+
+                query_stats[file2_ID].da[j] = (query_stats[file2_ID].da[j] * fabs(1 - powl(base, exponent)));
+
+                    printf("d'a[file2]->%lf\n",query_stats[file2_ID].da[j]);
+                // f'c = f'a
+                query_stats[file2_ID].fa[j] = query_stats[file2_ID].fa[file2_column];
+            }
+        }
+    }
+
+
 
 }
