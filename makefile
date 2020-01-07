@@ -13,7 +13,8 @@ OBJS = build/main.o \
 		build/intervening.o \
 		build/work.o \
 		build/executeQuery.o \
-		build/statistics.o
+		build/statistics.o \
+		build/bestTree.o
 
 TEST_OBJS = $(filter-out build/main.o, $(OBJS))
 
@@ -81,10 +82,13 @@ build/work.o: src/work.c
 build/statistics.o: src/statistics.c
 	$(CC) $(FLAGS) $< -o $@
 
+build/bestTree.o: src/bestTree.c
+	$(CC) $(FLAGS) $< -o $@
+
 $(TARGET) : $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ -lm -lpthread
 
 $(TARGET_TEST) : unit_testing.c $(TEST_OBJS)
-	$(CC) $(CFLAGS) $^ -o $@ $(CUNIT_FLAG)
+	$(CC) $(CFLAGS) $^ -o $@ $(CUNIT_FLAG) -lm -lpthread
 
 rebuild: clean all
