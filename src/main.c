@@ -12,7 +12,6 @@
 #include "../include/intervening.h"
 #include "../include/work.h"
 #include "../include/executeQuery.h"
-#include "../include/scheduler.h"
 #include "../include/bestTree.h"
 
 int main(int argc, char const *argv[])
@@ -67,7 +66,7 @@ int main(int argc, char const *argv[])
     // Cannot allocate memory : 35 (Maybe that's random)
     // 38, 43 SEG: Case that Join doesn't Find any result, so it has to terminate
 
-    scheduler *sched = NULL;
+
 
     // #if NUM_THREADS > 1
     //     Scheduler_Init(&sched,NUM_THREADS);
