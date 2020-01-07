@@ -14,7 +14,8 @@ OBJS = build/main.o \
 		build/work.o \
 		build/executeQuery.o \
 		build/statistics.o \
-		build/bestTree.o
+		build/bestTree.o \
+		build/jobScheduler.o
 
 TEST_OBJS = $(filter-out build/main.o, $(OBJS))
 
@@ -83,6 +84,9 @@ build/statistics.o: src/statistics.c
 	$(CC) $(FLAGS) $< -o $@
 
 build/bestTree.o: src/bestTree.c
+	$(CC) $(FLAGS) $< -o $@
+
+build/jobScheduler.o: src/jobScheduler.c
 	$(CC) $(FLAGS) $< -o $@
 
 $(TARGET) : $(OBJS)
