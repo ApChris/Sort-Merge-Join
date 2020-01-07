@@ -73,7 +73,7 @@ int main(int argc, char const *argv[])
     //     Scheduler_Init(&sched,NUM_THREADS);
     // #endif
 
-    for (uint64_t i = 21; i < totalQueries; i++)
+    for (uint64_t i = 0; i < totalQueries; i++)
     {
         // if(i == 2)// || i == 7 || i == 11 || i == 35)
         // {

@@ -3,40 +3,7 @@
 
 // void Deallocate_BestTree(best_tree_node **best_tree,batch_listnode *curr_query,relation_map* rel_map)
 // {
-//   int size = pow(2, curr_query->num_of_relations);
-//   for (size_t i = 1; i < size; i++)
-//   {
-//     if (best_tree[i]->best_tree != NULL)
-//     	FreePredicateList(best_tree[i]->best_tree);
-//     if(best_tree[i]->tree_stats != NULL)
-//       FreeQueryStats(best_tree[i]->tree_stats,curr_query,rel_map);
-//     free(best_tree[i]);
-//   }
-//   free(best_tree);
-// }
-//
-// uint64_t Create_JoinTree(best_tree ** final_bt, best_tree * bt, query_tuple * qt_query_tree, uint64_t qt_columns, work_line * wl_ptr, uint64_t s_new_num)
-// {
-//     uint64_t num = s_new_num;
-//     uint64_t bit_num = 0;
-//
-//     (*final_bt) = malloc(sizeof(best_tree));
-//     (*final_bt) -> qt_query_tree = NULL;
-//
-//     while(num != 0)
-//     {
-//         if (num % 2 == 1)
-//         {
-//             bit_num++;
-//         }
-//       num = num >> 1;
-//     }
-//     (*final_bt) -> active_bits = bit_num;
-//     (*final_bt) -> num_predicates = 0;
-//     (*final_bt) -> tree_stats = calloc(qt_columns, sizeof(statistics *));
-//
-//
-//
+
 // }
 bestTree * Best_Tree_Init()
 {
