@@ -21,4 +21,5 @@ typedef struct statistics
 
 statistics * Calculate_Statistics(metadata * md, uint64_t rows);
 statistics * Init_Query_Stats(statistics * stats, work_line * wl_ptr, uint64_t pos);
+void Update_Query_Stats(statistics * query_stats, work_line * wl_ptr, uint64_t pos);
 #endif
