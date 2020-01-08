@@ -236,23 +236,23 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 // free(qt_predicates);
         // return;
         // For predicates
-        for (uint64_t j = 0; j < wl_ptr -> predicates[i].num_tuples; j++)
+        for (uint64_t pred = 0; pred < wl_ptr -> predicates[i].num_tuples; pred++)
         {
-            // for (size_t f = 0; f < filter_counter; f++)
-            // {
-            //     if(!qt_filters[f].rel -> num_tuples)
-            //     {
-            //         null_flag = 1;
-            //     }
-            // }
-            // if(null_flag)
-            // {
-            //     break;
-            // }
-            // uint64_t j = bt -> path;
-            // // printf("j = %lu\n",j);
-            //
-            // j = Current_Best_Predicate(wl_ptr -> predicates[i].num_tuples,pred,j);
+            for (size_t f = 0; f < filter_counter; f++)
+            {
+                if(!qt_filters[f].rel -> num_tuples)
+                {
+                    null_flag = 1;
+                }
+            }
+            if(null_flag)
+            {
+                break;
+            }
+            uint64_t j = bt -> path;
+            // printf("j = %lu\n",j);
+
+            j = Current_Best_Predicate(wl_ptr -> predicates[i].num_tuples,pred,j);
 
             // printf("j = %lu\n",j);
             // printf("%lu\n",j);
@@ -777,6 +777,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
         }
 
+        printf("%lu)",i);
 
     //    exit(-1);
         if(null_flag == 1)
@@ -800,6 +801,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
             }
             free(qt_filters);
             free(interv_final);
+            if(predicate_counter > 0)
             free(qt_predicates);
 
             return;
@@ -858,7 +860,6 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
         }
         else
         {
-            printf("%lu)",i);
             for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
             {
                 for (uint64_t x = 0; x < interv_final -> position; x++)   // Search in interval final in rowid
@@ -917,6 +918,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
         filter_counter = 0;
         predicate_counter = 0;
+        free(bt);
         // printf("-------------------------------------------------------------------\n",i);
     }
 
