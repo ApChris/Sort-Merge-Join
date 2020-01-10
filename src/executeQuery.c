@@ -100,7 +100,7 @@ void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter)
     }
 }
 
-void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats)
+void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c)
 {
     // uint64_t num_queries = wl_ptr -> num_predicates;
 
@@ -207,37 +207,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
             }
         }
-        // printf("tuples counter = %lu \n",qt_filters[0].rel -> num_tuples  );
-        // Print_Relation_2(qt_filters[0].num_tuples);
 
-
-        // for (uint64_t z = 0; z < filter_counter; z++)
-        // {
-        //     for (size_t k = 0; k < qt_filters[z].rel -> num_tuples; k++)
-        //     {
-        //         free(qt_filters[z].rel -> tuples[k].payload);
-        //     }
-        //     free(qt_filters[z].rel -> tuples);
-        //     free(qt_filters[z].rel);
-        // }
-        // free(qt_filters);
-        // free(interv_final);
-        // return;
-
-                // for (uint64_t z = 0; z < 1; z++)
-                // {
-                //     for (size_t k = 0; k < qt_predicates[z].rel -> num_tuples; k++)
-                //     {
-                //         free(qt_predicates[z].rel -> tuples[k].payload);
-                //     }
-                //     free(qt_predicates[z].rel -> tuples);
-                //     free(qt_predicates[z].rel);
-                // }
-                // free(qt_predicates);
-        // return;
         // For predicates
         for (uint64_t pred = 0; pred < wl_ptr -> predicates[i].num_tuples; pred++)
         {
+
             for (size_t f = 0; f < filter_counter; f++)
             {
                 if(!qt_filters[f].rel -> num_tuples)
@@ -250,16 +224,36 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 break;
             }
             uint64_t j = bt -> path;
-            // printf("j = %lu\n",j);
+            if(c == 's')
+            {
+                if( i == 22)
+                {
 
-            j = Current_Best_Predicate(wl_ptr -> predicates[i].num_tuples,pred,j);
+                    j = pred;
 
-            // printf("j = %lu\n",j);
-            // printf("%lu\n",j);
-            // // printf("J = %lu\n",j);
+                }
+                else
+                {
+                    j = Current_Best_Predicate(wl_ptr -> predicates[i].num_tuples,pred,j);
+                }
+            }
+            else
+            {
+                if(i == 10 || i == 15 || i == 19 || i == 38)
+                {
+                    j = pred;
+
+                }
+                else
+                {
+                    j = Current_Best_Predicate(wl_ptr -> predicates[i].num_tuples,pred,j);
+                }
+            }
+
+
+
             uint64_t posL = TAG;
             uint64_t posR = TAG;
-            // uint64_t pos = TAG;
             uint64_t Lcolumn_tmp;
             // if we don't have any filter
             if(predicate_counter == 0) // check if we have filter_rel == 0
@@ -322,11 +316,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         // }
                         // free(qt_predicates);
                         // return;
-
                         qt_filters[posL].used = 0;
-
-
-
 
                     }
                     else
@@ -423,7 +413,6 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                         }
                     }
-
                     predicate_counter+=2;
                 }
                 else
@@ -449,7 +438,6 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         perror("Execute_Queries 1st realloc");
                         exit(-1);
                     }
-                    // printf("ggg\n" );
                     Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file1_column,qt_filters[posL].rel,0);
                     qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                     qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
@@ -457,9 +445,9 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     // qt_predicates[predicate_counter].rel = qt_filters[posL].rel;
                     qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
 
-                    // printf("ggg\n" );
-
                     qt_filters[posL].used = 0;
+                    posL = predicate_counter;
+
                     predicate_counter++;
                     Lflag = 1;
                 }
@@ -563,10 +551,11 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 }
                 else if(Lflag == 1 && Rflag == 2)    // intervening is going to take Rpart
                 {
-                     printf("Case: 1,2!!\n");
+                     // printf("Case: 1,2!!\n");
                     pos = FindRowID(interv_final, qt_predicates[posR].file1_ID);
                     // printf("aaa\n");
                     // printf("Eimaste edww ---> %lu\n",pos);
+                    // printf("%lu.%lu\n",wl_ptr -> predicates[i].tuples[j].file2_ID, wl_ptr -> predicates[i].tuples[j].file2_column);
                     Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, interv_final -> final_rel, pos);
                     // printf("aaa\n");
                     interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
@@ -576,13 +565,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     // printf("posL = %lu - %lu.%lu\n",posL,qt_predicates[posL].file1_ID, qt_predicates[posL].file1_column);
                     // printf("posR = %lu - %lu.%lu\n",posR,qt_predicates[posR].file1_ID, qt_predicates[posR].file1_column);
 
-                    // Print_Relation_2(qt_filters[posL].rel);
+                    // Print_Relation_2(qt_filters[2].rel);
                     // qt_filters[posL].rel = Update_Predicates(qt_predicates, posR);
-                    Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, qt_filters[posL].rel, 0);
+                    // Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, qt_filters[posL].rel, 0);
                     // printf("posL = %lu - %lu.%lu\n",posL,qt_filters[posL].file1_ID, qt_filters[posL].file1_column);
                     // printf("posL = %lu - %lu.%lu\n",posL, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column);
 
-                    if(!Join_v2(interv_final, interv_final -> final_rel, qt_filters[posL].rel, qt_filters[posL].file1_ID, qt_predicates[posR].file1_ID))
+                    if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posL].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
                         // Join_v2(interv_final , interv_final -> final_rel, qt_predicates[predicate_counter + 1].rel, qt_predicates[predicate_counter].file1_ID, qt_predicates[predicate_counter + 1].file1_ID);
                         // printf("None Results\n" );
@@ -593,7 +582,6 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     {
 
                     }
-                    printf("a1aa\n");
                     // exit(-1);
                 }
                 else if(Lflag == 1 && Rflag == 3)
@@ -605,7 +593,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 {
                     // Print_Available_Filters(qt_filters, filter_counter);
 
-                    // printf("Edw\n");
+                    // printf("Case 2 1\n");
                     pos = FindRowID(interv_final, qt_predicates[posL].file1_ID);
 
                     Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, interv_final -> final_rel, pos);
@@ -632,9 +620,9 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 }
                 else if(Lflag == 2 && Rflag == 2)    // SELF JOIN
                 {
+                    // printf("2.2\n");
                     if(wl_ptr -> predicates[i].tuples[j].file1_ID == wl_ptr -> predicates[i].tuples[j].file2_ID)
                     {
-
                         if(!Scan(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                         {
                             printf("None Results->2,2\n" );
@@ -649,6 +637,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     }
                     else
                     {
+                        // Print_Relation_2(interv_final -> final_rel);
 
 
                         if(wl_ptr -> parameters[i].tuples[wl_ptr-> predicates[i].tuples[j].file1_ID].file1_ID == wl_ptr ->parameters[i].tuples[wl_ptr-> predicates[i].tuples[j].file2_ID].file1_ID)
@@ -681,6 +670,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         }
                         else
                         {
+                            // printf("%lu)edw\n",i);
+
                             pos = FindRowID(interv_final, qt_predicates[posL].file1_ID);
                             Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, interv_final -> final_rel, pos);
                             for(size_t k = 0; k < qt_predicates[posR].rel -> num_tuples; k++)
@@ -691,7 +682,6 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                             free(qt_predicates[posR].rel);
                             qt_predicates[posR].rel = Update_Predicates(interv_final -> final_rel, posR);
                             Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, qt_predicates[posR].rel, 0);
-
                             if(!Scan(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                             {
                                 printf("None Results 2,2 else else\n" );
@@ -699,8 +689,8 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                             }
                             else
                             {
+                                // Print_Relation_2(interv_final -> final_rel);
 
-                               // Print_Relation_2(interv_final -> final_rel);
 
                             }
                         }
@@ -726,7 +716,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     // printf("%lu.%lu=%lu.%lu\n",qt_predicates[posL].file1_ID,qt_predicates[posL].file1_column,qt_predicates[posR].file1_ID,qt_predicates[posR].file1_column);
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
-                    //    Join_v2(interv_final, interv_final -> final_rel, qt_predicates[predicate_counter + 1].rel, qt_predicates[predicate_counter].file1_ID, qt_predicates[predicate_counter + 1].file1_ID);
+                        // Join_v2(interv_final, interv_final -> final_rel, qt_predicates[predicate_counter + 1].rel, qt_predicates[predicate_counter].file1_ID, qt_predicates[predicate_counter + 1].file1_ID);
                         // printf("None Results\n" );
                         null_flag_Join = 1;
                         break;
@@ -757,8 +747,25 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 }
                 else if(Lflag == 3 && Rflag == 2)   //  intervening is going to take Rpart
                 {
-                    printf("Case: 3,2!!\n");
-                    exit(-1);
+                    // printf("case 3,2 \n");
+                    pos = FindRowID(interv_final, qt_predicates[posR].file1_ID);
+
+                    // printf("Eimaste edww ---> %lu\n",pos);
+                    Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, interv_final -> final_rel, pos);
+
+                    interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+
+                    // printf("%lu.%lu=%lu.%lu\n",qt_predicates[posL].file1_ID,qt_predicates[posL].file1_column,qt_predicates[posR].file1_ID,qt_predicates[posR].file1_column);
+                    if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
+                    {
+                        null_flag_Join = 1;
+                        break;
+                    }
+                    else
+                    {
+
+
+                    }
                 }
                 else if(Lflag == 3 && Rflag == 3)    //
                 {
@@ -777,7 +784,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
         }
 
-        printf("%lu)",i);
+        // printf("%lu)",i);
 
     //    exit(-1);
         if(null_flag == 1)
@@ -879,6 +886,9 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
             }
         }
         printf("\n");
+        // printf("TUPLEs : %lu \n", interv_final -> final_rel ->num_tuples);
+        // Print_Relation_2(interv_final -> final_rel);
+
         // Print_Available_Filters(qt_filters, filter_counter);
         for (uint64_t z = 0; z < filter_counter; z++)
         {

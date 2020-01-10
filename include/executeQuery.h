@@ -19,7 +19,7 @@ query_tuple * Init_Query_Tuple();
 
 // relation * UpdateRel(metadata * md, uint64_t md_pos,uint64_t array_pos, intervening * interv_final,uint64_t interv_pos, uint64_t payload_pos);
 
-void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats);
+void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c);
 void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter);
 uint64_t Current_Best_Predicate(uint64_t num_predicates, uint64_t pred, uint64_t j);
 #endif
