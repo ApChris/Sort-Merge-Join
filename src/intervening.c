@@ -380,9 +380,10 @@ uint64_t Scan(intervening * final_interv, relation * rel_A, relation * rel_B, ui
 
 					if((posA = FindRowID(final_interv,rowIdA)) != TAG) // if exists
 					{
+						// printf("%lu\n", posA);
 						if((posB = FindRowID(final_interv,rowIdB)) != TAG) // if exists
 						{
-
+							// printf("%lu\n", posB);
 							temp_rel = (relation *)malloc(sizeof(relation));
 							relation struct_final;
 							final_interv -> final_rel = &struct_final;
@@ -421,15 +422,15 @@ uint64_t Scan(intervening * final_interv, relation * rel_A, relation * rel_B, ui
 			if(flag)
 			{
 				//	printf("Mpainei!!\n");
-				if(posB < posA)
-				{
-					pushJoinedElements_Self(temp_rel, rel_A, rel_B, i, i,rowIdA, counter,rel_A->tuples[i].key);
-				}
-				else
-				{
+				// if(posB < posA)
+				// {
+				// 	pushJoinedElements_Self(temp_rel, rel_A, rel_B, i, i,rowIdA, counter,rel_A->tuples[i].key);
+				// }
+				// else
+				// {
 					pushJoinedElements_Self(temp_rel, rel_A, rel_B, i, i,rowIdB, counter,rel_A->tuples[i].key);
 
-				}
+				// }
 			}
 			else
 			{
