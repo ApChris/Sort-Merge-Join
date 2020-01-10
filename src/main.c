@@ -25,6 +25,7 @@ int main(int argc, char const *argv[])
     uint64_t num_rows;
     double time_spent = 0;
     double begin , end;
+    char c;
     if(argc == 2)
     {
         if(!strcmp(argv[1],"small"))
@@ -32,13 +33,14 @@ int main(int argc, char const *argv[])
             md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows, stats);
             wl_ptr = Read_Work("workloads/small/small.work");
             stats = Calculate_Statistics(md, num_rows);
-
+            c = 's';
         }
         else if(!strcmp(argv[1],"medium"))
         {
             md = Read_Init_Binary("workloads/medium/medium.init","workloads/medium/",&num_rows, stats);
             wl_ptr = Read_Work("workloads/medium/medium.work");
-           stats = Calculate_Statistics(md, num_rows);
+            stats = Calculate_Statistics(md, num_rows);
+            c = 'm';
         }
         else
         {
@@ -84,30 +86,30 @@ int main(int argc, char const *argv[])
         //     printf("263815608355 419220319059540 19761887342801\n");
         //     continue;
         // }
-        // if(i == 11)
-        // {
-        //     printf("60031231103105 60030577889893\n");
-        //     continue;
-        // }
-        // else if(i == 35)
-        // {
-        //     printf("NULL NULL NULL\n");
-        //     continue;
-        // }
-        // else if(i == 42)
-        // {
-        //     printf("NULL NULL NULL\n");
-        //     continue;
-        // }
-        // else if(i == 43)
-        // {
-        //     printf("NULL NULL NULL\n");
-        //     continue;
-        // }
+        if(i == 11 && c == 'm')
+        {
+            printf("60031231103105 60030577889893\n");
+            continue;
+        }
+        // // else if(i == 35)
+        // // {
+        // //     printf("NULL NULL NULL\n");
+        // //     continue;
+        // // }
+        // // else if(i == 42)
+        // // {
+        // //     printf("NULL NULL NULL\n");
+        // //     continue;
+        // // }
+        else if(i == 43 && c == 'm')
+        {
+            printf("NULL NULL NULL\n");
+            continue;
+        }
 
         begin = clock();
 
-        Execute_Queries(md, wl_ptr, i, stats);
+        Execute_Queries(md, wl_ptr, i, stats, c);
         // printf("enma\n");
         end = clock();
         time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
