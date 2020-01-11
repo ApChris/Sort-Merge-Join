@@ -784,7 +784,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
         }
 
-        // printf("%lu)",i);
+         printf("%lu)",i);
 
     //    exit(-1);
         if(null_flag == 1)

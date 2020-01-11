@@ -3,9 +3,11 @@
 
 #include <pthread.h>
 #include <semaphore.h>
+#include <unistd.h>
 #include <stdint.h>
-
-#define THREADS 4
+#include "metadata.h"
+#include "work.h"
+#include "statistics.h"
 
 typedef struct job
 {
@@ -20,7 +22,8 @@ typedef struct job_scheduler
 	uint64_t total_threads;
 	uint64_t jobs_left;
 	uint64_t finished; // to exit and destroy threads
-	job * jobs_queue;
+	job * jobs_queue_head;
+	job * jobs_queue_tail;
 
 	pthread_t * threads;
 	pthread_mutex_t  queue_thread_access; // access to the same queue from multiple threads
@@ -29,8 +32,20 @@ typedef struct job_scheduler
 
 } job_scheduler;
 
+
+typedef struct job_query
+{
+	metadata * md;
+	work_line * wl_ptr;
+	uint64_t query;
+	statistics * stats;
+	char c;
+
+} job_query;
+
+
 // Initializes the job scheduler, creating THREADS total threads and every other struct member
-job_scheduler * Init_JobScheduler();
+job_scheduler * Init_JobScheduler(uint64_t num_threads);
 
 // Pops a job from the queue, locking the mutex for accessing into the queue and unlocks when finishes
 // used by the Thread_Routine
@@ -53,5 +68,7 @@ void Assign_Job(job_scheduler * scheduler, void * function, void * arguments);
 
 // Destroys all threads and frees memory
 void Destroy_JobScheduler(job_scheduler * scheduler);
+
+void JobQuery(void *job_arguments);
 
 #endif
