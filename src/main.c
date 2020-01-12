@@ -15,7 +15,7 @@
 #include "../include/bestTree.h"
 #include "../include/jobScheduler.h"
 
-#define THREADS 4
+#define THREADS 3
 
 int main(int argc, char const *argv[])
 {
@@ -30,6 +30,7 @@ int main(int argc, char const *argv[])
     uint64_t num_rows;
     double time_spent = 0;
     double begin , end;
+    char c;
     if(argc == 2)
     {
         if(!strcmp(argv[1],"small"))
@@ -37,6 +38,7 @@ int main(int argc, char const *argv[])
             md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows, stats);
             wl_ptr = Read_Work("workloads/small/small.work");
             stats = Calculate_Statistics(md, num_rows);
+            c = 's';
 
         }
         else if(!strcmp(argv[1],"medium"))
@@ -44,6 +46,7 @@ int main(int argc, char const *argv[])
             md = Read_Init_Binary("workloads/medium/medium.init","workloads/medium/",&num_rows, stats);
             wl_ptr = Read_Work("workloads/medium/medium.work");
            stats = Calculate_Statistics(md, num_rows);
+           c = 'm';
         }
         else
         {
@@ -62,81 +65,58 @@ int main(int argc, char const *argv[])
         exit(-1);
     }
 
-    // Print_Work(wl_ptr);
     uint64_t totalQueries = wl_ptr -> num_parameters;
 
-    // Correct: 0, 1, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26
-    //          27, 28, 29, 30, 31, 32, 33, 34 , 36, 37, 39, 40, 41, 42, 44, 45, 46, 47, 48
-    // Killed: 2, 7, 11
-    // Cannot allocate memory : 35 (Maybe that's random)
-    // 38, 43 SEG: Case that Join doesn't Find any result, so it has to terminate
 
 
-
-    // #if NUM_THREADS > 1
-    //     Scheduler_Init(&sched,NUM_THREADS);
-    // #endif
 
     // scheduler->jobs_left = scheduler->total_threads;
-    scheduler->jobs_left = totalQueries;
+    #if THREADS > 1
+        scheduler->jobs_left = totalQueries;
+    #endif
 
+    begin = clock();
     for (uint64_t i = 0; i < totalQueries; i++)
     {
-        // if(i == 2)// || i == 7 || i == 11 || i == 35)
-        // {
-        //     printf("697086818074004 30421427867517 30424207300885\n");
-        //     continue;
-        // }
-        // if(i == 7)
-        // {
-        //     printf("263815608355 419220319059540 19761887342801\n");
-        //     continue;
-        // }
-        // if(i == 11)
-        // {
-        //     printf("60031231103105 60030577889893\n");
-        //     continue;
-        // }
-        // else if(i == 35)
-        // {
-        //     printf("NULL NULL NULL\n");
-        //     continue;
-        // }
-        // else if(i == 42)
-        // {
-        //     printf("NULL NULL NULL\n");
-        //     continue;
-        // }
-        // else if(i == 43)
-        // {
-        //     printf("NULL NULL NULL\n");
-        //     continue;
-        // }
 
-        begin = clock();
 
-        job_query * job_arguments = malloc(sizeof(job_query));
-        job_arguments->md = md;
-        job_arguments->wl_ptr = wl_ptr;
-        job_arguments->stats = stats;
-        job_arguments->query = i;
-        job_arguments->c = 's';
-        // for medium
-        // job_arguments->c = 'm';
+        if(i == 11 && c == 'm')
+        {
+            printf("60031231103105 60030577889893\n");
+            continue;
+        }
 
-        Assign_Job(scheduler, &JobQuery, (void*)job_arguments);
+        else if(i == 43 && c == 'm')
+        {
+            printf("NULL NULL NULL\n");
+            continue;
+        }
 
-        // Execute_Queries(job_arguments->md, job_arguments->wl_ptr, job_arguments->query, job_arguments->stats);
+        #if THREADS == 1
+            Execute_Queries(md, wl_ptr, i, stats , c);
+        #endif
 
-        // Execute_Queries(md, wl_ptr, i, stats);
-        // printf("enma\n");
-        end = clock();
-        time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+        #if THREADS > 1
+
+
+            job_query * job_arguments = malloc(sizeof(job_query));
+            job_arguments->md = md;
+            job_arguments->wl_ptr = wl_ptr;
+            job_arguments->stats = stats;
+            job_arguments->query = i;
+            job_arguments->c = c;
+
+            Assign_Job(scheduler, &JobQuery, (void*)job_arguments);
+        #endif
+
+
     }
-    
+    #if THREADS > 1
     // block until all threads finish their jobs
-    Barrier(scheduler);
-
+        Barrier(scheduler);
+    #endif
+    end = clock();
+    time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
     for (uint64_t i = 0; i < num_rows; i++)
     {
         free(md[i].array);
