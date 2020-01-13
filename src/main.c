@@ -15,7 +15,7 @@
 #include "../include/bestTree.h"
 #include "../include/jobScheduler.h"
 
-#define THREADS 3
+#define THREADS 2
 
 int main(int argc, char const *argv[])
 {
@@ -79,19 +79,6 @@ int main(int argc, char const *argv[])
     for (uint64_t i = 0; i < totalQueries; i++)
     {
 
-
-        if(i == 11 && c == 'm')
-        {
-            printf("60031231103105 60030577889893\n");
-            continue;
-        }
-
-        else if(i == 43 && c == 'm')
-        {
-            printf("NULL NULL NULL\n");
-            continue;
-        }
-
         #if THREADS == 1
             Execute_Queries(md, wl_ptr, i, stats , c);
         #endif
@@ -105,16 +92,84 @@ int main(int argc, char const *argv[])
             job_arguments->stats = stats;
             job_arguments->query = i;
             job_arguments->c = c;
+            // printf("edw\n");
 
             Assign_Job(scheduler, &JobQuery, (void*)job_arguments);
         #endif
 
 
+
     }
+
     #if THREADS > 1
-    // block until all threads finish their jobs
         Barrier(scheduler);
     #endif
+
+    // block until all threads finish their jobs
+    // #if THREADS > 1
+    //     Barrier(scheduler);
+    // #endif
+    // relation * rel = Create_Relation(md,0,0);
+    //
+    // histogram struct_h;
+    // histogram * hist = &struct_h;
+    //
+    // Histogram(rel,hist,7,0,rel -> num_tuples);
+    // Print_Histogram(hist);
+    //
+    // exit(-1);
+
+    // #if THREADS > 1
+    //     relation * rel = Create_Relation(md,0,0);
+    //     scheduler->jobs_left = scheduler->total_threads;
+    //     histogram ** hist = calloc(scheduler -> total_threads, sizeof(histogram *));
+    //     uint64_t tuples_per_thread = (rel -> num_tuples) / scheduler -> total_threads;
+    //     uint64_t tuples_per_thread_final =  (rel -> num_tuples) / scheduler -> total_threads;
+    //
+    //     for (size_t j = 0; j < scheduler -> total_threads; j++)
+    //     {
+    //         job_hist * job_arguments = malloc(sizeof(job_hist));
+    //         job_arguments -> rel = rel;
+    //         job_arguments -> hist = &hist[j];
+    //         job_arguments -> sel_byte = 7;
+    //         job_arguments -> start = j * tuples_per_thread;
+    //         if(j + 1 == scheduler -> total_threads)
+    //         {
+    //             job_arguments -> end = rel -> num_tuples;
+    //         }
+    //         else
+    //         {
+    //            job_arguments -> end = (j + 1) * tuples_per_thread;
+    //         }
+    //         // Assign_Job(scheduler, &JobHist, (void*)job_arguments);
+    //         // Print_Histogram(job_arguments -> hist);
+    //     }
+    //
+    //     uint64_t * hist_final = calloc(256, sizeof(uint64_t));
+    //     #if THREADS > 1
+    //     // block until all threads finish their jobs
+    //         // Barrier(scheduler);
+    //     #endif
+    //
+    //     for (size_t i = 0; i < 256; i++)
+    //     {
+    //         for (size_t j = 0; j < scheduler -> total_threads; j++)
+    //         {
+    //             // hist_final[i] += hist[j][i];
+    //         }
+    //     }
+    //     // Print_Histogram(hist_final);
+    //     // job_arguments -> rel = md;
+    //     // job_arguments -> wl_ptr = wl_ptr;
+    //     // job_arguments -> stats = stats;
+    //     // job_arguments -> query = i;
+    //     // job_arguments -> c = c;
+    //
+    //     // Assign_Job(scheduler, &JobHist, (void*)job_arguments);
+    // #endif
+
+
+
     end = clock();
     time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
     for (uint64_t i = 0; i < num_rows; i++)
@@ -174,44 +229,3 @@ int main(int argc, char const *argv[])
 
     return 0;
 }
-
-
-
-// Write_To_File(md, "output/r8.txt",8);
-
-
-void Write_To_File(metadata * md, char * filename,uint64_t pos)
-{
-    uint64_t * ptr;
-    FILE *fp;
-    if((fp = fopen(filename,"w")) == NULL)
-    {
-        perror("fopen failed");
-        exit(-1);
-    }
-
-        for (size_t j = 0; j < md[pos].num_tuples; j++)
-        {
-            for (size_t z = 0; z <  md[pos].num_columns; z++)
-            {
-                /* code */
-                ptr = md[pos].array[z];
-
-                char str[30];
-
-                sprintf(str,"%lu",*(ptr + j));
-                fputs(str,fp);
-                fputs("|",fp);
-
-
-            }
-            fputs("\n",fp);
-            // printf("%lu|", *(ptr));
-        }
-
-
-    fclose(fp);
-}
-
-// correct medium results
-// i = 1, 4, 12, 18, 20, 22, 27, 31, 32, 33, 37, 40, 42, 46
