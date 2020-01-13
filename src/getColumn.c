@@ -141,7 +141,7 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * n
 
         // start reading
         fread(md[i].full_array,length_binary,1,file_binary);
-        
+
         md[i].num_tuples = md[i].full_array[0];
 
         md[i].num_columns = md[i].full_array[1];
@@ -433,4 +433,41 @@ work_line * Read_Work(const char * filename)
     }
 
     return wl_ptr;
+}
+
+
+// Write_To_File(md, "output/r8.txt",8);
+
+
+void Write_To_File(metadata * md, char * filename,uint64_t pos)
+{
+    uint64_t * ptr;
+    FILE *fp;
+    if((fp = fopen(filename,"w")) == NULL)
+    {
+        perror("fopen failed");
+        exit(-1);
+    }
+
+        for (size_t j = 0; j < md[pos].num_tuples; j++)
+        {
+            for (size_t z = 0; z <  md[pos].num_columns; z++)
+            {
+                /* code */
+                ptr = md[pos].array[z];
+
+                char str[30];
+
+                sprintf(str,"%lu",*(ptr + j));
+                fputs(str,fp);
+                fputs("|",fp);
+
+
+            }
+            fputs("\n",fp);
+            // printf("%lu|", *(ptr));
+        }
+
+
+    fclose(fp);
 }
