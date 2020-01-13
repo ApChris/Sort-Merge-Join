@@ -8,6 +8,7 @@
 #include "metadata.h"
 #include "work.h"
 #include "statistics.h"
+#include "processRelation.h"
 
 typedef struct job
 {
@@ -44,6 +45,15 @@ typedef struct job_query
 } job_query;
 
 
+typedef struct job_hist
+{
+	relation * rel;
+	histogram * hist;
+	uint64_t sel_byte;
+	uint64_t start;
+	uint64_t end;
+} job_hist;
+
 // Initializes the job scheduler, creating THREADS total threads and every other struct member
 job_scheduler * Init_JobScheduler(uint64_t num_threads);
 
@@ -71,4 +81,5 @@ void Destroy_JobScheduler(job_scheduler * scheduler);
 
 void JobQuery(void *job_arguments);
 
+void JobHist(void * job_arguments);
 #endif

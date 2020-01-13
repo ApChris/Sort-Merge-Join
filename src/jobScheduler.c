@@ -65,7 +65,7 @@ void Complete_Job(job_scheduler * scheduler){
 		pthread_cond_signal(&(scheduler->barrier_cond_var));
 	}
 
-	pthread_mutex_unlock(&(scheduler->queue_thread_access));	
+	pthread_mutex_unlock(&(scheduler->queue_thread_access));
 	// printf("Complete_Job\n");
 }
 
@@ -79,7 +79,8 @@ void Barrier(job_scheduler * scheduler){
 	pthread_mutex_unlock(&(scheduler->queue_thread_access));
 }
 
-void JobQuery(void * job_arguments){
+void JobQuery(void * job_arguments)
+{
 	job_query * temp = job_arguments;
 
 	Execute_Queries(temp->md, temp->wl_ptr, temp->query, temp->stats, temp->c);
@@ -87,12 +88,23 @@ void JobQuery(void * job_arguments){
 	free(temp);
 }
 
+void JobHist(void * job_arguments)
+{
+	job_hist * temp = job_arguments;
 
-void *Thread_Routine(void * thread_pool){
+	Histogram(temp -> rel, temp-> hist, temp -> sel_byte, temp -> start, temp -> end);
+	Print_Histogram(temp -> hist);
+	free(temp);
+}
+
+
+
+void * Thread_Routine(void * thread_pool){
 	job_scheduler * scheduler = (job_scheduler *) thread_pool;
 	job * temp_job;
 
-	while(1){
+	while(1)
+	{
 		// wait using semaphore for a job to be available at the queue
 		sem_wait(&(scheduler->queue_job_sem));
 
