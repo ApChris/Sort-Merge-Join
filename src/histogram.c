@@ -48,3 +48,17 @@ void Print_Histogram(histogram * hist)
     }
     printf("----------------------------------------------\n");
 }
+
+
+uint64_t Histogram_Tuples(histogram * hist)
+{
+    uint64_t sum = 0;
+    uint64_t i = 0;
+    while(i < hist -> num_tuples)
+    {
+        if(hist -> hist_tuples[i].sum != 0)
+            sum++;
+        i++;
+    }
+    return sum;
+}
