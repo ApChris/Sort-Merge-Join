@@ -50,7 +50,8 @@ The aim of Join Enumeration algorithm is to choose the optimal way to execute th
 
 ## Multithreading
 To begin with, we implemented the multithreading method using a Job Scheduler. A Job Scheduler consists of an array of pointers to threads, a job queue. Aside of these structures, it also has a semaphore, which makes threads to wait() and then Assing_Job post(), when a job has been pushed to the queue. In this way, threads don't wait, as of busy waiting, to receive a job to complete, but are triggered from Assign_Job, when that's necessary. 
-Whenever a thread completes it's job, the function Complete
+Whenever a thread completes it's job, the function Complete_Job is called, which lowers jobs_left by 1 and checks if jobs_left is 0. If that's true, it signals the condition variable, that Barrier waits. 
+
 
 
 <h2 id="part-two">Part Two</h2>
@@ -311,7 +312,7 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0OTM3Nzk3MDgsMTIzMTQ3ODY2OSwtND
+eyJoaXN0b3J5IjpbLTEwNzExMDg1ODUsMTIzMTQ3ODY2OSwtND
 MwNzYxNDY5LC0yMTQxOTYwNiw2MTM5OTg4OSwtMTU0OTUxMjg0
 XX0=
 -->
