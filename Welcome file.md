@@ -54,8 +54,7 @@ Whenever a thread completes it's job, the function Complete_Job is called, which
 
 We've implemented a JobQuery, which executes every query in a multithreading manner. Each thread is responsible of executing the whole query. Queries are pushed in the queue and threads receive jobs from that queue to complete.
 
-We've also implemented a JobHist and a JobPsum, which, respectively, execute the process of the histogram and psum creation (that we've already implemented in Part One and used at larin Part Two)
-
+We've also implemented a JobHist and a JobPsum, which, respectively, execute the process of the histogram and psum creation (that we've already implemented in Part One and used at large in Part Two)
 
 
 <h2 id="part-two">Part Two</h2>
@@ -316,7 +315,7 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI2NTYwMTA0MywxMjMxNDc4NjY5LC00Mz
-A3NjE0NjksLTIxNDE5NjA2LDYxMzk5ODg5LC0xNTQ5NTEyODRd
-fQ==
+eyJoaXN0b3J5IjpbNzIzMTY3NDk3LDEyMzE0Nzg2NjksLTQzMD
+c2MTQ2OSwtMjE0MTk2MDYsNjEzOTk4ODksLTE1NDk1MTI4NF19
+
 -->
