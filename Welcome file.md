@@ -19,7 +19,7 @@ and execute for either small or medium datasets:<br>
 Query Optimization
 ---
 A query can be executed in many different ways. Reordering the predicates, executing filters first etc. 
-For example, a way to execute p
+Let's say we have the following query: 
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -279,5 +279,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MTIyNzgyNTAsLTE1NDk1MTI4NF19
+eyJoaXN0b3J5IjpbLTE3ODEwODExOTksLTE1NDk1MTI4NF19
 -->
