@@ -34,7 +34,7 @@ For every column of a relation, we are going to store the following four values
  - fa: total number of values of column A
  - da: total distinct values of column A
 
-To evaluate the distinct values
+To, approximetaly, evaluate the distinct values of a column is going to be with the use of a boolean array of size ua - la + 1, initialized as false. For every value (x) of th
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -294,5 +294,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MTM2MDgwNDEsLTE1NDk1MTI4NF19
+eyJoaXN0b3J5IjpbLTE3MzAzNjA0ODMsLTE1NDk1MTI4NF19
 -->
