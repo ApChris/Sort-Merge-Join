@@ -37,7 +37,12 @@ For every column of a relation, we are going to store the following four values
 To, approximetaly, evaluate the distinct values of a column is going to be with the use of a boolean array of size ua - la + 1, initialized as false. For every value (x) of that particular column, we can turn the (x - ua) position of the array to true.
 
 ## Evaluation of Cardinality
-We are using the above statistics, that are stored in memory, to evaluate the cardinality of every predicate's result. To do that, we made the following compromises 
+We are using the above statistics, that are stored in memory, to evaluate the cardinality of every predicate's result. To do that, we made the following compromises:
+
+ - Values are uniformly distributed
+ - Values of columns have been distributed seperately
+
+
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -297,5 +302,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5Mzk0ODA3MDIsLTE1NDk1MTI4NF19
+eyJoaXN0b3J5IjpbNjEzOTk4ODksLTE1NDk1MTI4NF19
 -->
