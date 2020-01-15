@@ -31,8 +31,10 @@ For every column of a relation, we are going to store the following four values
 
  - la: minimum value of column A
  - ua: maximum value of column A
- - fa: total entries of column A
- - da: 
+ - fa: total number of values of column A
+ - da: total distinct values of column A
+
+To evaluate the distinct values
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -292,5 +294,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQxNjI5MDYwMiwtMTU0OTUxMjg0XX0=
+eyJoaXN0b3J5IjpbLTE5MTM2MDgwNDEsLTE1NDk1MTI4NF19
 -->
