@@ -45,7 +45,10 @@ We are using the above statistics, that are stored in memory, to evaluate the ca
 Using the equation from this custom made sheet, we are able to evaluate the cardinality of each predicate's result.
 
 ## Join Enumeration
-The aim of Join Enumeration algorithm is to choose the optimal way to execute the predicates, in order to minimize the 
+The aim of Join Enumeration algorithm is to choose the optimal way to execute the predicates, in order to minimize the intervening's results. Pseudocode for this particular algorithm is given below.
+
+
+## Multi
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -305,6 +308,6 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNjE5NzYyNDgsLTQzMDc2MTQ2OSwtMj
-E0MTk2MDYsNjEzOTk4ODksLTE1NDk1MTI4NF19
+eyJoaXN0b3J5IjpbLTkzOTA2Mzc5MCwtNDMwNzYxNDY5LC0yMT
+QxOTYwNiw2MTM5OTg4OSwtMTU0OTUxMjg0XX0=
 -->
