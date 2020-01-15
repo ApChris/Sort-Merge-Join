@@ -42,7 +42,7 @@ We are using the above statistics, that are stored in memory, to evaluate the ca
  - Values are uniformly distributed
  - Values of columns have been distributed seperately
 
-Using the equation from this custom made 
+Using the equation from this custom made sheet, we are able to evaluate the cardinality of each predicate's result.
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -302,6 +302,6 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcxNTE1NzA0Niw2MTM5OTg4OSwtMTU0OT
-UxMjg0XX0=
+eyJoaXN0b3J5IjpbLTIxNDE5NjA2LDYxMzk5ODg5LC0xNTQ5NT
+EyODRdfQ==
 -->
