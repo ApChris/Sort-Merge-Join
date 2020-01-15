@@ -10,12 +10,13 @@
 #include "metadata.h"
 #include "work.h"
 #include "intervening.h"
-
+#include "jobScheduler.h"
 
 void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation * rel_new,int64_t sel_byte);
 void Print_Relation(relation * rel, histogram * hist, psum * ps);
 //relation * Radix_Sort(relation * rel, relation * rel_final);
 relation * Radix_Sort(relation * rel);
+relation * Job_Radix_Sort(relation * rel, job_scheduler * scheduler);
 
 relation * Init_pointer();
 
@@ -29,4 +30,8 @@ relation * Filter(relation * rel, uint64_t limit, char symbol);
 
 void Update_Relation_Keys(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos);
 relation * Update_Interv(relation * final_rel);
+
+
+void Hist_Job_Partitions(relation * rel, histogram * hist_final,job_scheduler * scheduler);
+
 #endif
