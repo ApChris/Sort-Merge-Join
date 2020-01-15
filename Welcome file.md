@@ -19,13 +19,16 @@ and execute for either small or medium datasets:<br>
 Query Optimization
 ---
 A query can be executed in many different ways. Reordering the predicates, executing filters first etc. 
+
 Let's say we have the following query:`A.a=B.a & B.a=C.a & C.a=D.a`
+
 A way to execute the above query is (((A&B)&C)&D), which means that A.a=B.a would be executed first, then B.a=C.a and finally C.a=D.a.
 Another way to execute the same query is (((C&B)&A)&D), which means that B.a=C.a would be executed first, then A.a=B.a and finally C.a=D.a.
 
 The orded in which the predicates are going to be executed is very crucial to the execution time of the query. We've already decided (from Part Two) that filters have priority, in order to cut large loads of data and reduce the execution time of the Joins.
 
 One way to evaluate the result of a predicate is going to be through the calculations of some statistics. 
+
 ## Statistics
 For every column of a relation, we are going to store the following four values
 
@@ -42,10 +45,12 @@ We are using the above statistics, that are stored in memory, to evaluate the ca
  - Values are uniformly distributed
  - Values of columns have been distributed seperately
 
-Using the equation from this custom made sheet, we are able to evaluate the cardinality of each predicate's result.
+Using the equation from ***this*** custom made sheet, we are able to evaluate the cardinality of each predicate's result.
 
 ## Join Enumeration
 The aim of Join Enumeration algorithm is to choose the optimal way to execute the predicates, in order to minimize the intervening's results. Pseudocode for this particular algorithm is given below.
+
+
 
 
 ## Multithreading
@@ -315,7 +320,7 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzIzMTY3NDk3LDEyMzE0Nzg2NjksLTQzMD
-c2MTQ2OSwtMjE0MTk2MDYsNjEzOTk4ODksLTE1NDk1MTI4NF19
-
+eyJoaXN0b3J5IjpbLTIwNTc0Nzc3MywxMjMxNDc4NjY5LC00Mz
+A3NjE0NjksLTIxNDE5NjA2LDYxMzk5ODg5LC0xNTQ5NTEyODRd
+fQ==
 -->
