@@ -29,7 +29,9 @@ One way to evaluate the result of a predicate is going to be through the calcula
 ## Statistics
 For every column of a relation, we are going to store the following four values
 
- - l
+ - la: minimum value of column A
+ - ua: maximum value of column A
+ - 
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -289,5 +291,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE3MjQwODU4MiwtMTU0OTUxMjg0XX0=
+eyJoaXN0b3J5IjpbLTEyNDQ0MjA5OTcsLTE1NDk1MTI4NF19
 -->
