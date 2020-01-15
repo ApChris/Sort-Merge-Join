@@ -25,7 +25,11 @@ Another way to execute the same query is (((C&B)&A)&D), which means that B.a=C.a
 
 The orded in which the predicates are going to be executed is very crucial to the execution time of the query. We've already decided (from Part Two) that filters have priority, in order to cut large loads of data and reduce the execution time of the Joins.
 
-One way to evaluate the result of a predicate is going to be through 
+One way to evaluate the result of a predicate is going to be through the calculations of some statistics. 
+## Statistics
+For every column of a relation, we are going to store the following four values
+
+ - l
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -285,5 +289,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY3ODUwOTExMywtMTU0OTUxMjg0XX0=
+eyJoaXN0b3J5IjpbMTE3MjQwODU4MiwtMTU0OTUxMjg0XX0=
 -->
