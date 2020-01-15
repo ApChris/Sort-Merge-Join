@@ -9,8 +9,8 @@
 <p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:<br>
 <code>make all</code><br>
 and execute for either small or medium datasets:<br>
-<code>./smj small</code><br>
-<code>./smj medium</code></p>
+<code>./smj small query/radix</code><br>
+<code>./smj medium query/radix</code></p>
 <p>To compile Sort-Merge-Join and unit testing seperately:<br>
 <code>make smj</code><br>
 <code>make unit_test</code></p>
@@ -84,8 +84,8 @@ i.e. The first node in the image above holds the characteristics of r0, which ha
 Therefore, the metadata structure holds everything we need in memory, our entire dataset.</p>
 <h2 id="query">Query</h2>
 <p>An example of an SQL query is something like that:</p>
-<pre><code>SELECT SUM("0".c0), SUM("1".c1) 
-FROM r0 "0", r2 "1", r4 "2" 
+<pre><code>SELECT SUM("0".c0), SUM("1".c1)
+FROM r0 "0", r2 "1", r4 "2"
 WHERE 0.c1=1.c2 and 1.c0=2.c1 and 0.c1&gt;3000
 </code></pre>
 <p>In .work files, though, we are given our queries in a bit different format:</p>
@@ -301,4 +301,3 @@ i.e.</p>
 <p>Important to note that in order to compile and execute the unit testing file, you have to install the <a href="http://cunit.sourceforge.net/">CUnit library</a></p>
 <pre><code>gcc -o unit_test unit_testing.c ./src/quicksort.c ./src/histogram.c ./src/psum.c ./src/result.c -lcunit
 </code></pre>
-
