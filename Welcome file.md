@@ -34,7 +34,9 @@ For every column of a relation, we are going to store the following four values
  - fa: total number of values of column A
  - da: total distinct values of column A
 
-To, approximetaly, evaluate the distinct values of a column is going to be with the use of a boolean array of size ua - la + 1, initialized as false. For every value (x) of th
+To, approximetaly, evaluate the distinct values of a column is going to be with the use of a boolean array of size ua - la + 1, initialized as false. For every value (x) of that particular column, we can turn the (x - ua) position of the array to true.
+
+## Evaluation of 
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -294,5 +296,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MzAzNjA0ODMsLTE1NDk1MTI4NF19
+eyJoaXN0b3J5IjpbLTEyMzk5MTUwMjcsLTE1NDk1MTI4NF19
 -->
