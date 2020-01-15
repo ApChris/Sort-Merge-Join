@@ -23,7 +23,7 @@ Let's say we have the following query:`A.a=B.a & B.a=C.a & C.a=D.a`
 A way to execute the above query is (((A&B)&C)&D), which means that A.a=B.a would be executed first, then B.a=C.a and finally C.a=D.a.
 Another way to execute the same query is (((C&B)&A)&D), which means that B.a=C.a would be executed first, then A.a=B.a and finally C.a=D.a.
 
-The orded in which the predicates are going to be executed is very crucial to the execution time of the qi
+The orded in which the predicates are going to be executed is very crucial to the execution time of the query. We've already decided (from Part Two) that filters have priority, in order to c
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -283,5 +283,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM0MTc3ODQ2NywtMTU0OTUxMjg0XX0=
+eyJoaXN0b3J5IjpbMTc5NDkzODYyMiwtMTU0OTUxMjg0XX0=
 -->
