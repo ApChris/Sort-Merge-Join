@@ -18,6 +18,7 @@ and execute for either small or medium datasets:<br>
 
 Query Optimization
 ---
+A query can be executed in many different ways. Reordering 
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -277,5 +278,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NDk1MTI4NF19
+eyJoaXN0b3J5IjpbLTQ0ODQyMzY1NywtMTU0OTUxMjg0XX0=
 -->
