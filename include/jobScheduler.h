@@ -45,7 +45,6 @@ typedef struct job_query
 	statistics * stats;
 	char c;
 	job_scheduler * scheduler;
-	char parallel_method;
 } job_query;
 
 
