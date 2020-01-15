@@ -49,7 +49,7 @@ The aim of Join Enumeration algorithm is to choose the optimal way to execute th
 
 
 ## Multithreading
-To begin with, we implemented the multithreading method using a Job Scheduler. A Job Scheduler 
+To begin with, we implemented the multithreading method using a Job Scheduler. A Job Scheduler consists of an array of pointers to threads, a job queue. O
 
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
@@ -309,6 +309,7 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIzMTQ3ODY2OSwtNDMwNzYxNDY5LC0yMT
-QxOTYwNiw2MTM5OTg4OSwtMTU0OTUxMjg0XX0=
+eyJoaXN0b3J5IjpbLTE1MTgyNzk1ODMsMTIzMTQ3ODY2OSwtND
+MwNzYxNDY5LC0yMTQxOTYwNiw2MTM5OTg4OSwtMTU0OTUxMjg0
+XX0=
 -->
