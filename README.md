@@ -10,7 +10,7 @@
 <code>make all</code><br>
 and execute for either small or medium datasets:<br>
 <code>./smj small</code><br>
-<code>./smj medium</code>(not working entirely)</p>
+<code>./smj medium</code></p>
 <p>To compile Sort-Merge-Join and unit testing seperately:<br>
 <code>make smj</code><br>
 <code>make unit_test</code></p>
