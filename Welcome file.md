@@ -44,6 +44,9 @@ We are using the above statistics, that are stored in memory, to evaluate the ca
 
 Using the equation from this custom made sheet, we are able to evaluate the cardinality of each predicate's result.
 
+## Join Enumeration
+
+
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
 <p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:<br>
@@ -302,6 +305,6 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxNDE5NjA2LDYxMzk5ODg5LC0xNTQ5NT
-EyODRdfQ==
+eyJoaXN0b3J5IjpbLTQzMDc2MTQ2OSwtMjE0MTk2MDYsNjEzOT
+k4ODksLTE1NDk1MTI4NF19
 -->
