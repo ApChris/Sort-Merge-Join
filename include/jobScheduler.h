@@ -8,7 +8,10 @@
 #include "metadata.h"
 #include "work.h"
 #include "statistics.h"
-#include "processRelation.h"
+#include "histogram.h"
+
+
+#define THREADS 2
 
 typedef struct job
 {
@@ -41,7 +44,8 @@ typedef struct job_query
 	uint64_t query;
 	statistics * stats;
 	char c;
-
+	job_scheduler * scheduler;
+	char parallel_method;
 } job_query;
 
 
