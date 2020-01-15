@@ -2,7 +2,21 @@
 ---
 ## Part Three
 
+<h2 id="compilation-and-execution">Compilation and Execution</h2>
+<p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:<br>
+<code>make all</code><br>
+and execute for either small or medium datasets:<br>
+<code>./smj small</code><br>
+<code>./smj medium</code>(not working entirely)</p>
+<p>To compile Sort-Merge-Join and unit testing seperately:<br>
+<code>make smj</code><br>
+<code>make unit_test</code></p>
+<p>To remove all object files:<br>
+<code>make clean</code></p>
+<p>To remove all object files and compile them all together:<br>
+<code>make rebuild</code></p>
 
+Query Optimization
 ---
 
 <h2 id="part-two">Part Two</h2>
@@ -263,5 +277,5 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0ODIwMTI0OTVdfQ==
+eyJoaXN0b3J5IjpbLTE1NDk1MTI4NF19
 -->
