@@ -441,6 +441,128 @@ void Print_Relation(relation * rel, histogram * hist, psum * ps)
     }
 }
 
+relation * Job_Radix_Sort(relation * rel, job_scheduler * scheduler)
+{
+
+    relation * rel_final;
+    if(((rel_final = (relation *)malloc(sizeof(relation)))) == NULL)
+    {
+        perror("Create_Relation malloc");
+        exit(-1);
+    }
+
+    psum struct_p;
+    psum *ps = &struct_p;
+
+    histogram struct_hist;
+    histogram * hist_final = &struct_hist;
+    /* --------------------------- HISTOGRAM ----------------------------- */
+    Hist_Job_Partitions(rel, hist_final,scheduler);
+    // scheduler -> jobs_left += scheduler -> total_threads;
+    // histogram ** hist = (histogram **)malloc(sizeof(histogram *) * scheduler -> total_threads);
+    // for (size_t i = 0; i < scheduler -> total_threads; i++)
+    // {
+    //     hist[i] = malloc(sizeof(histogram));
+    // }
+    //
+    //
+    // uint64_t tuples_per_thread = (rel -> num_tuples) / scheduler -> total_threads;
+    // uint64_t tuples_per_thread_final =  (rel -> num_tuples) / scheduler -> total_threads;
+    //
+    //
+    // for (size_t j = 0; j < scheduler -> total_threads; j++)
+    // {
+    //     job_hist * job_arguments = malloc(sizeof(job_hist));
+    //     job_arguments -> rel = rel;
+    //     job_arguments -> hist = hist[j];
+    //     job_arguments -> sel_byte = 7;
+    //     job_arguments -> start = j * tuples_per_thread;
+    //     if(j + 1 == scheduler -> total_threads)
+    //     {
+    //         job_arguments -> end = rel -> num_tuples;
+    //     }
+    //     else
+    //     {
+    //        job_arguments -> end = (j + 1) * tuples_per_thread;
+    //     }
+    //     Assign_Job(scheduler, &JobHist, (void*)job_arguments);
+    // }
+    //
+    // // WAIT FOR ALL PARTS
+    // Barrier(scheduler);
+    //
+    // /* -----Create Final Histogram , by merging partitions------ */
+    // uint64_t num_tuples = 0;
+    // for (size_t i = 0; i < scheduler -> total_threads; i++)
+    // {
+    //     num_tuples += Histogram_Tuples(hist[i]);
+    //
+    // }
+    // num_tuples = num_tuples/scheduler -> total_threads;
+    // histogram * hist_final = (histogram *)malloc(sizeof(histogram));
+    //
+    // uint64_t result = 0;
+    // uint64_t sel_byte = 7;
+    // if((hist_final -> hist_tuples = (hist_tuple *)malloc(num_tuples * sizeof(hist_tuple))) == NULL)
+    // {
+    //     perror("histogram, first malloc\n");
+    //     exit(-1);
+    // }
+    // hist_final -> num_tuples = num_tuples;
+    // for (size_t i = 0; i < num_tuples; i++)
+    // {
+    //     hist_final -> hist_tuples[result].sum = 0;
+    // }
+    // for (size_t i = 0; i <  scheduler -> total_threads; i++)
+    // {
+    //     for (size_t j = 0; j < hist[i] -> num_tuples; j++)
+    //     {
+    //         if(hist[i] -> hist_tuples[j].sum != 0)
+    //         {
+    //             result = (hist[i] -> hist_tuples[j].key >> (8*sel_byte) & 0xFF);
+    //             hist_final -> hist_tuples[result].sum += hist[i] -> hist_tuples[result].sum;
+    //             hist_final -> hist_tuples[result].key =  hist[i] -> hist_tuples[result].key;
+    //             hist_final -> hist_tuples[result].payload = hist[i] -> hist_tuples[result].payload;
+    //         }
+    //     }
+    //
+    // }
+    // for (size_t i = 0; i < scheduler -> total_threads; i++)
+    // {
+    //     free(hist[i]);
+    // }
+    // free(hist);
+    /* --------- End of Histogram -------- */
+
+
+    // Print_Histogram(hist_final);
+
+    // Print_Histogram(hist_final);
+    Psum(hist_final,ps,0);
+    //Print_Psum(hist_final,ps);
+
+    ReorderedColumn(rel,rel_final,ps);
+
+    RestorePsum(hist_final, ps);
+
+    ProcessRelation(rel,hist_final,ps,rel_final,6);
+
+    free(hist_final -> hist_tuples);
+
+    // free(hist_final);
+    free(ps -> psum_tuples);
+    for(size_t i = 0; i < rel -> num_tuples; i++)
+    {
+        free(rel->tuples[i].payload);
+    }
+    free(rel -> tuples);
+    free(rel);
+    return rel_final;
+
+}
+
+
+
 //relation * Radix_Sort(relation * rel)
 relation * Radix_Sort(relation * rel)
 {
@@ -451,6 +573,7 @@ relation * Radix_Sort(relation * rel)
         perror("Create_Relation malloc");
         exit(-1);
     }
+
     histogram struct_h;
     histogram * hist = &struct_h;
 
@@ -657,26 +780,7 @@ relation * Update_Interv(relation * final_rel)
 	free(final_rel);
     return rel;
 }
-//
-// uint64_t CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos)
-// {
-//     uint64_t * ptr = md[md_row].array[md_column];
-//     uint64_t sum = 0;
-//     for (uint64_t i = 0; i < rel -> num_tuples; i++)
-//     {
-//         sum += *(ptr + rel -> tuples[i].payload[pos]); // calculate keys
-//         //sum += rel -> tuples[i].payload[pos]; // calculate payloads
-//     }
-//     if(sum == 0)
-//     {
-//         printf("NULL ");
-//     }
-//     else
-//     {
-//         printf("%lu ",sum);
-//     }
-//     return sum;
-// }
+
 
 
 relation * Filter(relation * rel, uint64_t limit, char symbol)
@@ -898,4 +1002,85 @@ relation * Filter(relation * rel, uint64_t limit, char symbol)
 
     return rel_final;
 
+}
+
+
+
+
+void Hist_Job_Partitions(relation * rel, histogram * hist_final,job_scheduler * scheduler)
+{
+    scheduler -> jobs_left += scheduler -> total_threads;
+    histogram ** hist = (histogram **)malloc(sizeof(histogram *) * scheduler -> total_threads);
+    for (size_t i = 0; i < scheduler -> total_threads; i++)
+    {
+        hist[i] = malloc(sizeof(histogram));
+    }
+
+
+    uint64_t tuples_per_thread = (rel -> num_tuples) / scheduler -> total_threads;
+    uint64_t tuples_per_thread_final =  (rel -> num_tuples) / scheduler -> total_threads;
+
+
+    for (size_t j = 0; j < scheduler -> total_threads; j++)
+    {
+        job_hist * job_arguments = malloc(sizeof(job_hist));
+        job_arguments -> rel = rel;
+        job_arguments -> hist = hist[j];
+        job_arguments -> sel_byte = 7;
+        job_arguments -> start = j * tuples_per_thread;
+        if(j + 1 == scheduler -> total_threads)
+        {
+            job_arguments -> end = rel -> num_tuples;
+        }
+        else
+        {
+           job_arguments -> end = (j + 1) * tuples_per_thread;
+        }
+        Assign_Job(scheduler, &JobHist, (void*)job_arguments);
+    }
+
+    // WAIT FOR ALL PARTS
+    Barrier(scheduler);
+
+    /* -----Create Final Histogram , by merging partitions------ */
+    uint64_t num_tuples = 0;
+    for (size_t i = 0; i < scheduler -> total_threads; i++)
+    {
+        num_tuples += Histogram_Tuples(hist[i]);
+
+    }
+    num_tuples = num_tuples/scheduler -> total_threads;
+    // histogram * hist_final = (histogram *)malloc(sizeof(histogram));
+
+    uint64_t result = 0;
+    uint64_t sel_byte = 7;
+    if((hist_final -> hist_tuples = (hist_tuple *)malloc(num_tuples * sizeof(hist_tuple))) == NULL)
+    {
+        perror("histogram, first malloc\n");
+        exit(-1);
+    }
+    hist_final -> num_tuples = num_tuples;
+    for (size_t i = 0; i < num_tuples; i++)
+    {
+        hist_final -> hist_tuples[result].sum = 0;
+    }
+    for (size_t i = 0; i <  scheduler -> total_threads; i++)
+    {
+        for (size_t j = 0; j < hist[i] -> num_tuples; j++)
+        {
+            if(hist[i] -> hist_tuples[j].sum != 0)
+            {
+                result = (hist[i] -> hist_tuples[j].key >> (8*sel_byte) & 0xFF);
+                hist_final -> hist_tuples[result].sum += hist[i] -> hist_tuples[result].sum;
+                hist_final -> hist_tuples[result].key =  hist[i] -> hist_tuples[result].key;
+                hist_final -> hist_tuples[result].payload = hist[i] -> hist_tuples[result].payload;
+            }
+        }
+
+    }
+    for (size_t i = 0; i < scheduler -> total_threads; i++)
+    {
+        free(hist[i]);
+    }
+    free(hist);
 }
