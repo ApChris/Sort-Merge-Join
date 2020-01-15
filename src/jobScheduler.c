@@ -83,7 +83,7 @@ void JobQuery(void * job_arguments)
 {
 	job_query * temp = job_arguments;
 
-	Execute_Queries(temp->md, temp->wl_ptr, temp->query, temp->stats, temp->c);
+	Execute_Queries(temp->md, temp->wl_ptr, temp->query, temp->stats, temp->c, temp -> scheduler);
 
 	free(temp);
 }
@@ -93,7 +93,6 @@ void JobHist(void * job_arguments)
 	job_hist * temp = job_arguments;
 
 	Histogram(temp -> rel, temp-> hist, temp -> sel_byte, temp -> start, temp -> end);
-	Print_Histogram(temp -> hist);
 	free(temp);
 }
 
@@ -108,7 +107,7 @@ void * Thread_Routine(void * thread_pool){
 		// wait using semaphore for a job to be available at the queue
 		sem_wait(&(scheduler->queue_job_sem));
 
-		if (scheduler->jobs_left == 0)
+		if (scheduler->finished == 1)
 		{
 			pthread_exit(NULL);
 			return;
