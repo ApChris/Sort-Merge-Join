@@ -40,7 +40,7 @@ Another way to execute the same query is (((C&amp;B)&amp;A)&amp;D), which means 
 <li>Values are uniformly distributed</li>
 <li>Values of columns have been distributed seperately</li>
 </ul>
-<p>Using the equation from <em><strong>[this](Statistic_spreadsheet)</strong></em> custom made sheet, we are able to evaluate the cardinality of each predicate’s result.</p>
+<p>Using the equation from <em><strong>[this](Statistic_spreadsheet.pdf)</strong></em> custom made sheet, we are able to evaluate the cardinality of each predicate’s result.</p>
 <h2 id="join-enumeration">Join Enumeration</h2>
 <p>The aim of Join Enumeration algorithm is to choose the optimal way to execute the predicates, in order to minimize the intervening’s results. Pseudocode for this particular algorithm is given below.</p>
 <p><img src="https://scontent.fath3-3.fna.fbcdn.net/v/t1.15752-9/83715265_489115568675311_2452585377244905472_n.png?_nc_cat=104&amp;_nc_ohc=-W-DJdTmwpEAX8Ib7S8&amp;_nc_ht=scontent.fath3-3.fna&amp;oh=fc62062540ff942b9ab88e18bec2152b&amp;oe=5E91BA9C" alt="enter image description here"></p>
