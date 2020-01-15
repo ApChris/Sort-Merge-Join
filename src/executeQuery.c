@@ -100,7 +100,7 @@ void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter)
     }
 }
 
-void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c)
+void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c, job_scheduler * scheduler)
 {
 
     uint64_t filter_counter = 0;
@@ -155,7 +155,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 qt_filters[filter_counter].file1_column = wl_ptr -> filters[i].tuples[j].file1_column;
                 qt_filters[filter_counter].used = 1;
                 qt_filters[filter_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,qt_filters[filter_counter].file1_column);
-                qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                #if THREADS == 1
+                    qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                #endif
+
+                #if THREADS > 1
+                    qt_filters[filter_counter].rel = Job_Radix_Sort(qt_filters[filter_counter].rel, scheduler);
+                #endif
                 qt_filters[filter_counter].rel = Filter(qt_filters[filter_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
 
                 filter_counter++;
@@ -166,7 +172,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 if((pos = Find_Query_Tuple(qt_filters,wl_ptr -> filters[i].tuples[j].file1_ID, filter_counter)) != TAG)
                 {
                     Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,wl_ptr -> filters[i].tuples[j].file1_column,qt_filters[pos].rel,pos);
-                    qt_filters[pos].rel = Radix_Sort(qt_filters[pos].rel);
+                    #if THREADS == 1
+                        qt_filters[pos].rel = Radix_Sort(qt_filters[pos].rel);
+                    #endif
+
+                    #if THREADS > 1
+                        qt_filters[pos].rel = Job_Radix_Sort(qt_filters[pos].rel, scheduler);
+                    #endif
                     qt_filters[pos].rel = Filter(qt_filters[pos].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
 
                 }
@@ -185,12 +197,16 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                     qt_filters[filter_counter].used = 1;
                     qt_filters[filter_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> filters[i].tuples[j].file1_ID].file1_ID,qt_filters[filter_counter].file1_column);
-                    qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                    #if THREADS == 1
+                        qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                    #endif
+
+                    #if THREADS > 1
+                        qt_filters[filter_counter].rel = Job_Radix_Sort(qt_filters[filter_counter].rel, scheduler);
+                    #endif
                     qt_filters[filter_counter].rel = Filter(qt_filters[filter_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
                     filter_counter++;
-
                 }
-
             }
         }
 
@@ -269,7 +285,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                             exit(-1);
                         }
 
-                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        #if THREADS == 1
+                            qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        #endif
+
+                        #if THREADS > 1
+                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        #endif
 
 
                         qt_filters[posL].used = 0;
@@ -290,7 +312,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                     qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
                     qt_predicates[predicate_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
-                    qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    #if THREADS == 1
+                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    #endif
+
+                    #if THREADS > 1
+                        qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                    #endif
 
 
                 }
@@ -313,7 +341,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                         qt_predicates[predicate_counter + 1].rel = Update_Predicates(qt_filters[posR].rel, 0);
 
-                        qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                        #if THREADS == 1
+                            qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                        #endif
+
+                        #if THREADS > 1
+                            qt_predicates[predicate_counter + 1].rel = Job_Radix_Sort(qt_predicates[predicate_counter + 1].rel, scheduler);
+                        #endif
 
                         qt_filters[posR].used = 0;
 
@@ -338,7 +372,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     qt_predicates[predicate_counter + 1].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
 
                     qt_predicates[predicate_counter + 1].rel = Create_Relation(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,wl_ptr -> predicates[i].tuples[j].file2_column);
-                    qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                    #if THREADS == 1
+                        qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                    #endif
+
+                    #if THREADS > 1
+                        qt_predicates[predicate_counter + 1].rel = Job_Radix_Sort(qt_predicates[predicate_counter + 1].rel, scheduler);
+                    #endif
 
 
                 }
@@ -398,7 +438,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
                     qt_predicates[predicate_counter].rel = Update_Predicates(qt_filters[posL].rel, 0);//Init_pointer();
                     // qt_predicates[predicate_counter].rel = qt_filters[posL].rel;
-                    qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    #if THREADS == 1
+                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    #endif
+
+                    #if THREADS > 1
+                        qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                    #endif
 
                     qt_filters[posL].used = 0;
                     posL = predicate_counter;
@@ -417,7 +463,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                         qt_predicates[posL].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
                         // printf("Lpart)  I have found it %lu.%lu-> %lu\n",qt_predicates[posL].file1_ID, qt_predicates[posL].file1_column,posL);
-                        qt_predicates[posL].rel = Radix_Sort(qt_predicates[posL].rel);
+                        #if THREADS == 1
+                            qt_predicates[posL].rel = Radix_Sort(qt_predicates[posL].rel);
+                        #endif
+
+                        #if THREADS > 1
+                            qt_predicates[posL].rel = Job_Radix_Sort(qt_predicates[posL].rel, scheduler);
+                        #endif
                         Lflag = 2;
                         Lcolumn_tmp = qt_predicates[posL].file1_column;
 
@@ -432,7 +484,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file1_ID;
                         qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file1_column;
                         qt_predicates[predicate_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
-                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        #if THREADS == 1
+                            qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        #endif
+
+                        #if THREADS > 1
+                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        #endif
                         posL = predicate_counter;
                         predicate_counter++;
                         Lflag = 3;
@@ -455,7 +513,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                     qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
                     qt_predicates[predicate_counter].rel = Update_Predicates(qt_filters[posR].rel, 0);
-                    qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    #if THREADS == 1
+                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                    #endif
+
+                    #if THREADS > 1
+                        qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                    #endif
 
                     qt_filters[posR].used = 0;
                     posR = predicate_counter;
@@ -473,7 +537,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         Update_Relation_Keys(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,  wl_ptr -> predicates[i].tuples[j].file2_column,qt_predicates[posR].rel,0);
                         qt_predicates[posR].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                         qt_predicates[posR].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
-                        qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                        #if THREADS == 1
+                            qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                        #endif
+
+                        #if THREADS > 1
+                            qt_predicates[posR].rel = Job_Radix_Sort(qt_predicates[posR].rel, scheduler);
+                        #endif
 
 
                         Rflag = 2;
@@ -489,7 +559,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         qt_predicates[predicate_counter].file1_ID = wl_ptr -> predicates[i].tuples[j].file2_ID;
                         qt_predicates[predicate_counter].file1_column = wl_ptr -> predicates[i].tuples[j].file2_column;
                         qt_predicates[predicate_counter].rel = Create_Relation(md,wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID,qt_predicates[predicate_counter].file1_column);
-                        qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        #if THREADS == 1
+                            qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        #endif
+
+                        #if THREADS > 1
+                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        #endif
                         posR = predicate_counter;
                         predicate_counter++;
 
@@ -510,8 +586,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                     Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, interv_final -> final_rel, pos);
 
-                    interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    #if THREADS == 1
+                        interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    #endif
 
+                    #if THREADS > 1
+                        interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                    #endif
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posL].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
                         null_flag_Join = 1;
@@ -535,7 +616,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     pos = FindRowID(interv_final, qt_predicates[posL].file1_ID);
 
                     Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, interv_final -> final_rel, pos);
-                    interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    #if THREADS == 1
+                        interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    #endif
+
+                    #if THREADS > 1
+                        interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                    #endif
 
 
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
@@ -578,7 +665,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                             pos = FindRowID(interv_final, qt_predicates[posL].file1_ID);
                             Update_Relation_Keys(md, qt_predicates[posL].file1_ID, Lcolumn_tmp, interv_final -> final_rel, pos);
-                            interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                            #if THREADS == 1
+                                interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                            #endif
+
+                            #if THREADS > 1
+                                interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                            #endif
 
                             for(size_t k = 0; k < qt_predicates[posR].rel -> num_tuples; k++)
                             {
@@ -588,8 +681,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                             free(qt_predicates[posR].rel);
                             qt_predicates[posR].rel = Update_Predicates(interv_final -> final_rel, pos);
                             Update_Relation_Keys(md, qt_predicates[posR].file1_ID, qt_predicates[posR].file1_column, qt_predicates[posR].rel, 0);
-                            qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
 
+                            #if THREADS == 1
+                                qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                            #endif
+
+                            #if THREADS > 1
+                                qt_predicates[posR].rel = Job_Radix_Sort(qt_predicates[posR].rel, scheduler);
+                            #endif
                             if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                             {
                                 printf("None Results, 2,2 else\n" );
@@ -641,8 +740,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                     Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file1_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file1_column, interv_final -> final_rel, pos);
 
-                    interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
 
+                    #if THREADS == 1
+                        interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    #endif
+
+                    #if THREADS > 1
+                        interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                    #endif
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
 
@@ -667,7 +772,13 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                     Update_Relation_Keys(md, wl_ptr -> parameters[i].tuples[wl_ptr -> predicates[i].tuples[j].file2_ID].file1_ID, wl_ptr -> predicates[i].tuples[j].file2_column, interv_final -> final_rel, pos);
 
-                    interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    #if THREADS == 1
+                        interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                    #endif
+
+                    #if THREADS > 1
+                        interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                    #endif
 
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
