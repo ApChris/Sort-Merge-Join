@@ -50,16 +50,16 @@ Using the equation from ***this*** custom made sheet, we are able to evaluate th
 ## Join Enumeration
 The aim of Join Enumeration algorithm is to choose the optimal way to execute the predicates, in order to minimize the intervening's results. Pseudocode for this particular algorithm is given below.
 
-
+![enter image description here](https://scontent.fath3-3.fna.fbcdn.net/v/t1.15752-9/83715265_489115568675311_2452585377244905472_n.png?_nc_cat=104&_nc_ohc=-W-DJdTmwpEAX8Ib7S8&_nc_ht=scontent.fath3-3.fna&oh=fc62062540ff942b9ab88e18bec2152b&oe=5E91BA9C)
 
 
 ## Multithreading
-To begin with, we implemented the multithreading method using a Job Scheduler. A Job Scheduler consists of an array of pointers to threads, a job queue. Aside of these structures, it also has a semaphore, which makes threads to wait() and then Assing_Job post(), when a job has been pushed to the queue. In this way, threads don't wait, as of busy waiting, to receive a job to complete, but are triggered from Assign_Job, when that's necessary. 
+To begin with, we implemented the multithreading method using a **Job Scheduler**. A Job Scheduler consists of an array of pointers to threads, a job queue. Aside of these structures, it also has a semaphore, which makes threads to wait() and then Assing_Job post(), when a job has been pushed to the queue. In this way, threads don't wait, as of busy waiting, to receive a job to complete, but are triggered from Assign_Job, when that's necessary. 
 Whenever a thread completes it's job, the function Complete_Job is called, which lowers jobs_left by 1 and checks if jobs_left is 0. If that's true, it signals the condition variable, that Barrier waits. 
 
-We've implemented a JobQuery, which executes every query in a multithreading manner. Each thread is responsible of executing the whole query. Queries are pushed in the queue and threads receive jobs from that queue to complete.
+We've implemented a **JobQuery**, which executes every query in a multithreading manner. Each thread is responsible of executing the whole query. Queries are pushed in the queue and threads receive jobs from that queue to complete.
 
-We've also implemented a JobHist and a JobPsum, which, respectively, execute the process of the histogram and psum creation (that we've already implemented in Part One and used at large in Part Two)
+We've also implemented a **JobHist** and a **JobPsum**, which, respectively, execute the process of the histogram and psum creation (that we've already implemented in Part One and used at large in Part Two)
 
 
 <h2 id="part-two">Part Two</h2>
@@ -320,7 +320,7 @@ i.e.</p>
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNTc0Nzc3MywxMjMxNDc4NjY5LC00Mz
-A3NjE0NjksLTIxNDE5NjA2LDYxMzk5ODg5LC0xNTQ5NTEyODRd
-fQ==
+eyJoaXN0b3J5IjpbLTE4MDczMTM3NzYsMTIzMTQ3ODY2OSwtND
+MwNzYxNDY5LC0yMTQxOTYwNiw2MTM5OTg4OSwtMTU0OTUxMjg0
+XX0=
 -->
