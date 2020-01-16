@@ -100,7 +100,7 @@ void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter)
     }
 }
 
-void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c, job_scheduler * scheduler)
+void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c, job_scheduler * scheduler, char method)
 {
 
     uint64_t filter_counter = 0;
@@ -129,6 +129,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
         free(query_stats);
 
         intervening * interv_final = interveningInit();
+
         // variable to count how many rel are we going to use
         query_tuple * qt_filters;
         filter_counter = 0;
@@ -160,7 +161,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 #endif
 
                 #if THREADS > 1
-                    qt_filters[filter_counter].rel = Job_Radix_Sort(qt_filters[filter_counter].rel, scheduler);
+                    if(method == 'q')
+                    {
+                        qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                    }
+                    else
+                    {
+                        qt_filters[filter_counter].rel = Job_Radix_Sort(qt_filters[filter_counter].rel, scheduler);
+                    }
                 #endif
                 qt_filters[filter_counter].rel = Filter(qt_filters[filter_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
 
@@ -177,7 +185,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        qt_filters[pos].rel = Job_Radix_Sort(qt_filters[pos].rel, scheduler);
+                        if(method == 'q')
+                        {
+                            qt_filters[pos].rel = Radix_Sort(qt_filters[pos].rel);
+                        }
+                        else
+                        {
+                            qt_filters[pos].rel = Job_Radix_Sort(qt_filters[pos].rel, scheduler);
+                        }
                     #endif
                     qt_filters[pos].rel = Filter(qt_filters[pos].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
 
@@ -202,7 +217,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        qt_filters[filter_counter].rel = Job_Radix_Sort(qt_filters[filter_counter].rel, scheduler);
+                        if(method == 'q')
+                        {
+                            qt_filters[filter_counter].rel = Radix_Sort(qt_filters[filter_counter].rel);
+                        }
+                        else
+                        {
+                            qt_filters[filter_counter].rel = Job_Radix_Sort(qt_filters[filter_counter].rel, scheduler);
+                        }
                     #endif
                     qt_filters[filter_counter].rel = Filter(qt_filters[filter_counter].rel,wl_ptr -> filters[i].tuples[j].limit, wl_ptr -> filters[i].tuples[j].symbol);
                     filter_counter++;
@@ -290,7 +312,16 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         #endif
 
                         #if THREADS > 1
-                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                            if(method == 'q')
+                            {
+                                qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+
+                            }
+                            else
+                            {
+                                qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+
+                            }
                         #endif
 
 
@@ -317,7 +348,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        if(method == 'q')
+                        {
+                            qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                        }
+                        else
+                        {
+                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        }
                     #endif
 
 
@@ -346,7 +384,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         #endif
 
                         #if THREADS > 1
-                            qt_predicates[predicate_counter + 1].rel = Job_Radix_Sort(qt_predicates[predicate_counter + 1].rel, scheduler);
+                            if(method == 'q')
+                            {
+                                qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                            }
+                            else
+                            {
+                                qt_predicates[predicate_counter + 1].rel = Job_Radix_Sort(qt_predicates[predicate_counter + 1].rel, scheduler);
+                            }
                         #endif
 
                         qt_filters[posR].used = 0;
@@ -377,7 +422,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        qt_predicates[predicate_counter + 1].rel = Job_Radix_Sort(qt_predicates[predicate_counter + 1].rel, scheduler);
+                        if(method == 'q')
+                        {
+                            qt_predicates[predicate_counter + 1].rel = Radix_Sort(qt_predicates[predicate_counter + 1].rel);
+                        }
+                        else
+                        {
+                            qt_predicates[predicate_counter + 1].rel = Job_Radix_Sort(qt_predicates[predicate_counter + 1].rel, scheduler);
+                        }
                     #endif
 
 
@@ -443,7 +495,16 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        if(method == 'q')
+                        {
+                            qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+
+                        }
+                        else
+                        {
+                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+
+                        }
                     #endif
 
                     qt_filters[posL].used = 0;
@@ -468,7 +529,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         #endif
 
                         #if THREADS > 1
-                            qt_predicates[posL].rel = Job_Radix_Sort(qt_predicates[posL].rel, scheduler);
+                            if(method == 'q')
+                            {
+                                qt_predicates[posL].rel = Radix_Sort(qt_predicates[posL].rel);
+                            }
+                            else
+                            {
+                                qt_predicates[posL].rel = Job_Radix_Sort(qt_predicates[posL].rel, scheduler);
+                            }
                         #endif
                         Lflag = 2;
                         Lcolumn_tmp = qt_predicates[posL].file1_column;
@@ -489,7 +557,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         #endif
 
                         #if THREADS > 1
-                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                            if(method == 'q')
+                            {
+                                qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                            }
+                            else
+                            {
+                                qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                            }
                         #endif
                         posL = predicate_counter;
                         predicate_counter++;
@@ -518,7 +593,15 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        if(method == 'q')
+                        {
+                            qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+
+                        }
+                        else
+                        {
+                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        }
                     #endif
 
                     qt_filters[posR].used = 0;
@@ -542,7 +625,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         #endif
 
                         #if THREADS > 1
-                            qt_predicates[posR].rel = Job_Radix_Sort(qt_predicates[posR].rel, scheduler);
+                            if(method == 'q')
+                            {
+                                qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+                            }
+                            else
+                            {
+                                qt_predicates[posR].rel = Job_Radix_Sort(qt_predicates[posR].rel, scheduler);
+                            }
                         #endif
 
 
@@ -564,7 +654,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                         #endif
 
                         #if THREADS > 1
-                            qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                        if(method == 'q')
+                            {
+                                qt_predicates[predicate_counter].rel = Radix_Sort(qt_predicates[predicate_counter].rel);
+                            }
+                            else
+                            {
+                                qt_predicates[predicate_counter].rel = Job_Radix_Sort(qt_predicates[predicate_counter].rel, scheduler);
+                            }
                         #endif
                         posR = predicate_counter;
                         predicate_counter++;
@@ -591,7 +688,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                        if(method == 'q')
+                        {
+                            interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                        }
+                        else
+                        {
+                            interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                        }
                     #endif
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posL].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
@@ -621,7 +725,14 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                        if(method == 'q')
+                        {
+                            interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                        }
+                        else
+                        {
+                            interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                        }
                     #endif
 
 
@@ -670,7 +781,15 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                             #endif
 
                             #if THREADS > 1
+                            if(method == 'q')
+
+                            {
+                                interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                            }
+                            else
+                            {
                                 interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                            }
                             #endif
 
                             for(size_t k = 0; k < qt_predicates[posR].rel -> num_tuples; k++)
@@ -687,7 +806,16 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                             #endif
 
                             #if THREADS > 1
+                            if(method == 'q')
+
+                            {
+                                qt_predicates[posR].rel = Radix_Sort(qt_predicates[posR].rel);
+
+                            }
+                            else
+                            {
                                 qt_predicates[posR].rel = Job_Radix_Sort(qt_predicates[posR].rel, scheduler);
+                            }
                             #endif
                             if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                             {
@@ -746,11 +874,17 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
-                        interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                        if(method == 'q')
+                        {
+                            interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+                        }
+                        else
+                        {
+                            interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+                        }
                     #endif
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
                     {
-
                         null_flag_Join = 1;
                         break;
                     }
@@ -777,7 +911,16 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                     #endif
 
                     #if THREADS > 1
+                    if(method == 'q')
+                    {
+                        interv_final -> final_rel = Radix_Sort(interv_final -> final_rel);
+
+                    }
+                    else
+                    {
                         interv_final -> final_rel = Job_Radix_Sort(interv_final -> final_rel, scheduler);
+
+                    }
                     #endif
 
                     if(!Join_v2(interv_final, interv_final -> final_rel, qt_predicates[posR].rel, qt_predicates[posL].file1_ID, qt_predicates[posR].file1_ID))
