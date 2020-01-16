@@ -69,16 +69,16 @@ int main(int argc, char const *argv[])
     #if THREADS > 1
         if(!strcmp(argv[2],"query"))
         {
-            scheduler->jobs_left = 4;
+            scheduler->jobs_left = 2;
         }
     #endif
 
     begin = clock();
-    for (uint64_t i = 0; i < 4; i++)
+    for (uint64_t i = 0; i < 2; i++)
     {
 
         #if THREADS == 1
-            Execute_Queries(md, wl_ptr, i, stats , c, scheduler);
+            Execute_Queries(md, wl_ptr, i, stats , c, scheduler, 0);
         #endif
 
         #if THREADS > 1
@@ -91,13 +91,13 @@ int main(int argc, char const *argv[])
                 job_arguments -> query = i;
                 job_arguments -> c = c;
                 job_arguments -> scheduler = scheduler;
-
+                job_arguments -> method = 'q';
 
                 Assign_Job(scheduler, &JobQuery, (void*)job_arguments);
             }
             else if(!strcmp(argv[2],"radix"))
             {
-                Execute_Queries(md, wl_ptr, i, stats , c, scheduler);
+                Execute_Queries(md, wl_ptr, i, stats , c, scheduler, 'r');
             }
             else
             {
@@ -112,7 +112,10 @@ int main(int argc, char const *argv[])
     }
 
     #if THREADS > 1
-        Barrier(scheduler);
+        if(!strcmp(argv[2],"query"))
+        {
+            Barrier(scheduler);
+        }
     #endif
 
 
