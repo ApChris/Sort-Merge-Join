@@ -19,7 +19,7 @@ relation * Init_pointer();
 
 query_tuple * Init_Query_Tuple();
 
-void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c, job_scheduler * scheduler);
+void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c, job_scheduler * scheduler, char method);
 void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter);
 uint64_t Current_Best_Predicate(uint64_t num_predicates, uint64_t pred, uint64_t j);
 bool Check_Q(uint64_t i, char c);
