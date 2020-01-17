@@ -83,7 +83,7 @@ void JobQuery(void * job_arguments)
 {
 	job_query * temp = job_arguments;
 
-	Execute_Queries(temp->md, temp->wl_ptr, temp->query, temp->stats, temp->c, temp -> scheduler, temp -> method);
+	Execute_Queries(temp->md, temp->wl_ptr, temp->query, temp->stats, temp->c, temp -> scheduler, temp -> method, temp -> result);
 
 	free(temp);
 }
