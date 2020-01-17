@@ -238,50 +238,50 @@ void Join_v2_AfterUpdating(void){
     CU_ASSERT_EQUAL(interv_final->final_rel->tuples[9].payload[2], 3726);
 }
 
-// Checksum testing for this particular query: 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
-void CheckSum_Simple(void){
-		uint64_t num_rows;
-    statistics *stats;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/", &num_rows, stats);
-    // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
-
-    // r3.2
-    relation * relation_A = Create_Relation(md,3,2);
-
-    // Radix sort to r3.2
-    relation_A = Radix_Sort(relation_A);
-
-    // r3.2 < 2
-    relation_A = Filter(relation_A, 2, '<');
-
-    // Print_Relation_2(relation_A);
-
-    // r1.0
-    relation * relation_B = Create_Relation(md,0,0);
-
-    // Radix Sort to r1.0
-    relation_B = Radix_Sort(relation_B);
-
-    intervening * interv_final = interveningInit();
-    Join_v2(interv_final, relation_A, relation_B, 3, 0);
-
-    Update_Relation_Keys(md,3,1,interv_final->final_rel,0);
-
-
-    interv_final -> final_rel = Radix_Sort(interv_final->final_rel);
-
-    relation * relation_C = Create_Relation(md,1,0);
-
-    relation_C = Radix_Sort(relation_C);
-
-    Join_v2(interv_final, interv_final->final_rel, relation_C, 3, 1);
-
-    printf("\n");
-    CU_ASSERT_EQUAL(CheckSum(md,0,2,interv_final->final_rel,1), 5820);
-    printf("\n");
-    CU_ASSERT_EQUAL(CheckSum(md,3,1,interv_final->final_rel,0), 74494);
-    printf("\n");
-}
+// // Checksum testing for this particular query: 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
+// void CheckSum_Simple(void){
+// 		uint64_t num_rows;
+//     statistics *stats;
+//     metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/", &num_rows, stats);
+//     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
+//
+//     // r3.2
+//     relation * relation_A = Create_Relation(md,3,2);
+//
+//     // Radix sort to r3.2
+//     relation_A = Radix_Sort(relation_A);
+//
+//     // r3.2 < 2
+//     relation_A = Filter(relation_A, 2, '<');
+//
+//     // Print_Relation_2(relation_A);
+//
+//     // r1.0
+//     relation * relation_B = Create_Relation(md,0,0);
+//
+//     // Radix Sort to r1.0
+//     relation_B = Radix_Sort(relation_B);
+//
+//     intervening * interv_final = interveningInit();
+//     Join_v2(interv_final, relation_A, relation_B, 3, 0);
+//
+//     Update_Relation_Keys(md,3,1,interv_final->final_rel,0);
+//
+//
+//     interv_final -> final_rel = Radix_Sort(interv_final->final_rel);
+//
+//     relation * relation_C = Create_Relation(md,1,0);
+//
+//     relation_C = Radix_Sort(relation_C);
+//
+//     Join_v2(interv_final, interv_final->final_rel, relation_C, 3, 1);
+//
+//     printf("\n");
+//     CU_ASSERT_EQUAL(CheckSum(md,0,2,interv_final->final_rel,1), 5820);
+//     printf("\n");
+//     CU_ASSERT_EQUAL(CheckSum(md,3,1,interv_final->final_rel,0), 74494);
+//     printf("\n");
+// }
 
 int main(int argc, char const *argv[])
 {
@@ -302,7 +302,7 @@ int main(int argc, char const *argv[])
 	// Add unit tests to the suite
 	if ((CU_ADD_TEST(pSuite, Join_v2_Simple)==NULL) ||
         (CU_ADD_TEST(pSuite, Join_v2_AfterUpdating)==NULL) ||
-        (CU_ADD_TEST(pSuite, CheckSum_Simple)==NULL) ||
+        // (CU_ADD_TEST(pSuite, CheckSum_Simple)==NULL) ||
         (CU_ADD_TEST(pSuite, Scan_Simple)==NULL))
 	{
 		CU_cleanup_registry();
