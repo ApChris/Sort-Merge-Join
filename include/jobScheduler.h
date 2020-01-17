@@ -9,9 +9,10 @@
 #include "work.h"
 #include "statistics.h"
 #include "histogram.h"
+#include "result.h"
 
 
-#define THREADS 2
+#define THREADS 1
 
 typedef struct job
 {
@@ -46,6 +47,7 @@ typedef struct job_query
 	char c;
 	job_scheduler * scheduler;
 	char method;
+	resultBucket * result;
 } job_query;
 
 

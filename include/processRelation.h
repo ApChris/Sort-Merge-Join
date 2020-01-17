@@ -14,7 +14,8 @@
 
 void ProcessRelation(relation * rel_old, histogram * hist, psum * ps, relation * rel_new,int64_t sel_byte);
 void Print_Relation(relation * rel, histogram * hist, psum * ps);
-//relation * Radix_Sort(relation * rel, relation * rel_final);
+
+
 relation * Radix_Sort(relation * rel);
 relation * Job_Radix_Sort(relation * rel, job_scheduler * scheduler);
 
