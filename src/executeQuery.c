@@ -1,13 +1,14 @@
 #include "../include/executeQuery.h"
 #include "../include/bestTree.h"
-uint64_t CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos)
+
+
+uint64_t CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos, uint64_t * array, uint64_t current_payload, char method)
 {
     uint64_t * ptr = (uint64_t *)md[md_row].array[md_column];
     uint64_t sum = 0;
     for (uint64_t i = 0; i < rel -> num_tuples; i++)
     {
         sum += *(ptr + rel -> tuples[i].payload[pos]); // calculate keys
-        //sum += rel -> tuples[i].payload[pos]; // calculate payloads
     }
     if(sum == 0)
     {
@@ -15,17 +16,15 @@ uint64_t CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation *
     }
     else
     {
-        printf("%lu",sum);
+        array[current_payload] = sum;
+
+        if(method != 'q')
+        {
+            printf("%lu",sum);
+        }
     }
     return sum;
 }
-
-// relation * Copy(relation * rel)
-// {
-//     relation * rel_final  = Init_pointer();
-//     rel_final -> num_tuples = rel -> final_tuples;
-//
-// }
 
 relation * Init_pointer()
 {
@@ -46,9 +45,6 @@ query_tuple * Init_Query_Tuple()
         perror("Query_Tuple error");
         exit(-1);
     }
-    // qt[0].file1_ID = 0;
-    // qt[0].file1_column = 0;
-    // qt[0].rel = NULL;
     return qt;
 }
 
@@ -56,7 +52,7 @@ uint64_t Find_Query_Tuple(query_tuple * qt, uint64_t file_ID,uint64_t counter)
 {
     for (uint64_t i = 0; i < counter; i++)
     {
-        if((qt[i].file1_ID == file_ID) && (qt[i].used != 0))// && (qt[i].file1_column == file_column))
+        if((qt[i].file1_ID == file_ID) && (qt[i].used != 0))
         {
             return i;
         }
@@ -68,7 +64,7 @@ uint64_t Find_Query_Tuple_Predicate(query_tuple * qt, uint64_t file_ID,uint64_t 
 {
     for (uint64_t i = 0; i < counter; i++)
     {
-        if((qt[i].file1_ID == file_ID))// && (qt[i].file1_column == file_column))
+        if((qt[i].file1_ID == file_ID))
         {
             return i;
         }
@@ -100,7 +96,7 @@ void Print_Available_Filters(query_tuple * qt_filters, uint64_t filter_counter)
     }
 }
 
-void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c, job_scheduler * scheduler, char method)
+void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistics * stats, char c, job_scheduler * scheduler, char method, resultBucket * result)
 {
 
     uint64_t filter_counter = 0;
@@ -951,22 +947,30 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
         }
 
-         printf("%lu)",i);
+        // printf("%lu)",i);
 
         if(null_flag == 1)
         {
-            for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
+            if(method != 'q')
             {
+                for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
+                {
+                    printf("NULL");
+                    if(z + 1 ==  wl_ptr -> selects[i].num_tuples)
+                    break;
+                    else
+                    printf(" ");
+                }
 
-                printf("NULL");
-                if(z + 1 ==  wl_ptr -> selects[i].num_tuples)
-                break;
-                else
-                printf(" ");
-
-
+                printf("\n");
             }
-            printf("\n");
+            #if THREADS > 1
+                uint64_t * array;
+                if(method == 'q')
+                {
+                    resultBucket_Push(result, array,false, i, wl_ptr -> selects[i].num_tuples);
+                }
+            #endif
             for (uint64_t z = 0; z < filter_counter; z++)
             {
                 free(qt_filters[z].rel);
@@ -974,24 +978,32 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
             free(qt_filters);
             free(interv_final);
             if(predicate_counter > 0)
-            free(qt_predicates);
+                free(qt_predicates);
 
             return;
         }
         else if(null_flag_Join == 1)
         {
             // printf("%lu)",i);
-            for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
+            if(method != 'q')
             {
-                printf("NULL");
-                if(z + 1 ==  wl_ptr -> selects[i].num_tuples)
-                break;
-                else
-                printf(" ");
-
-
+                for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
+                {
+                    printf("NULL");
+                    if(z + 1 ==  wl_ptr -> selects[i].num_tuples)
+                    break;
+                    else
+                    printf(" ");
+                }
+                printf("\n");
             }
-            printf("\n");
+            #if THREADS > 1
+                uint64_t * array;
+                if(method == 'q')
+                {
+                    resultBucket_Push(result, array,false, i, wl_ptr -> selects[i].num_tuples);
+                }
+            #endif
             for (uint64_t z = 0; z < filter_counter; z++)
             {
                 for (size_t k = 0; k < qt_filters[z].rel -> num_tuples; k++)
@@ -1002,9 +1014,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 free(qt_filters[z].rel);
             }
             free(qt_filters);
-            //
-            //
-            //
+
             for (uint64_t z = 0; z < predicate_counter; z++)
             {
                 for (size_t k = 0; k < qt_predicates[z].rel -> num_tuples; k++)
@@ -1015,15 +1025,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 free(qt_predicates[z].rel);
             }
             free(qt_predicates);
-            //
-            // // if()
-            // for (size_t z = 0; z < interv_final -> final_rel -> num_tuples; z++)
-            // {
-            //     free(interv_final -> final_rel ->tuples[z].payload);
-            // }
-            // free(interv_final -> final_rel ->tuples);
-            // free(interv_final -> final_rel);
-            // // //
+
             free(interv_final -> rowId);
             free(interv_final);
 
@@ -1032,6 +1034,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
         }
         else
         {
+            uint64_t * array = (uint64_t *)calloc( wl_ptr -> selects[i].num_tuples, sizeof(uint64_t));
             for (uint64_t z = 0; z < wl_ptr -> selects[i].num_tuples; z++) // for every select
             {
                 for (uint64_t x = 0; x < interv_final -> position; x++)   // Search in interval final in rowid
@@ -1039,18 +1042,26 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
 
                     if(interv_final -> rowId[x] == wl_ptr -> selects[i].tuples[z].file1_ID)
                     {
-
-                        CheckSum(md,wl_ptr -> parameters[i].tuples[wl_ptr -> selects[i].tuples[z].file1_ID].file1_ID,wl_ptr -> selects[i].tuples[z].file1_column,interv_final -> final_rel,x);
+                        CheckSum(md,wl_ptr -> parameters[i].tuples[wl_ptr -> selects[i].tuples[z].file1_ID].file1_ID,wl_ptr -> selects[i].tuples[z].file1_column,interv_final -> final_rel,x, array , z, method);
                         if(z + 1 ==  wl_ptr -> selects[i].num_tuples)
                         break;
                         else
-                        printf(" ");
+                            if(method != 'q')
+                                printf(" ");
                         break;
                     }
                 }
             }
+            #if THREADS > 1
+                if(method == 'q')
+                {
+                    resultBucket_Push(result, array,true, i, wl_ptr -> selects[i].num_tuples);
+                }
+            #endif
+            free(array);
         }
-        printf("\n");
+        if(method != 'q')
+            printf("\n");
 
         for (uint64_t z = 0; z < filter_counter; z++)
         {
