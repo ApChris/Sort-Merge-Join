@@ -23,7 +23,7 @@ void insertNewResult(result *res)
 	res->next_result = current_result;
 }
 
-result *pushJoinedElements(result *head, uint64_t key, uint64_t * payload_A, uint64_t * payload_B)
+result * pushJoinedElements(result *head, uint64_t key, uint64_t * payload_A, uint64_t * payload_B)
 {
 	result *current_result = head;
 	result *previous_result = head;
@@ -129,11 +129,58 @@ uint64_t Join(relation *rel_A, relation *rel_B, result *head)
 				counter++;
 			}
 			a++;
-			if(a==rel_A->num_tuples){
+			if(a==rel_A->num_tuples)
+			{
 				return counter;
 			}
 		}
 
 	}
 	return counter;
+}
+
+
+resultBucket * resultBucket_Init(uint64_t totalQueries)
+{
+	resultBucket * result;
+	if((result = (resultBucket *)malloc(totalQueries * sizeof(resultBucket))) == NULL)
+	{
+		perror("result.c, first malloc");
+		exit(-1);
+	}
+	for (size_t i = 0; i < totalQueries; i++)
+	{
+		result[i].id = 0;
+		result[i].num_payloads = 0;
+		result[i].is_null = false;
+		result[i].payload = NULL;
+	}
+	return result;
+}
+
+void resultBucket_Push(resultBucket * result ,uint64_t * array_payloads,bool is_null, uint64_t pos,uint64_t num_payloads)
+{
+
+	// if current query has uint64_t results
+	if(is_null == true)
+	{
+		if((result[pos].payload = (uint64_t *)malloc(num_payloads * sizeof(uint64_t))) == NULL)
+		{
+			perror("resultBucket_Push.c , first malloc\n");
+			exit(-1);
+		}
+
+		for (size_t i = 0; i < num_payloads; i++)
+		{
+			result[pos].payload[i] = array_payloads[i];
+		}
+		result[pos].is_null = true;
+	}
+	// if results are null
+	else
+	{
+		result[pos].is_null = false;
+	}
+	result[pos].num_payloads = num_payloads;
+	result[pos].id = pos;
 }
