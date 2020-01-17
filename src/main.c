@@ -64,21 +64,21 @@ int main(int argc, char const *argv[])
     }
 
     uint64_t totalQueries = wl_ptr -> num_parameters;
-
-
+    resultBucket * result ;
     #if THREADS > 1
         if(!strcmp(argv[2],"query"))
         {
-            scheduler->jobs_left = 2;
+            result = resultBucket_Init(totalQueries);
+            scheduler->jobs_left = totalQueries;
         }
     #endif
 
     begin = clock();
-    for (uint64_t i = 0; i < 2; i++)
+    for (uint64_t i = 0; i < totalQueries; i++)
     {
 
         #if THREADS == 1
-            Execute_Queries(md, wl_ptr, i, stats , c, scheduler, 0);
+            Execute_Queries(md, wl_ptr, i, stats , c, scheduler, 0, result);
         #endif
 
         #if THREADS > 1
@@ -92,32 +92,60 @@ int main(int argc, char const *argv[])
                 job_arguments -> c = c;
                 job_arguments -> scheduler = scheduler;
                 job_arguments -> method = 'q';
-
+                job_arguments -> result = result;
                 Assign_Job(scheduler, &JobQuery, (void*)job_arguments);
             }
             else if(!strcmp(argv[2],"radix"))
             {
-                Execute_Queries(md, wl_ptr, i, stats , c, scheduler, 'r');
+                Execute_Queries(md, wl_ptr, i, stats , c, scheduler, 'r', result);
             }
             else
             {
                 printf("\nYou have to run one of the following:\n\n./smj small query/radix\n./smj medium query/radix\n\nTry again!!\n\n");
                 exit(-1);
             }
-
         #endif
-
-
-
     }
 
     #if THREADS > 1
         if(!strcmp(argv[2],"query"))
         {
             Barrier(scheduler);
+
+            for (size_t i = 0; i < totalQueries; i++)
+            {
+                if(result[i].is_null)
+                {
+                    for (size_t j = 0; j < result[i].num_payloads; j++)
+                    {
+                        printf("%lu", result[i].payload[j]);
+                        if(j + 1 ==  result[i].num_payloads)
+                        break;
+                        else
+                        printf(" ");
+                    }
+                }
+                else
+                {
+                    for (size_t j = 0; j < result[i].num_payloads; j++)
+                    {
+                        printf("NULL");
+                        if(j + 1 ==  result[i].num_payloads)
+                        break;
+                        else
+                        printf(" ");
+                    }
+                }
+                printf("\n");
+            }
+            for (size_t i = 0; i < totalQueries; i++)
+            {
+                if(result[i].is_null)
+                    free(result[i].payload);
+            }
+            free(result);
         }
     #endif
-
 
     end = clock();
     time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
@@ -127,7 +155,6 @@ int main(int argc, char const *argv[])
         free(md[i].full_array);
     }
     free(md);
-
 
 
     for (size_t j = 0; j < wl_ptr -> num_parameters; j++)
@@ -168,11 +195,12 @@ int main(int argc, char const *argv[])
     }
     free(stats);
 
+
     #if THREADS > 1
         Destroy_JobScheduler(scheduler);
     #endif
 
-    // printf("Time %f\n", time_spent);
+    printf("Time %f\n", time_spent);
 
 
     return 0;
