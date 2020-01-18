@@ -965,7 +965,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 printf("\n");
             }
             #if THREADS > 1
-                uint64_t * array;
+                uint64_t * array = NULL;
                 if(method == 'q')
                 {
                     resultBucket_Push(result, array,false, i, wl_ptr -> selects[i].num_tuples);
@@ -998,7 +998,7 @@ void Execute_Queries(metadata * md, work_line * wl_ptr,uint64_t query, statistic
                 printf("\n");
             }
             #if THREADS > 1
-                uint64_t * array;
+                uint64_t * array = NULL;
                 if(method == 'q')
                 {
                     resultBucket_Push(result, array,false, i, wl_ptr -> selects[i].num_tuples);
