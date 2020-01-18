@@ -34,14 +34,14 @@ int main(int argc, char const *argv[])
     {
         if(!strcmp(argv[1],"small"))
         {
-            md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows, stats);
+            md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
             wl_ptr = Read_Work("workloads/small/small.work");
             stats = Calculate_Statistics(md, num_rows);
             c = 's';
         }
         else if(!strcmp(argv[1],"medium"))
         {
-            md = Read_Init_Binary("workloads/medium/medium.init","workloads/medium/",&num_rows, stats);
+            md = Read_Init_Binary("workloads/medium/medium.init","workloads/medium/",&num_rows);
             wl_ptr = Read_Work("workloads/medium/medium.work");
             stats = Calculate_Statistics(md, num_rows);
             c = 'm';
