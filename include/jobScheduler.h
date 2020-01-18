@@ -12,7 +12,7 @@
 #include "result.h"
 
 
-#define THREADS 1
+#define THREADS 2
 
 typedef struct job
 {
