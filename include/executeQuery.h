@@ -12,7 +12,7 @@
 #include "statistics.h"
 #include "jobScheduler.h"
 #include "result.h"
-#include "qcheck.h"
+
 
 uint64_t Find_Query_Tuple(query_tuple * qt, uint64_t file_ID,uint64_t counter);
 uint64_t CheckSum(metadata * md, uint64_t md_row, uint64_t md_column, relation * rel, uint64_t pos, uint64_t * array, uint64_t current_payload, char method);
