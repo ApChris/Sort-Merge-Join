@@ -40,7 +40,7 @@ void Init_relation(relation *rel, int size){
 void Scan_Simple(void){
 	uint64_t num_rows;
     statistics * stats;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows,stats);
+    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
 
     relation * relation_A = Create_Relation(md,1,0);
     relation_A = Radix_Sort(relation_A);
@@ -81,7 +81,7 @@ void Scan_Simple(void){
 void Join_v2_Simple(void){
 		uint64_t num_rows;
     statistics * stats;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows,stats);
+    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
@@ -152,7 +152,7 @@ void Join_v2_Simple(void){
 void Join_v2_AfterUpdating(void){
 		uint64_t num_rows;
     statistics * stats;
-    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows,stats);
+    metadata *md = Read_Init_Binary("workloads/small/small.init","workloads/small/",&num_rows);
     // 3 0 1|0.2=1.0&0.1=2.0&0.2<2|1.2 0.1
 
     // r3.2
