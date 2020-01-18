@@ -11,6 +11,8 @@
 and execute for either small or medium datasets:<br>
 <code>./smj small query/radix</code><br>
 <code>./smj medium query/radix</code></p>
+<code>./smj small/medium radix(for 1 thread without parallel)</code></p>
+<p>If you want to set the threads number that are going to execute the program you have to change it manually from jobScheduler.h (By default threads number has been set as 2)</p>
 <p>To compile Sort-Merge-Join and unit testing seperately:<br>
 <code>make smj</code><br>
 <code>make unit_test</code></p>
@@ -49,6 +51,21 @@ Another way to execute the same query is (((C&amp;B)&amp;A)&amp;D), which means 
 Whenever a thread completes it’s job, the function Complete_Job is called, which lowers jobs_left by 1 and checks if jobs_left is 0. If that’s true, it signals the condition variable, that Barrier waits.</p>
 <p>We’ve implemented a <strong>JobQuery</strong>, which executes every query in a multithreading manner. Each thread is responsible of executing the whole query. Queries are pushed in the queue and threads receive jobs from that queue to complete.</p>
 <p>We’ve also implemented a <strong>JobHist</strong> and a <strong>JobPsum</strong>, which, respectively, execute the process of the histogram and psum creation (that we’ve already implemented in Part One and used at large in Part Two)</p>
+<h2 id="multithreading">Times</h2>
+
+<p>1 Thread: Small: 8.078s </p>
+
+<p>2 Threads: Small: Query: 57.4622s </p>
+<p>2 Threads: Small: Radix: 11.1213s </p>
+
+<p>3 Threads: Small: Query: 70.338s </p>
+<p>3 Threads: Small: Radix: 12.2478s </p>
+<p>4 Threads: Small: Query: 109.0321s </p>
+<p>4 Threads: Small: Radix: 11.1989s </p>
+
+<p>1 Thread: Medium: 805.456s </p>
+<p>2 Threads: Medium: Query: 3646.4971s</p>
+<p>2 Thread: Medium: Radix: 850.456s </p>
 <h2 id="part-two">Part Two</h2>
 <h2 id="compilation-and-execution">Compilation and Execution</h2>
 <p>Clone Sort-Merge-Join in your local repository, open terminal and type the following:<br>
