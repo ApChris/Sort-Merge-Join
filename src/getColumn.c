@@ -63,7 +63,7 @@ void GetColumn_FromFILE(const char * filename, relation *rel)
 
 
 
-metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * num_rows, statistics * stats)
+metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * num_rows)
 {
 
     // variables for init file
@@ -76,8 +76,6 @@ metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * n
     // variables for binary files
     FILE * file_binary;
     uint64_t length_binary = 0;
-    uint64_t * array;
-
 
     // variables for metadata struct
     metadata * md;
@@ -190,19 +188,6 @@ char * split(char * str, const char * delim)
     return p + strlen(delim);
 }
 
-// uint64_t self_join_check(char * str1, char * str2)
-// {
-//     char * tail_str1, * tail_str2;
-//
-//     tail_str1 = split(str1, ".");
-//     tail_str2 = split(str2, ".");
-//
-//     if (!strcmp(str1, str2))
-//     {
-//         return 0;
-//     }
-//     return -1;
-// }
 
 work_line * Read_Work(const char * filename)
 {
@@ -291,12 +276,6 @@ work_line * Read_Work(const char * filename)
                 char * temp_predicate_tail = (char*)malloc(strlen(predicate_tail)+1);
                 strcpy(temp_predicate_tail, predicate_tail);
 
-
-                // self join, i.e. 0.1=0.2 (scanning) ---> SELF_JOIN
-                // if (!self_join_check(predicate, temp_predicate_tail))
-                // {
-                //     printf("self join\n");
-                // }
 
                 // i.e. 0.1=5000 is a filter, not a predicate
                 if ((strchr(predicate_tail, '.') == NULL))
@@ -454,7 +433,7 @@ void Write_To_File(metadata * md, char * filename,uint64_t pos)
             for (size_t z = 0; z <  md[pos].num_columns; z++)
             {
                 /* code */
-                ptr = md[pos].array[z];
+                ptr = (uint64_t *)md[pos].array[z];
 
                 char str[30];
 
