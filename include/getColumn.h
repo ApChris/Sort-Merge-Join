@@ -12,7 +12,7 @@
 void GetColumn_FromFILE(const char * filename, relation *rel);
 
 // metadata * Read_Init_Binary(const char * filename);
-metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * num_rows, statistics * stats);
+metadata * Read_Init_Binary(const char * filename, char * fileFlag, uint64_t * num_rows);
 work_line * Read_Work(const char * filename);
 
 // uint64_t self_join_check(char * str1, char * str2);
