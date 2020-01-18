@@ -1018,7 +1018,6 @@ void Hist_Job_Partitions(relation * rel, histogram * hist_final,job_scheduler * 
 
 
     uint64_t tuples_per_thread = (rel -> num_tuples) / scheduler -> total_threads;
-    uint64_t tuples_per_thread_final =  (rel -> num_tuples) / scheduler -> total_threads;
 
 
     for (size_t j = 0; j < scheduler -> total_threads; j++)
