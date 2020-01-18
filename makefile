@@ -15,7 +15,8 @@ OBJS = build/main.o \
 		build/executeQuery.o \
 		build/statistics.o \
 		build/bestTree.o \
-		build/jobScheduler.o
+		build/jobScheduler.o \
+		build/qcheck.o
 
 TEST_OBJS = $(filter-out build/main.o, $(OBJS))
 
@@ -59,6 +60,9 @@ build/quicksort.o: src/quicksort.c
 build/cleanRelation.o: src/cleanRelation.c
 	$(CC) $(FLAGS) $< -o $@
 
+build/qcheck.o: src/qcheck.c
+	$(CC) $(FLAGS) $< -o $@
+
 build/splitBucket.o: src/splitBucket.c
 	$(CC) $(FLAGS) $< -o $@
 
@@ -91,6 +95,7 @@ build/jobScheduler.o: src/jobScheduler.c
 
 build/qcheck.o: src/qcheck.c
 	$(CC) $(FLAGS) $< -o $@
+
 $(TARGET) : $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ -lm -lpthread
 

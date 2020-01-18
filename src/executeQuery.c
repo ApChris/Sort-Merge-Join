@@ -1142,20 +1142,3 @@ uint64_t Current_Best_Predicate(uint64_t num_predicates, uint64_t pred, uint64_t
     }
     return j;
 }
-
-bool Check_Q(uint64_t i, char c)
-{
-    bool flag = false;
-    if(i == 11 && c == 'm')
-    {
-        printf("60031231103105 60030577889893\n");
-        flag = true;
-    }
-
-    else if(i == 43 && c == 'm')
-    {
-        printf("NULL NULL NULL\n");
-        flag = true;
-    }
-    return flag;
-}
