@@ -110,7 +110,7 @@ void * Thread_Routine(void * thread_pool){
 		if (scheduler->finished == 1)
 		{
 			pthread_exit(NULL);
-			return;
+			return NULL;
 		}
 
 		// Assign a job to be completed from queue
