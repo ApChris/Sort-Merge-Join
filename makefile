@@ -93,8 +93,6 @@ build/bestTree.o: src/bestTree.c
 build/jobScheduler.o: src/jobScheduler.c
 	$(CC) $(FLAGS) $< -o $@
 
-build/qcheck.o: src/qcheck.c
-	$(CC) $(FLAGS) $< -o $@
 
 $(TARGET) : $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ -lm -lpthread
